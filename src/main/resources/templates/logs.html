@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <div class="header">
+        <h1>ExerciseLog</h1>
+        <div>
+            <a th:href="@{/profile}">Profile</a>
+            <a th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+    <div class="nav">
+        <a th:href="@{/home}">Home</a>
+        <a th:href="@{/workouts}">Workouts</a>
+        <a th:href="@{/planned}">Planned Training</a>
+        <a th:href="@{/logs}">Exercise Logs</a>
+    </div>
+    <div class="content">
+        <h2>Exercise Logs</h2>
+        <p>Logs of your past exercises will be displayed here. They can be sorted based on exercise name to see progression.</p>
+    </div>
+</body>
+</html>
