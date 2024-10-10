@@ -9,9 +9,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import s24.backend.exerciselog.domain.ExerciseLog;
+import s24.backend.exerciselog.domain.PlannedExercise;
 import s24.backend.exerciselog.domain.Role;
 import s24.backend.exerciselog.domain.User;
 import s24.backend.exerciselog.domain.Workout;
+import s24.backend.exerciselog.repository.ExerciseLogRepository;
+import s24.backend.exerciselog.repository.PlannedExerciseRepository;
 import s24.backend.exerciselog.repository.RoleRepository;
 import s24.backend.exerciselog.repository.UserRepository;
 import s24.backend.exerciselog.repository.WorkoutRepository;
@@ -24,22 +28,25 @@ public class ExerciselogApplication {
 	}
 
 	@Bean
-	public CommandLineRunner demo(WorkoutRepository workoutRepository, UserRepository userRepository, RoleRepository roleRepository) {
+	public CommandLineRunner demo(WorkoutRepository workoutRepository, UserRepository userRepository, RoleRepository roleRepository, PlannedExerciseRepository PlannedExerciseRepository, ExerciseLogRepository exerciseLogRepository) {
 		return (args) -> {
 			LocalDate date = LocalDate.now();
 
 			List<Workout> workouts = new ArrayList<>();
 
-			Workout workout = new Workout("training", "hard", date, null);
-			workouts.add(workout);
-
 			Role role = new Role("user");
 			roleRepository.save(role);
 
 			User user = new User(workouts, "username", "password", "user@email.com", role);
-
-			workout.setUser(user);
 			userRepository.save(user);
+
+			List<PlannedExercise> plannedExercises = new ArrayList<>();
+			List<ExerciseLog> exerciseLogs = new ArrayList<>();
+			PlannedExerciseRepository.saveAll(plannedExercises);
+			exerciseLogRepository.saveAll(exerciseLogs);
+
+			Workout workout = new Workout(user, exerciseLogs, plannedExercises, "training", "hard", date);
+			workouts.add(workout);
 			workoutRepository.save(workout);
 		};
 	}
