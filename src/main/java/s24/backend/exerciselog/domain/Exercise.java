@@ -17,15 +17,23 @@ public class Exercise {
     @OneToMany(mappedBy = "exercise")
     private List<ExerciseLog> exerciseLogs;
 
+    @OneToMany(mappedBy = "exercise")
+    private List<PlannedExercise> plannedExercises;
+
     private String name;
     private String muscleGroup;
 
     public Exercise() {
     }
-    public Exercise(String name, String muscleGroup, List<ExerciseLog> exerciseLogs) {
+    public Exercise(String name, String muscleGroup) {
         this.name = name;
         this.muscleGroup = muscleGroup;
-        this.exerciseLogs = exerciseLogs;
+    }
+    public List<PlannedExercise> getPlannedExercises() {
+        return plannedExercises;
+    }
+    public void setPlannedExercises(List<PlannedExercise> plannedExercises) {
+        this.plannedExercises = plannedExercises;
     }
     public List<ExerciseLog> getExerciseLogs() {
         return exerciseLogs;

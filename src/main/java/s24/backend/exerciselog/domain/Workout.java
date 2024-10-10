@@ -24,18 +24,30 @@ public class Workout {
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
     private List<ExerciseLog> exerciseLog;
+
+    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
+    private List<PlannedExercise> plannedExercises;
     
     private String name;
     private String notes;
     private LocalDate date;
 
-    public Workout(String name, String notes, LocalDate date, List<ExerciseLog> exerciseLog) {
+    public Workout(User user, List<ExerciseLog> exerciseLog, List<PlannedExercise> plannedExercises, String name,
+            String notes, LocalDate date) {
+        this.user = user;
+        this.exerciseLog = exerciseLog;
+        this.plannedExercises = plannedExercises;
         this.name = name;
         this.notes = notes;
         this.date = date;
-        this.exerciseLog = exerciseLog;
     }
     public Workout() {
+    }
+    public List<PlannedExercise> getPlannedExercises() {
+        return plannedExercises;
+    }
+    public void setPlannedExercises(List<PlannedExercise> plannedExercises) {
+        this.plannedExercises = plannedExercises;
     }
     public User getUser() {
         return user;
