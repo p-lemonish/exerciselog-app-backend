@@ -9,7 +9,7 @@ import jakarta.persistence.ManyToOne;
 
 //Compare List of this vs Workout's List of ExerciseLogs
 @Entity
-public class PlannedExercise {
+public class PlannedExerciseLog {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -26,9 +26,9 @@ public class PlannedExercise {
     private int plannedSets;
     private double plannedWeight;
     private String notes;
-    public PlannedExercise() {
+    public PlannedExerciseLog() {
     }
-    public PlannedExercise(Exercise exercise, Workout workout, int plannedReps, int plannedSets, double plannedWeight,
+    public PlannedExerciseLog(Exercise exercise, Workout workout, int plannedReps, int plannedSets, double plannedWeight,
             String notes) {
         this.exercise = exercise;
         this.workout = workout;

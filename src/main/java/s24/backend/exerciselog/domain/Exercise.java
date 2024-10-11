@@ -18,7 +18,7 @@ public class Exercise {
     private List<ExerciseLog> exerciseLogs;
 
     @OneToMany(mappedBy = "exercise")
-    private List<PlannedExercise> plannedExercises;
+    private List<PlannedExerciseLog> plannedExerciseLogs;
 
     private String name;
     private String muscleGroup;
@@ -29,11 +29,11 @@ public class Exercise {
         this.name = name;
         this.muscleGroup = muscleGroup;
     }
-    public List<PlannedExercise> getPlannedExercises() {
-        return plannedExercises;
+    public List<PlannedExerciseLog> getPlannedExerciseLogs() {
+        return plannedExerciseLogs;
     }
-    public void setPlannedExercises(List<PlannedExercise> plannedExercises) {
-        this.plannedExercises = plannedExercises;
+    public void setPlannedExercises(List<PlannedExerciseLog> plannedExerciseLogs) {
+        this.plannedExerciseLogs = plannedExerciseLogs;
     }
     public List<ExerciseLog> getExerciseLogs() {
         return exerciseLogs;

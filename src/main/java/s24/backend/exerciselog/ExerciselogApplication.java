@@ -10,12 +10,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import s24.backend.exerciselog.domain.ExerciseLog;
-import s24.backend.exerciselog.domain.PlannedExercise;
+import s24.backend.exerciselog.domain.PlannedExerciseLog;
 import s24.backend.exerciselog.domain.Role;
 import s24.backend.exerciselog.domain.User;
 import s24.backend.exerciselog.domain.Workout;
 import s24.backend.exerciselog.repository.ExerciseLogRepository;
-import s24.backend.exerciselog.repository.PlannedExerciseRepository;
+import s24.backend.exerciselog.repository.PlannedExerciseLogRepository;
 import s24.backend.exerciselog.repository.RoleRepository;
 import s24.backend.exerciselog.repository.UserRepository;
 import s24.backend.exerciselog.repository.WorkoutRepository;
@@ -28,7 +28,7 @@ public class ExerciselogApplication {
 	}
 
 	@Bean
-	public CommandLineRunner demo(WorkoutRepository workoutRepository, UserRepository userRepository, RoleRepository roleRepository, PlannedExerciseRepository PlannedExerciseRepository, ExerciseLogRepository exerciseLogRepository) {
+	public CommandLineRunner demo(WorkoutRepository workoutRepository, UserRepository userRepository, RoleRepository roleRepository, PlannedExerciseLogRepository PlannedExerciseRepository, ExerciseLogRepository exerciseLogRepository) {
 		return (args) -> {
 			LocalDate date = LocalDate.now();
 
@@ -40,12 +40,12 @@ public class ExerciselogApplication {
 			User user = new User(workouts, "username", "password", "user@email.com", role);
 			userRepository.save(user);
 
-			List<PlannedExercise> plannedExercises = new ArrayList<>();
+			List<PlannedExerciseLog> plannedExerciseLogs = new ArrayList<>();
 			List<ExerciseLog> exerciseLogs = new ArrayList<>();
-			PlannedExerciseRepository.saveAll(plannedExercises);
+			PlannedExerciseRepository.saveAll(plannedExerciseLogs);
 			exerciseLogRepository.saveAll(exerciseLogs);
 
-			Workout workout = new Workout(user, exerciseLogs, plannedExercises, "training", "hard", date);
+			Workout workout = new Workout(user, exerciseLogs, plannedExerciseLogs, "training", "hard", date);
 			workouts.add(workout);
 			workoutRepository.save(workout);
 		};
