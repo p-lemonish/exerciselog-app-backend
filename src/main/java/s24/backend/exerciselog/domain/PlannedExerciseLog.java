@@ -19,7 +19,7 @@ public class PlannedExerciseLog {
     private Exercise exercise;
 
     @ManyToOne
-    @JoinColumn(name = "workout_id")
+    @JoinColumn(name = "workout_id", nullable = true)
     private Workout workout;
 
     private int plannedReps;
@@ -28,10 +28,9 @@ public class PlannedExerciseLog {
     private String notes;
     public PlannedExerciseLog() {
     }
-    public PlannedExerciseLog(Exercise exercise, Workout workout, int plannedReps, int plannedSets, double plannedWeight,
+    public PlannedExerciseLog(Exercise exercise, int plannedSets, int plannedReps, double plannedWeight,
             String notes) {
         this.exercise = exercise;
-        this.workout = workout;
         this.plannedReps = plannedReps;
         this.plannedSets = plannedSets;
         this.plannedWeight = plannedWeight;

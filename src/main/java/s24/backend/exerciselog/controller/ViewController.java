@@ -14,10 +14,6 @@ public class ViewController {
     public String getLogs() {
         return "logs";
     }
-    @GetMapping("/planned")
-    public String getPlanned() {
-        return "planned";
-    }
     @GetMapping("/profile")
     public String getProfile() {
         return "profile";
