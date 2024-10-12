@@ -1,6 +1,5 @@
 package s24.backend.exerciselog;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,6 @@ import s24.backend.exerciselog.domain.Exercise;
 import s24.backend.exerciselog.domain.PlannedExerciseLog;
 import s24.backend.exerciselog.domain.Role;
 import s24.backend.exerciselog.domain.User;
-import s24.backend.exerciselog.domain.Workout;
 import s24.backend.exerciselog.repository.ExerciseLogRepository;
 import s24.backend.exerciselog.repository.ExerciseRepository;
 import s24.backend.exerciselog.repository.PlannedExerciseLogRepository;
