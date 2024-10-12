@@ -10,10 +10,6 @@ public class ViewController {
     public String getHome() {
         return "home";
     }
-    @GetMapping("/logs")
-    public String getLogs() {
-        return "logs";
-    }
     @GetMapping("/profile")
     public String getProfile() {
         return "profile";

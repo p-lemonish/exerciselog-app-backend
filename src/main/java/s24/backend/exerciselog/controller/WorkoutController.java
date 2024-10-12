@@ -8,10 +8,13 @@ import s24.backend.exerciselog.repository.PlannedExerciseLogRepository;
 import s24.backend.exerciselog.repository.UserRepository;
 import s24.backend.exerciselog.repository.WorkoutRepository;
 import s24.backend.exerciselog.domain.CompletedWorkout;
+import s24.backend.exerciselog.domain.ExerciseLog;
 import s24.backend.exerciselog.domain.PlannedExerciseLog;
 import s24.backend.exerciselog.domain.User;
 import s24.backend.exerciselog.domain.Workout;
 import s24.backend.exerciselog.repository.CompletedWorkoutRepository;
+import s24.backend.exerciselog.repository.ExerciseLogRepository;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +38,9 @@ public class WorkoutController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ExerciseLogRepository exerciseLogRepository;
 
     @GetMapping("/workouts")
     public String getWorkoutsPage(Model model) {
@@ -103,6 +109,19 @@ public class WorkoutController {
         completedWorkout.setPlannedDate(workout.getDate());
 
         completedWorkoutRepository.save(completedWorkout);
+
+        for(PlannedExerciseLog plannedExerciseLog : workout.getPlannedExerciseLogs()) {
+            ExerciseLog exerciseLog = new ExerciseLog();
+            exerciseLog.setUser(user);
+            exerciseLog.setCompletedWorkout(completedWorkout);
+            exerciseLog.setExercise(plannedExerciseLog.getExercise());
+            exerciseLog.setWorkout(workout);
+            exerciseLog.setName(plannedExerciseLog.getExercise().getName());
+            exerciseLog.setPlannedExerciseLog(plannedExerciseLog);
+            exerciseLog.setNotes(notes);
+            // TODO SetLog
+            exerciseLogRepository.save(exerciseLog);
+        }
         //user.getWorkouts().remove(workout);
 
         return "redirect:/workouts";

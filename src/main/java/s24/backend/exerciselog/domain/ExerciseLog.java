@@ -25,6 +25,10 @@ public class ExerciseLog {
     private Exercise exercise;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
     @JoinColumn(name = "workout_id")
     private Workout workout;
 
@@ -94,5 +98,11 @@ public class ExerciseLog {
     }
     public void setWorkout(Workout workout) {
         this.workout = workout;
+    }
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
     }
 }
