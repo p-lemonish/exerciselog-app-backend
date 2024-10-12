@@ -24,10 +24,9 @@ public class CompletedWorkout {
 
     private LocalDate date;
     private String notes;
-
-    @ManyToOne
-    @JoinColumn(name = "workout_id")
-    private Workout workout;
+    private String workoutName;
+    private String workoutNotes;
+    private LocalDate plannedDate;
 
     @OneToMany(mappedBy = "completedWorkout", cascade = CascadeType.ALL)
     private List<ExerciseLog> exerciseLogs;
@@ -42,14 +41,29 @@ public class CompletedWorkout {
     public CompletedWorkout() {
     }
 
-    public Workout getWorkout() {
-        return workout;
+    public String getWorkoutName() {
+        return workoutName;
     }
 
-    public void setWorkout(Workout workout) {
-        this.workout = workout;
+    public void setWorkoutName(String workoutName) {
+        this.workoutName = workoutName;
     }
 
+    public String getWorkoutNotes() {
+        return workoutNotes;
+    }
+
+    public void setWorkoutNotes(String workoutNotes) {
+        this.workoutNotes = workoutNotes;
+    }
+
+    public LocalDate getPlannedDate() {
+        return plannedDate;
+    }
+
+    public void setPlannedDate(LocalDate plannedDate) {
+        this.plannedDate = plannedDate;
+    }
 
     public Long getId() {
         return id;

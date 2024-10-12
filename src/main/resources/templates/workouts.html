@@ -25,6 +25,9 @@
                     <span th:text="${workout.name}">Workout Name</span> - 
                     <span th:text="${workout.date}">Workout Date</span>
                     <a th:href="@{/workouts/start/{id}(id=${workout.id})}">Start Workout</a>
+                    <form th:action="@{/workouts/delete-planned-workout/{id}(id=${workout.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn">delete</button>
+            </form>
                 </li>
             </ul>
         </div>
@@ -62,8 +65,10 @@
         <div th:if="${completedWorkouts.size() > 0}">
             <ul>
                 <li th:each="completedWorkout : ${completedWorkouts}">
-                    <span th:text="${completedWorkout.workout.name}">Completed Workout Name</span> - 
+                    <span th:text="${completedWorkout.workoutName}">Completed Workout Name</span> - 
                     <span th:text="${completedWorkout.date}">Completed Workout Date</span>
+                    <form th:action="@{/workouts/delete-completed-workout/{id}(id=${completedWorkout.id})}" method="post" style="display:inline;">
+                    <button type="submit" class="btn">delete</button>
                 </li>
             </ul>
         </div>

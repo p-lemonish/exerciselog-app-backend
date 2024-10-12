@@ -97,12 +97,38 @@ public class WorkoutController {
         LocalDate date = LocalDate.now();
         completedWorkout.setUser(user);
         completedWorkout.setDate(date);
-        completedWorkout.setWorkout(workout);
         completedWorkout.setNotes(notes);
+        completedWorkout.setWorkoutName(workout.getName());
+        completedWorkout.setWorkoutNotes(workout.getNotes());
+        completedWorkout.setPlannedDate(workout.getDate());
 
         completedWorkoutRepository.save(completedWorkout);
-        user.getWorkouts().remove(workout);
+        //user.getWorkouts().remove(workout);
 
+        return "redirect:/workouts";
+    }
+
+    @PostMapping("/workouts/delete-planned-workout/{id}")
+    public String deletePlannedWorkout(@PathVariable Long id) {
+        Optional<Workout> workoutOptional = workoutRepository.findById(id);
+        if (workoutOptional.isPresent()) {
+            Workout workout = workoutOptional.get();
+            workoutRepository.delete(workout);
+        } else {
+            throw new RuntimeException("Planned workout not found.");
+        }
+        return "redirect:/workouts";
+    }
+
+    @PostMapping("/workouts/delete-completed-workout/{id}")
+    public String deleteCompletedWorkout(@PathVariable Long id) {
+        Optional<CompletedWorkout> completedWorkoutOptional = completedWorkoutRepository.findById(id);
+        if (completedWorkoutOptional.isPresent()) {
+            CompletedWorkout completedWorkout = completedWorkoutOptional.get();
+            completedWorkoutRepository.delete(completedWorkout);
+        } else {
+            throw new RuntimeException("Completed workout not found.");
+        }
         return "redirect:/workouts";
     }
 }
