@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <a th:href="@{/workouts}" class="btn">Back to Workouts</a>
+    <h2 th:text="'Start Workout: ' + ${workout.name}">Start Workout</h2>
+    <form th:action="@{/workouts/complete/{id}(id=${workout.id})}" method="post">
+        <h3>Exercises</h3>
+        <ul>
+            <li th:each="plannedExercise : ${workout.plannedExerciseLogs}">
+                <strong th:text="${plannedExercise.exercise.name}">Exercise Name</strong>
+                <p>
+                    Sets: <span th:text="${plannedExercise.plannedSets}"></span>
+                    Reps: <span th:text="${plannedExercise.plannedReps}"></span>
+                    Weight: <span th:text="${plannedExercise.plannedWeight}"></span>
+                </p>
+            </li>
+        </ul>
+        <label for="notes">Workout Notes (optional):</label><br>
+        <textarea id="notes" name="notes" rows="4" cols="50"></textarea><br><br>
+
+        <button type="submit">Complete Workout</button>
+    </form>
+</body>
+</html>

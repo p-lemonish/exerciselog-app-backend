@@ -59,7 +59,14 @@ public class PlannedExerciseLogController {
         }
         User user = userOptional.get();
 
-        PlannedExerciseLog plannedExerciseLog = new PlannedExerciseLog(exercise, user, goalSets, goalReps, goalWeight, notes);
+        PlannedExerciseLog plannedExerciseLog = new PlannedExerciseLog();
+        plannedExerciseLog.setExercise(exercise);
+        plannedExerciseLog.setPlannedReps(goalReps);
+        plannedExerciseLog.setPlannedSets(goalSets);
+        plannedExerciseLog.setPlannedWeight(goalWeight);
+        plannedExerciseLog.setNotes(notes);
+        plannedExerciseLog.setUser(user);
+
         plannedExerciseLogRepository.save(plannedExerciseLog);
         return "redirect:/planned";
     }

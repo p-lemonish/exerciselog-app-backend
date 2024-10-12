@@ -1,11 +1,16 @@
 package s24.backend.exerciselog.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class ExerciseLog {
@@ -14,9 +19,7 @@ public class ExerciseLog {
     private Long id;
     private String name;
     private String notes;
-    private int sets;
-    private int reps;
-    private double weight;
+
     @ManyToOne
     @JoinColumn(name = "exercise_id")
     private Exercise exercise;
@@ -33,17 +36,22 @@ public class ExerciseLog {
     @JoinColumn(name = "planned_exercise_log_id")
     private PlannedExerciseLog plannedExerciseLog;
 
+    @OneToMany(mappedBy = "exerciseLog", cascade = CascadeType.ALL)
+    private List<SetLog> setLogs = new ArrayList<>();
+
     public ExerciseLog() {
     }
-    public ExerciseLog(String name, String notes, int sets, int reps, double weight, Exercise exercise,
-            Workout workout) {
+    public ExerciseLog(String name, String notes, Exercise exercise, Workout workout) {
         this.name = name;
         this.notes = notes;
-        this.sets = sets;
-        this.reps = reps;
-        this.weight = weight;
         this.exercise = exercise;
         this.workout = workout;
+    }
+    public List<SetLog> getSetLogs() {
+        return setLogs;
+    }
+    public void setSetLogs(List<SetLog> setLogs) {
+        this.setLogs = setLogs;
     }
     public PlannedExerciseLog getPlannedExerciseLog() {
         return plannedExerciseLog;
@@ -74,24 +82,6 @@ public class ExerciseLog {
     }
     public void setNotes(String notes) {
         this.notes = notes;
-    }
-    public int getSets() {
-        return sets;
-    }
-    public void setSets(int sets) {
-        this.sets = sets;
-    }
-    public int getReps() {
-        return reps;
-    }
-    public void setReps(int reps) {
-        this.reps = reps;
-    }
-    public double getWeight() {
-        return weight;
-    }
-    public void setWeight(double weight) {
-        this.weight = weight;
     }
     public Exercise getExercise() {
         return exercise;

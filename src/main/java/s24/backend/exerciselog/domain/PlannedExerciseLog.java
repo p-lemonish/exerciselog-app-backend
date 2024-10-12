@@ -26,7 +26,7 @@ public class PlannedExerciseLog {
     private double plannedWeight;
     private String notes;
 
-    public PlannedExerciseLog(Exercise exercise, User user, int plannedReps, int plannedSets, double plannedWeight,
+    public PlannedExerciseLog(Exercise exercise, User user, int plannedSets, int plannedReps, double plannedWeight,
             String notes) {
         this.exercise = exercise;
         this.user = user;
@@ -36,6 +36,12 @@ public class PlannedExerciseLog {
         this.notes = notes;
     }
     public PlannedExerciseLog() {
+    }
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
     }
     public Long getId() {
         return id;

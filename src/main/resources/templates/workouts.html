@@ -45,7 +45,7 @@
         <input type="text" id="notes" name="notes">
         <br>
 
-        <h3>Exercises In Workout:</h3>
+        <h3>Your Planned Exercises:</h3>
         <ul>
             <li th:each="plannedExercise : ${plannedExercises}">
                 <input type="checkbox" th:name="plannedExerciseIds" th:value="${plannedExercise.id}">
@@ -62,7 +62,7 @@
         <div th:if="${completedWorkouts.size() > 0}">
             <ul>
                 <li th:each="completedWorkout : ${completedWorkouts}">
-                    <span th:text="${completedWorkout.name}">Completed Workout Name</span> - 
+                    <span th:text="${completedWorkout.workout.name}">Completed Workout Name</span> - 
                     <span th:text="${completedWorkout.date}">Completed Workout Date</span>
                 </li>
             </ul>
