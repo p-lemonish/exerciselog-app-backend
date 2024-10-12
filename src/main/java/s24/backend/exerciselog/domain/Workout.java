@@ -9,6 +9,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
@@ -25,17 +27,20 @@ public class Workout {
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
     private List<ExerciseLog> exerciseLog;
 
-    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+        name = "workout_planned_exercises",
+        joinColumns = @JoinColumn(name = "workout_id"),
+        inverseJoinColumns = @JoinColumn(name = "planned_exercise_logs_id")
+    )
     private List<PlannedExerciseLog> plannedExerciseLogs;
     
     private String name;
     private String notes;
     private LocalDate date;
 
-    public Workout(User user, List<ExerciseLog> exerciseLog, List<PlannedExerciseLog> plannedExerciseLogs, String name,
-            String notes, LocalDate date) {
+    public Workout(User user, List<PlannedExerciseLog> plannedExerciseLogs, String name, String notes, LocalDate date) {
         this.user = user;
-        this.exerciseLog = exerciseLog;
         this.plannedExerciseLogs = plannedExerciseLogs;
         this.name = name;
         this.notes = notes;

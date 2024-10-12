@@ -34,11 +34,8 @@ public class ExerciselogApplication {
 			List<PlannedExerciseLog> plannedExerciseLogs = new ArrayList<>();
 			Role role = new Role("user");
 			roleRepository.save(role);
-			User user = new User(new ArrayList<>(), "username", "password", "user@email.com", role);
+			User user = new User(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), role, "username", "password", "user@email.com");
 			userRepository.save(user);
-
-			LocalDate date = LocalDate.now();
-			Workout workout = new Workout(user, new ArrayList<>(), new ArrayList<>(), "training", "hard", date);
 
 			Exercise squatExercise = new Exercise("Squat", "Legs");
 			Exercise benchExercise = new Exercise("Bench", "Chest");
@@ -53,12 +50,12 @@ public class ExerciselogApplication {
 			exerciseRepository.save(shoulderPressExercise);
 			exerciseRepository.save(bentOverRowExercise);
 
-			PlannedExerciseLog plannedExerciseLogSquat = new PlannedExerciseLog(squatExercise, 3, 8, 110, "");
-			PlannedExerciseLog plannedExerciseLogBench = new PlannedExerciseLog(benchExercise, 3, 8, 90, "");
-			PlannedExerciseLog plannedExerciseLogDeadlift = new PlannedExerciseLog(deadliftExercise, 3, 5, 140, "");
-			PlannedExerciseLog plannedExerciseLogPullup = new PlannedExerciseLog(pullupExercise, 3, 8, 100, "Bodyweight + added weight");
-			PlannedExerciseLog plannedExerciseLogShoulderPress = new PlannedExerciseLog(shoulderPressExercise, 3, 8, 60, "");
-			PlannedExerciseLog plannedExerciseLogBentOverRow = new PlannedExerciseLog(bentOverRowExercise, 3, 8, 85, "");
+			PlannedExerciseLog plannedExerciseLogSquat = new PlannedExerciseLog(squatExercise, user, 3, 8, 110, "");
+			PlannedExerciseLog plannedExerciseLogBench = new PlannedExerciseLog(benchExercise, user, 3, 8, 90, "");
+			PlannedExerciseLog plannedExerciseLogDeadlift = new PlannedExerciseLog(deadliftExercise, user, 3, 5, 140, "");
+			PlannedExerciseLog plannedExerciseLogPullup = new PlannedExerciseLog(pullupExercise, user, 3, 8, 100, "Bodyweight + added weight");
+			PlannedExerciseLog plannedExerciseLogShoulderPress = new PlannedExerciseLog(shoulderPressExercise, user, 3, 8, 60, "");
+			PlannedExerciseLog plannedExerciseLogBentOverRow = new PlannedExerciseLog(bentOverRowExercise, user, 3, 8, 85, "");
 			plannedExerciseLogs.add(plannedExerciseLogSquat);
 			plannedExerciseLogs.add(plannedExerciseLogBench);
 			plannedExerciseLogs.add(plannedExerciseLogDeadlift);
@@ -67,19 +64,9 @@ public class ExerciselogApplication {
 			plannedExerciseLogs.add(plannedExerciseLogBentOverRow);
 
 			PlannedExerciseRepository.saveAll(plannedExerciseLogs);
-			for(PlannedExerciseLog peLog : plannedExerciseLogs) {
-				peLog.setWorkout(workout);
-			}
+			user.getPlannedExerciseLogs().addAll(plannedExerciseLogs);
 
-			/*
-			List<ExerciseLog> exerciseLogs = new ArrayList<>();
-			exerciseLogRepository.saveAll(exerciseLogs);
-			for(ExerciseLog eLog : exerciseLogs) {
-				eLog.setWorkout(workout);
-			}
-			*/
-			user.getWorkouts().add(workout);
-			workoutRepository.save(workout);
+			userRepository.save(user);
 		};
 	}
 }

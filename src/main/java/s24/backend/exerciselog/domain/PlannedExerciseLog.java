@@ -7,7 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-//Compare List of this vs Workout's List of ExerciseLogs
 @Entity
 public class PlannedExerciseLog {
     @Id
@@ -19,22 +18,24 @@ public class PlannedExerciseLog {
     private Exercise exercise;
 
     @ManyToOne
-    @JoinColumn(name = "workout_id", nullable = true)
-    private Workout workout;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private int plannedReps;
     private int plannedSets;
     private double plannedWeight;
     private String notes;
-    public PlannedExerciseLog() {
-    }
-    public PlannedExerciseLog(Exercise exercise, int plannedSets, int plannedReps, double plannedWeight,
+
+    public PlannedExerciseLog(Exercise exercise, User user, int plannedReps, int plannedSets, double plannedWeight,
             String notes) {
         this.exercise = exercise;
+        this.user = user;
         this.plannedReps = plannedReps;
         this.plannedSets = plannedSets;
         this.plannedWeight = plannedWeight;
         this.notes = notes;
+    }
+    public PlannedExerciseLog() {
     }
     public Long getId() {
         return id;
@@ -47,12 +48,6 @@ public class PlannedExerciseLog {
     }
     public void setExercise(Exercise exercise) {
         this.exercise = exercise;
-    }
-    public Workout getWorkout() {
-        return workout;
-    }
-    public void setWorkout(Workout workout) {
-        this.workout = workout;
     }
     public int getPlannedReps() {
         return plannedReps;

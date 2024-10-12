@@ -17,7 +17,6 @@ public class ExerciseLog {
     private int sets;
     private int reps;
     private double weight;
-
     @ManyToOne
     @JoinColumn(name = "exercise_id")
     private Exercise exercise;
@@ -25,6 +24,15 @@ public class ExerciseLog {
     @ManyToOne
     @JoinColumn(name = "workout_id")
     private Workout workout;
+
+    @ManyToOne
+    @JoinColumn(name = "completed_workout_id")
+    private CompletedWorkout completedWorkout;
+
+    @ManyToOne
+    @JoinColumn(name = "planned_exercise_log_id")
+    private PlannedExerciseLog plannedExerciseLog;
+
     public ExerciseLog() {
     }
     public ExerciseLog(String name, String notes, int sets, int reps, double weight, Exercise exercise,
@@ -36,6 +44,18 @@ public class ExerciseLog {
         this.weight = weight;
         this.exercise = exercise;
         this.workout = workout;
+    }
+    public PlannedExerciseLog getPlannedExerciseLog() {
+        return plannedExerciseLog;
+    }
+    public void setPlannedExerciseLog(PlannedExerciseLog plannedExerciseLog) {
+        this.plannedExerciseLog = plannedExerciseLog;
+    }
+    public CompletedWorkout getCompletedWorkout() {
+        return completedWorkout;
+    }
+    public void setCompletedWorkout(CompletedWorkout completedWorkout) {
+        this.completedWorkout = completedWorkout;
     }
     public Long getId() {
         return id;

@@ -18,9 +18,4 @@ public class ViewController {
     public String getProfile() {
         return "profile";
     }
-    @GetMapping("/workouts")
-    public String getWorkouts() {
-        return "workouts";
-    }
-    
 }

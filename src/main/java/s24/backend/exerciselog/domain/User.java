@@ -22,6 +22,12 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Workout> workouts;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<CompletedWorkout> completedWorkouts;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<PlannedExerciseLog> plannedExerciseLogs;
+
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
@@ -30,14 +36,29 @@ public class User {
     private String password;
     private String email;
 
-    public User(List<Workout> workouts, String username, String password, String email, Role role) {
+    public User(List<Workout> workouts, List<CompletedWorkout> completedWorkouts,
+            List<PlannedExerciseLog> plannedExerciseLogs, Role role, String username, String password, String email) {
         this.workouts = workouts;
+        this.completedWorkouts = completedWorkouts;
+        this.plannedExerciseLogs = plannedExerciseLogs;
+        this.role = role;
         this.username = username;
         this.password = password;
         this.email = email;
-        this.role = role;
     }
     public User() {
+    }
+    public List<PlannedExerciseLog> getPlannedExerciseLogs() {
+        return plannedExerciseLogs;
+    }
+    public void setPlannedExerciseLogs(List<PlannedExerciseLog> plannedExerciseLogs) {
+        this.plannedExerciseLogs = plannedExerciseLogs;
+    }
+    public List<CompletedWorkout> getCompletedWorkouts() {
+        return completedWorkouts;
+    }
+    public void setCompletedWorkouts(List<CompletedWorkout> completedWorkouts) {
+        this.completedWorkouts = completedWorkouts;
     }
     public Role getRole() {
         return role;

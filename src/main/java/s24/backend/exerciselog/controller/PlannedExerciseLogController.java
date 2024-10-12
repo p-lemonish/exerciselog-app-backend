@@ -8,8 +8,10 @@ import org.springframework.ui.Model;
 
 import s24.backend.exerciselog.domain.Exercise;
 import s24.backend.exerciselog.domain.PlannedExerciseLog;
+import s24.backend.exerciselog.domain.User;
 import s24.backend.exerciselog.repository.ExerciseRepository;
 import s24.backend.exerciselog.repository.PlannedExerciseLogRepository;
+import s24.backend.exerciselog.repository.UserRepository;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +25,9 @@ public class PlannedExerciseLogController {
 
     @Autowired
     private ExerciseRepository exerciseRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/planned")
     public String getAllPlannedExerciseLogs(Model model) {
@@ -48,7 +53,13 @@ public class PlannedExerciseLogController {
             exerciseRepository.save(exercise);
         }
 
-        PlannedExerciseLog plannedExerciseLog = new PlannedExerciseLog(exercise, goalSets, goalReps, goalWeight, notes);
+        Optional<User> userOptional = userRepository.findById(1L); //TODO placeholder
+        if (!userOptional.isPresent()) {
+            throw new RuntimeException("User not found");
+        }
+        User user = userOptional.get();
+
+        PlannedExerciseLog plannedExerciseLog = new PlannedExerciseLog(exercise, user, goalSets, goalReps, goalWeight, notes);
         plannedExerciseLogRepository.save(plannedExerciseLog);
         return "redirect:/planned";
     }
