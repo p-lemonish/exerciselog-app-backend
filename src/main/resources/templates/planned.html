@@ -23,16 +23,23 @@
                 <span th:text="${plannedExerciseLog.plannedSets}">Sets</span> x
                 <span th:text="${plannedExerciseLog.plannedReps}">Reps</span> @
                 <span th:text="${plannedExerciseLog.plannedWeight}">Weight</span> kg
+                <a th:href="@{/edit-planned/{id}(id=${plannedExerciseLog.id})}">
+                    Edit
+                </a>
+                <form th:action="@{/delete-planned/{id}(id=${plannedExerciseLog.id})}" method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="delete" />
+                    <button type="submit">Delete</button>
+                </form>
             </li>
         </ul>
 
         <h2>Plan a New Exercise</h2>
-        <form th:action="@{/add-planned-exercise-log}" method="post">
+        <form th:action="@{/add-planned}" method="post">
             <label for="exerciseName">Exercise:</label>
             <input type="text" id="exerciseName" name="name" placeholder="New or existing exercise name">
             <br>
 
-            <label for="muscleGroup">Muscle Group (optional if selecting existing):</label>
+            <label for="muscleGroup">Muscle Group (optional if selecting existing exercise name):</label>
             <input type="text" id="muscleGroup" name="muscleGroup">
             <br>
 

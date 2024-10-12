@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <h2>Editing a Planned Exercise Log</h2>
+    <form th:action="@{/edit-planned/{id}(id=${plannedExerciseLog.id})}" method="post">
+        <label for="exerciseName">Exercise:</label>
+        <input type="text" id="exerciseName" name="name" th:value="${plannedExerciseLog.exercise.name}" placeholder="New or existing exercise name" required>
+        <br>
+
+        <label for="muscleGroup">Muscle Group (optional if selecting existing exercise name):</label>
+        <input type="text" id="muscleGroup" name="muscleGroup" th:value="${plannedExerciseLog.exercise.muscleGroup}">
+        <br>
+
+        <label for="goalSets">Goal Sets:</label>
+        <input type="number" id="goalSets" name="goalSets" th:value="${plannedExerciseLog.plannedSets}" required>
+        <br>
+
+        <label for="goalReps">Goal Reps:</label>
+        <input type="number" id="goalReps" name="goalReps" th:value="${plannedExerciseLog.plannedReps}" required>
+        <br>
+
+        <label for="goalWeight">Goal Weight (kg):</label>
+        <input type="number" id="goalWeight" name="goalWeight" th:value="${plannedExerciseLog.plannedWeight}" step="0.5" required>
+        <br>
+
+        <label for="notes">Notes (optional):</label>
+        <input type="text" id="notes" name="notes" th:value="${plannedExerciseLog.notes}">
+        <br>
+
+        <button type="submit">Save Changes</button>
+    </form>
+</body>
+</html>
