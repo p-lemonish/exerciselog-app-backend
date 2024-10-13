@@ -9,9 +9,22 @@
             <li th:each="plannedExercise : ${workout.plannedExerciseLogs}">
                 <strong th:text="${plannedExercise.exercise.name}">Exercise Name</strong>
                 <p>
-                    Sets: <span th:text="${plannedExercise.plannedSets}"></span>
-                    Reps: <span th:text="${plannedExercise.plannedReps}"></span>
-                    Weight: <span th:text="${plannedExercise.plannedWeight}"></span>
+
+                    Sets:
+                    <input type="number" id="completedSets" name="completedSets" th:value="${plannedExercise.plannedSets}" step="1.0" required>
+                    <br>
+
+                    Reps:
+                    <input type="number" id="completedReps" name="completedReps" th:value="${plannedExercise.plannedReps}" step="1.0" required>
+                    <br>
+
+                    Weight:
+                    <input type="number" id="completedWeight" name="completedWeight" th:value="${plannedExercise.plannedWeight}" step="0.5" required>
+                    <br>
+
+                    Exercise Notes (optional):
+                    <input type="text" id="notes" name="notes" th:value="${plannedExercise.notes}">
+                    <br>
                 </p>
             </li>
         </ul>

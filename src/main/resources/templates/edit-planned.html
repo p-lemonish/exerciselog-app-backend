@@ -12,11 +12,11 @@
         <br>
 
         <label for="goalSets">Goal Sets:</label>
-        <input type="number" id="goalSets" name="goalSets" th:value="${plannedExerciseLog.plannedSets}" required>
+        <input type="number" id="goalSets" name="goalSets" th:value="${plannedExerciseLog.plannedSets}" step="1.0" required>
         <br>
 
         <label for="goalReps">Goal Reps:</label>
-        <input type="number" id="goalReps" name="goalReps" th:value="${plannedExerciseLog.plannedReps}" required>
+        <input type="number" id="goalReps" name="goalReps" th:value="${plannedExerciseLog.plannedReps}" step="1.0" required>
         <br>
 
         <label for="goalWeight">Goal Weight (kg):</label>
