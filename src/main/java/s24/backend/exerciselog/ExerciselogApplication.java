@@ -7,6 +7,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import s24.backend.exerciselog.domain.Exercise;
 import s24.backend.exerciselog.domain.PlannedExerciseLog;
@@ -27,13 +28,26 @@ public class ExerciselogApplication {
 	}
 
 	@Bean
-	public CommandLineRunner demo(ExerciseRepository exerciseRepository, WorkoutRepository workoutRepository, UserRepository userRepository, RoleRepository roleRepository, PlannedExerciseLogRepository PlannedExerciseRepository, ExerciseLogRepository exerciseLogRepository) {
+	public CommandLineRunner demo(PasswordEncoder passwordEncoder, ExerciseRepository exerciseRepository, WorkoutRepository workoutRepository, UserRepository userRepository, RoleRepository roleRepository, PlannedExerciseLogRepository PlannedExerciseRepository, ExerciseLogRepository exerciseLogRepository) {
 		return (args) -> {
 			List<PlannedExerciseLog> plannedExerciseLogs = new ArrayList<>();
-			Role role = new Role("user");
-			roleRepository.save(role);
-			User user = new User(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), role, "username", "password", "user@email.com");
+
+			Role roleUser = new Role("USER");
+			Role roleAdmin = new Role("ADMIN");
+			Role rolePaidUser = new Role("PAIDUSER");
+			Role roleTrialUser = new Role("TRIALUSER");
+			roleRepository.save(roleUser);
+			roleRepository.save(roleAdmin);
+			roleRepository.save(rolePaidUser);
+			roleRepository.save(roleTrialUser);
+
+			String encodedPassword = passwordEncoder.encode("pass");
+			String encodedPassword2 = passwordEncoder.encode("admin");
+			User user = new User(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), roleUser, "user", encodedPassword, "user@email.com");
+			User admin = new User(new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), roleAdmin, "admin", encodedPassword2, "admin@email.com");
+
 			userRepository.save(user);
+			userRepository.save(admin);
 
 			Exercise squatExercise = new Exercise("Squat", "Legs");
 			Exercise benchExercise = new Exercise("Bench", "Chest");
