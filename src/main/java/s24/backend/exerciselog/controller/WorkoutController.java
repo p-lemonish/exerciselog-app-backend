@@ -55,11 +55,7 @@ public class WorkoutController {
                             @RequestParam LocalDate date, 
                             @RequestParam(required = false) String notes, 
                             @RequestParam List<Long> plannedExerciseIds) {
-        Optional<User> userOptional = userRepository.findById(1L); //TODO placeholder
-        if (!userOptional.isPresent()) {
-            throw new RuntimeException("User not found");
-        }
-        User user = userOptional.get();
+        User user = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found")); //TODO placeholder findbyid
 
         List<PlannedExerciseLog> selectedPlannedExercises = new ArrayList<>();
         if(plannedExerciseIds != null && !plannedExerciseIds.isEmpty()) {
@@ -87,11 +83,7 @@ public class WorkoutController {
 
     @PostMapping("/workouts/complete/{id}")
     public String completeWorkout(@PathVariable Long id, @RequestParam(required = false) String notes) {
-        Optional<User> userOptional = userRepository.findById(1L); //TODO placeholder
-        if (!userOptional.isPresent()) {
-            throw new RuntimeException("User not found");
-        }
-        User user = userOptional.get();
+        User user = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found")); //TODO placeholder findbyid
 
         Optional<Workout> workoutOptional = workoutRepository.findById(id);
         if(!workoutOptional.isPresent()) {

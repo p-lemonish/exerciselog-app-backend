@@ -53,11 +53,7 @@ public class PlannedExerciseLogController {
             exerciseRepository.save(exercise);
         }
 
-        Optional<User> userOptional = userRepository.findById(1L); //TODO placeholder
-        if (!userOptional.isPresent()) {
-            throw new RuntimeException("User not found");
-        }
-        User user = userOptional.get();
+        User user = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found")); //TODO placeholder findbyid
 
         PlannedExerciseLog plannedExerciseLog = new PlannedExerciseLog();
         plannedExerciseLog.setExercise(exercise);

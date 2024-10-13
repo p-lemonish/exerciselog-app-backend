@@ -24,12 +24,9 @@ public class ExerciseLogController {
         @RequestParam(value = "sort", required = false) String sort,
         @RequestParam(value = "exerciseName", required = false) String exerciseName,
         Model model) {
-        Optional<User> userOptional = userRepository.findById(1L); //TODO placeholder
-        if (!userOptional.isPresent()) {
-            throw new RuntimeException("User not found");
-        }
-        User user = userOptional.get();
+        User user = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found")); //TODO placeholder findbyid
 
+        //TODO filter by name (done), sort by date
         List<ExerciseLog> exerciseLogs;
         if(exerciseName != null && !exerciseName.isEmpty()) {
             exerciseLogs = exerciseLogRepository.findByUserAndName(user, exerciseName);
