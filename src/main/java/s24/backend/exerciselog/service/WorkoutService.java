@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import jakarta.transaction.Transactional;
 import s24.backend.exerciselog.domain.*;
 import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.mapper.*;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.util.SecurityUtils;
 
@@ -23,6 +24,10 @@ public class WorkoutService {
     private ExerciseLogRepository exerciseLogRepository;
     @Autowired
     private PlannedExerciseLogRepository plannedExerciseLogRepository;
+    @Autowired
+    private ExerciseLogMapper exerciseLogMapper;
+    @Autowired
+    private WorkoutMapper workoutMapper;
 
     @Transactional
     public void getAllAttributes(Model model) {
@@ -88,39 +93,20 @@ public class WorkoutService {
     public void completeWorkout(Long workoutId, WorkoutCompletionForm workoutCompletionForm) {
         User currentUser = SecurityUtils.getCurrentUser();
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
-
-        CompletedWorkout completedWorkout = new CompletedWorkout();
-        LocalDate date = LocalDate.now();
-        completedWorkout.setUser(currentUser);
-        completedWorkout.setDate(date);
-        completedWorkout.setNotes(workoutCompletionForm.getWorkoutNotes());
-        completedWorkout.setWorkoutName(workout.getName());
-        completedWorkout.setWorkoutNotes(workout.getNotes());
-        completedWorkout.setPlannedDate(workout.getDate());
+        CompletedWorkout completedWorkout = workoutMapper.toCompletedWorkout(workoutCompletionForm, workout, currentUser);
         completedWorkoutRepository.save(completedWorkout);
 
         //Fill to-be-completed workout's ExerciseLog with data
         for(ExerciseCompletionData exerciseData : workoutCompletionForm.getExercises()) {
             PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(exerciseData.getExerciseId())
                 .orElseThrow(() -> new RuntimeException("Planned Exercise not found"));
-            ExerciseLog exerciseLog = new ExerciseLog();
-            exerciseLog.setUser(currentUser);
-            exerciseLog.setCompletedWorkout(completedWorkout);
-            exerciseLog.setExercise(plannedExerciseLog.getExercise());
-            exerciseLog.setWorkout(workout);
-            exerciseLog.setName(plannedExerciseLog.getExercise().getName());
-            exerciseLog.setPlannedExerciseLog(plannedExerciseLog);
-            exerciseLog.setNotes(exerciseData.getExerciseNotes());
+            ExerciseLog exerciseLog = exerciseLogMapper.toExerciseLog(exerciseData, plannedExerciseLog, workout, currentUser, completedWorkout);
 
             // Fill SetLog-list with data
-            List<SetLog> setLogs = new ArrayList<>();
             List<SetData> setDatas = exerciseData.getSetData();
+            List<SetLog> setLogs = new ArrayList<>();
             for (SetData setData : setDatas) {
-                SetLog setLog = new SetLog();
-                setLog.setExerciseLog(exerciseLog);
-                setLog.setReps(setData.getReps());
-                setLog.setWeight(setData.getWeight());
-                setLog.setSetNumber(setData.getSetNumber());
+                SetLog setLog = exerciseLogMapper.toSetLog(setData, exerciseLog);
                 setLogs.add(setLog);
             }
             exerciseLog.setSetLogs(setLogs);
