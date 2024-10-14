@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 
 import jakarta.transaction.Transactional;
 import s24.backend.exerciselog.domain.*;
+import s24.backend.exerciselog.dto.*;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.util.SecurityUtils;
 
@@ -22,52 +23,42 @@ public class WorkoutService {
     private ExerciseLogRepository exerciseLogRepository;
     @Autowired
     private PlannedExerciseLogRepository plannedExerciseLogRepository;
-    
-    @Transactional
-    public void completeWorkout(Long workoutId, String notes) {
-        User currentUser = SecurityUtils.getCurrentUser();
-        Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
-
-        CompletedWorkout completedWorkout = new CompletedWorkout();
-        LocalDate date = LocalDate.now();
-        completedWorkout.setUser(currentUser);
-        completedWorkout.setDate(date);
-        completedWorkout.setNotes(notes);
-        completedWorkout.setWorkoutName(workout.getName());
-        completedWorkout.setWorkoutNotes(workout.getNotes());
-        completedWorkout.setPlannedDate(workout.getDate());
-        completedWorkoutRepository.save(completedWorkout);
-
-        for(PlannedExerciseLog plannedExerciseLog : workout.getPlannedExerciseLogs()) {
-            ExerciseLog exerciseLog = new ExerciseLog();
-            exerciseLog.setUser(currentUser);
-            exerciseLog.setCompletedWorkout(completedWorkout);
-            exerciseLog.setExercise(plannedExerciseLog.getExercise());
-            exerciseLog.setWorkout(workout);
-            exerciseLog.setName(plannedExerciseLog.getExercise().getName());
-            exerciseLog.setPlannedExerciseLog(plannedExerciseLog);
-            exerciseLog.setNotes(notes);
-            // TODO SetLog
-            exerciseLogRepository.save(exerciseLog);
-        }
-        //user.getWorkouts().remove(workout);
-    }
 
     @Transactional
-    public void deletePlannedWorkout(Long workoutId) {
-        Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
-        workoutRepository.delete(workout);
-    }
-
-    @Transactional
-    public void deleteCompletedWorkout(Long workoutId) {
-        CompletedWorkout completedWorkout = completedWorkoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Completed workout not found"));
-        completedWorkoutRepository.delete(completedWorkout);
+    public void getAllAttributes(Model model) {
+        model.addAttribute("workouts", workoutRepository.findAll());
+        model.addAttribute("completedWorkouts", completedWorkoutRepository.findAll());
+        model.addAttribute("plannedExercises", plannedExerciseLogRepository.findAll());
     }
     @Transactional
     public void startWorkout(Long workoutId, Model model) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
         model.addAttribute("workout", workout);
+
+        WorkoutCompletionForm workoutCompletionForm = new WorkoutCompletionForm();
+
+        //Initialize exercises within workout
+        List<ExerciseCompletionData> exercises = new ArrayList<>();
+        for(PlannedExerciseLog plannedExerciseLog : workout.getPlannedExerciseLogs()) {
+            ExerciseCompletionData exerciseData = new ExerciseCompletionData();
+            exerciseData.setExerciseId(plannedExerciseLog.getId());
+            exerciseData.setExerciseName(plannedExerciseLog.getExercise().getName());
+
+            //Initialize individual set data
+            List <SetData> sets = new ArrayList<>();
+            for(int i = 1; i <= plannedExerciseLog.getPlannedSets(); i++) {
+                SetData setData = new SetData();
+                setData.setSetNumber(i);
+                setData.setReps(plannedExerciseLog.getPlannedReps());
+                setData.setWeight(plannedExerciseLog.getPlannedWeight());
+                sets.add(setData);
+            }
+            exerciseData.setSetData(sets);
+
+            exercises.add(exerciseData);
+        }
+        workoutCompletionForm.setExercises(exercises);
+        model.addAttribute("workoutCompletionForm", workoutCompletionForm);
     }
     @Transactional
     public void addWorkout(String name, LocalDate date, String notes, List<Long> plannedExerciseIds) {
@@ -82,9 +73,59 @@ public class WorkoutService {
         workoutRepository.save(newWorkout);
     }
     @Transactional
-    public void getAllAttributes(Model model) {
-        model.addAttribute("workouts", workoutRepository.findAll());
-        model.addAttribute("completedWorkouts", completedWorkoutRepository.findAll());
-        model.addAttribute("plannedExercises", plannedExerciseLogRepository.findAll());
+    public void deletePlannedWorkout(Long workoutId) {
+        Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
+        workoutRepository.delete(workout);
+    }
+
+    @Transactional
+    public void deleteCompletedWorkout(Long workoutId) {
+        CompletedWorkout completedWorkout = completedWorkoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Completed workout not found"));
+        completedWorkoutRepository.delete(completedWorkout);
+    }
+    
+    @Transactional
+    public void completeWorkout(Long workoutId, WorkoutCompletionForm workoutCompletionForm) {
+        User currentUser = SecurityUtils.getCurrentUser();
+        Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
+
+        CompletedWorkout completedWorkout = new CompletedWorkout();
+        LocalDate date = LocalDate.now();
+        completedWorkout.setUser(currentUser);
+        completedWorkout.setDate(date);
+        completedWorkout.setNotes(workoutCompletionForm.getWorkoutNotes());
+        completedWorkout.setWorkoutName(workout.getName());
+        completedWorkout.setWorkoutNotes(workout.getNotes());
+        completedWorkout.setPlannedDate(workout.getDate());
+        completedWorkoutRepository.save(completedWorkout);
+
+        //Fill to-be-completed workout's ExerciseLog with data
+        for(ExerciseCompletionData exerciseData : workoutCompletionForm.getExercises()) {
+            PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(exerciseData.getExerciseId())
+                .orElseThrow(() -> new RuntimeException("Planned Exercise not found"));
+            ExerciseLog exerciseLog = new ExerciseLog();
+            exerciseLog.setUser(currentUser);
+            exerciseLog.setCompletedWorkout(completedWorkout);
+            exerciseLog.setExercise(plannedExerciseLog.getExercise());
+            exerciseLog.setWorkout(workout);
+            exerciseLog.setName(plannedExerciseLog.getExercise().getName());
+            exerciseLog.setPlannedExerciseLog(plannedExerciseLog);
+            exerciseLog.setNotes(exerciseData.getExerciseNotes());
+
+            // Fill SetLog-list with data
+            List<SetLog> setLogs = new ArrayList<>();
+            List<SetData> setDatas = exerciseData.getSetData();
+            for (SetData setData : setDatas) {
+                SetLog setLog = new SetLog();
+                setLog.setExerciseLog(exerciseLog);
+                setLog.setReps(setData.getReps());
+                setLog.setWeight(setData.getWeight());
+                setLog.setSetNumber(setData.getSetNumber());
+                setLogs.add(setLog);
+            }
+            exerciseLog.setSetLogs(setLogs);
+            exerciseLogRepository.save(exerciseLog);
+        }
+        //user.getWorkouts().remove(workout);
     }
 }

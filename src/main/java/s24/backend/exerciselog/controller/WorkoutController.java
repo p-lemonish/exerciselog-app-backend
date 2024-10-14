@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
+import s24.backend.exerciselog.dto.WorkoutCompletionForm;
 import s24.backend.exerciselog.service.WorkoutService;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,8 +43,8 @@ public class WorkoutController {
     }
 
     @PostMapping("/workouts/complete/{id}")
-    public String completeWorkout(@PathVariable Long id, @RequestParam(required = false) String notes) {
-        workoutService.completeWorkout(id, notes);
+    public String completeWorkout(@PathVariable Long id, @ModelAttribute WorkoutCompletionForm workoutCompletionForm) {
+        workoutService.completeWorkout(id, workoutCompletionForm);
         return "redirect:/workouts";
     }
 
