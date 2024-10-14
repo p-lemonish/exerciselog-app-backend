@@ -22,11 +22,11 @@ public class CompletedWorkout {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private LocalDate date;
+    private LocalDate date; // completion date
     private String notes;
     private String workoutName;
     private String workoutNotes;
-    private LocalDate plannedDate;
+    private LocalDate plannedDate; // date for which workout was planned for
 
     @OneToMany(mappedBy = "completedWorkout", cascade = CascadeType.ALL)
     private List<ExerciseLog> exerciseLogs;
