@@ -50,14 +50,13 @@
         <input type="text" id="exerciseName" name="exerciseName" placeholder="Enter exercise name">
         <button type="submit">Filter</button>
     </form>
-    <button onclick="toggleView()">Detailed View</button>
     <table>
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Exercise Name</th>
                 <th>Sets</th>
-                <th class="condensed-view">Weight</th>
+                <th>Weight</th>
                 <th>Notes</th>
             </tr>
         </thead>
@@ -65,27 +64,15 @@
             <tr th:each="log : ${exerciseLogs}">
                 <td th:text="${log.date}">Date</td>
                 <td th:text="${log.exerciseName}">Exercise Name</td>
-
-                <td class="detailed-view hidden">
-                    <span th:each="set, iterStat : ${log.setData}">
-                        <span th:text="'Set ' + ${set.setNumber} + ': '"></span>
-                        <span th:text="${set.reps} + ' reps'"></span> @
-                        <span th:text="${set.weight} + ' kg'"></span>
-                        <span th:if="${!iterStat.last}"> | </span>
-                    </span>
-                </td>
-
-                <td class="condensed-view">
+                <td>
                     <span th:each="set, iterStat : ${log.setData}">
                         <span th:text="${set.reps}"></span>
                         <span th:if="${!iterStat.last}">,</span>
                     </span>
                 </td>
-
-                <td class="condensed-view">
+                <td>
                     <span th:text="${log.setData[0].weight + ' kg'}">Weight</span>
                 </td>
-
                 <td th:text="${log.exerciseNotes}">Exercise Notes</td>
             </tr>
         </tbody>
