@@ -9,33 +9,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import s24.backend.exerciselog.domain.*;
+import s24.backend.exerciselog.dto.ExerciseCompletionData;
+import s24.backend.exerciselog.mapper.ExerciseLogMapper;
 import s24.backend.exerciselog.repository.*;
+import s24.backend.exerciselog.util.SecurityUtils;
 
 
 @Controller
 public class ExerciseLogController {
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private ExerciseLogRepository exerciseLogRepository;
+    @Autowired
+    private ExerciseLogMapper exerciseLogMapper;
     
     @GetMapping("/logs")
     public String showExerciseLogs(
         @RequestParam(value = "sort", required = false) String sort,
         @RequestParam(value = "exerciseName", required = false) String exerciseName,
         Model model) {
-        User user = userRepository.findById(1L).orElseThrow(() -> new RuntimeException("User not found")); //TODO placeholder findbyid
-
-        //TODO filter by name (done), sort by date
+        User user = SecurityUtils.getCurrentUser();
         List<ExerciseLog> exerciseLogs;
         if(exerciseName != null && !exerciseName.isEmpty()) {
-            exerciseLogs = exerciseLogRepository.findByUserAndName(user, exerciseName);
-        } else if("name".equals(sort)) {
-            exerciseLogs = exerciseLogRepository.findByUserOrderByNameAsc(user);
+            exerciseLogs = exerciseLogRepository.findByUserAndNameIgnoreCaseOrderByCompletedWorkout_DateDesc(user, exerciseName);
         } else {
-            exerciseLogs = exerciseLogRepository.findByUser(user);
+            exerciseLogs = exerciseLogRepository.findByUserOrderByCompletedWorkout_DateDesc(user);
         }
-        model.addAttribute("exerciseLogs", exerciseLogs);
+        List<ExerciseCompletionData> exerciseCompletionDataList = exerciseLogMapper.toExerciseCompletionDataList(exerciseLogs);
+        model.addAttribute("exerciseLogs", exerciseCompletionDataList);
         return "logs";
     }
     

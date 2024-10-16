@@ -1,6 +1,7 @@
 package s24.backend.exerciselog.dto;
 
 import java.util.List;
+import java.time.LocalDate;
 
 public class ExerciseCompletionData {
     
@@ -8,6 +9,7 @@ public class ExerciseCompletionData {
     private List<SetData> setData;
     private String exerciseNotes;
     private String exerciseName;
+    private LocalDate date;
     public ExerciseCompletionData() {
     }
     public List<SetData> getSetData() {
@@ -33,5 +35,11 @@ public class ExerciseCompletionData {
     }
     public void setExerciseNotes(String exerciseNotes) {
         this.exerciseNotes = exerciseNotes;
+    }
+    public LocalDate getDate() {
+        return date;
+    }
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

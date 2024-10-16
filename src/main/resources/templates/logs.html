@@ -8,7 +8,24 @@
             table {
                 border-collapse: collapse;
             }
+            .hidden {
+                display: none;
+            }
         </style>
+        <script>
+            function toggleView() {
+                const detailedElements = document.querySelectorAll('.detailed-view');
+                const condensedElements = document.querySelectorAll('.condensed-view');
+
+                detailedElements.forEach(element => {
+                    element.classList.toggle('hidden');
+                });
+
+                condensedElements.forEach(element => {
+                    element.classList.toggle('hidden');
+                });
+            }
+        </script>
     </head>
 <body>
     <div class="header">
@@ -26,29 +43,50 @@
     </div>
     <div class="content">
         <h2>Exercise Logs</h2>
-        <p>Logs of your past exercises will be displayed here. The can be sorted based on exercise name to see progression.</p>
+        <p>Logs of your past exercises will be displayed here. The can be sorted based on date and name to see progression.</p>
     </div>
      <form th:action="@{/logs}" method="get">
         <label for="exerciseName">Filter by Exercise Name:</label>
         <input type="text" id="exerciseName" name="exerciseName" placeholder="Enter exercise name">
         <button type="submit">Filter</button>
     </form>
-    <br>
-    <a th:href="@{/logs(sort='name')}" class="btn">Sort by Exercise Name</a>
-    <br><br>
+    <button onclick="toggleView()">Detailed View</button>
     <table>
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Exercise Name</th>
+                <th>Sets</th>
+                <th class="condensed-view">Weight</th>
                 <th>Notes</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="log : ${exerciseLogs}">
-                <td th:text="${log.completedWorkout.date}">Date</td>
-                <td th:text="${log.name}">Exercise Name</td>
-                <td th:text="${log.notes}">Notes</td>
+                <td th:text="${log.date}">Date</td>
+                <td th:text="${log.exerciseName}">Exercise Name</td>
+
+                <td class="detailed-view hidden">
+                    <span th:each="set, iterStat : ${log.setData}">
+                        <span th:text="'Set ' + ${set.setNumber} + ': '"></span>
+                        <span th:text="${set.reps} + ' reps'"></span> @
+                        <span th:text="${set.weight} + ' kg'"></span>
+                        <span th:if="${!iterStat.last}"> | </span>
+                    </span>
+                </td>
+
+                <td class="condensed-view">
+                    <span th:each="set, iterStat : ${log.setData}">
+                        <span th:text="${set.reps}"></span>
+                        <span th:if="${!iterStat.last}">,</span>
+                    </span>
+                </td>
+
+                <td class="condensed-view">
+                    <span th:text="${log.setData[0].weight + ' kg'}">Weight</span>
+                </td>
+
+                <td th:text="${log.exerciseNotes}">Exercise Notes</td>
             </tr>
         </tbody>
     </table>

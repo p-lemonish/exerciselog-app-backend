@@ -2,6 +2,8 @@ package s24.backend.exerciselog.mapper;
 
 import org.mapstruct.*;
 
+import java.util.*;
+
 import s24.backend.exerciselog.domain.*;
 import s24.backend.exerciselog.dto.*;
 
@@ -21,5 +23,17 @@ public interface ExerciseLogMapper {
     @Mapping(target = "exerciseLog", source = "exerciseLog")
     SetLog toSetLog(SetData setData, ExerciseLog exerciseLog);
 
+    @Mapping(target = "exerciseId", source = "exercise.id")
+    @Mapping(target = "exerciseName", source = "name")
+    @Mapping(target = "exerciseNotes", source = "notes")
+    @Mapping(target = "setData", source = "setLogs")
+    @Mapping(target = "date", source = "completedWorkout.date")
+    ExerciseCompletionData toExerciseCompletionData(ExerciseLog exerciseLog);
+
+    List<ExerciseCompletionData> toExerciseCompletionDataList(List<ExerciseLog> exerciseLogs);
+
+    SetData toSetData(SetLog setLog);
+
+    List<SetData> toSetDataList(List<SetLog> setLogs);
 }
 

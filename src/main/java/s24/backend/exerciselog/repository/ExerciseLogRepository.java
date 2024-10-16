@@ -9,7 +9,8 @@ import java.util.List;
 
 
 public interface ExerciseLogRepository extends JpaRepository<ExerciseLog, Long> {
-    List<ExerciseLog> findByUser(User user);
-    List<ExerciseLog> findByUserOrderByNameAsc(User user);
-    List<ExerciseLog> findByUserAndName(User user, String name);
+    List<ExerciseLog> findByUser(User user); // all by user
+    List<ExerciseLog> findByUserOrderByCompletedWorkout_DateDesc(User user); // all by user sort by completion date
+    List<ExerciseLog> findByUserAndNameIgnoreCase(User user, String name); // all of user's specific exercise
+    List<ExerciseLog> findByUserAndNameIgnoreCaseOrderByCompletedWorkout_DateDesc(User user, String name); // all of user's specific exercise sort by completion date
 }
