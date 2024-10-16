@@ -13,4 +13,8 @@ public class ViewController {
     public String redirectHome() {
         return "redirect:/home";
     }
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 }

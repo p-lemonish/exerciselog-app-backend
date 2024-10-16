@@ -22,9 +22,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/login","/h2-console/**","/register").permitAll()
                 .anyRequest().authenticated())
-            .formLogin(form -> form.permitAll())
-            .logout(logout -> logout.logoutSuccessUrl("/login").permitAll())
+            .formLogin(form -> form
+            .loginPage("/login")
+            .permitAll())
+            .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
             .rememberMe(remember -> remember.tokenValiditySeconds(1209600)) // 14 day token for rememberme
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())) //fix for h2-console not working
