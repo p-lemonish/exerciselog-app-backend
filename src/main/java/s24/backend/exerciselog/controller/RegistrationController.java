@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
 import s24.backend.exerciselog.domain.*;
+import s24.backend.exerciselog.dto.UserRegistrationDto;
+import s24.backend.exerciselog.mapper.UserMapper;
 import s24.backend.exerciselog.repository.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
 
 
 
@@ -21,39 +24,38 @@ public class RegistrationController {
     private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserMapper userMapper;
 
     @GetMapping("/register")
-    public String showRegistrationForm() {
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("user", new UserRegistrationDto());
         return "register";
     }
     @PostMapping("/register")
-    public String registerUser(
-        @RequestParam String username,
-        @RequestParam String email,
-        @RequestParam String password,
-        @RequestParam String confirmPassword,
-        Model model) {
-        if(!password.equals(confirmPassword)) {
+    public String registerUser(@Valid @ModelAttribute("user") UserRegistrationDto userDto, BindingResult result, Model model) {
+        if(result.hasErrors()) {
+            return "register";
+        }
+        if(!userDto.getPassword().equals(userDto.getConfirmPassword())) {
             model.addAttribute("errorMessage", "Passwords do not match");
             return "register";
         }
-        if(userRepository.findByUsername(username).isPresent()) {
+        if(userRepository.findByUsername(userDto.getUsername()).isPresent()) {
             model.addAttribute("errorMessage", "Username is already taken");
             return "register";
         }
-        if(userRepository.findByEmail(email).isPresent()) {
+        if(userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             model.addAttribute("errorMessage", "An account with this email is already registered");
             return "register";
         }
 
         Role roleUser = roleRepository.findByName("USER").orElseThrow(() -> new RuntimeException("Default role not found"));
-        String encodedPassword = passwordEncoder.encode(password);
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 
-        User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setEmail(email);
-        newUser.setRole(roleUser);
+        User newUser = userMapper.toUser(userDto);
         newUser.setPassword(encodedPassword);
+        newUser.setRole(roleUser);
 
         userRepository.save(newUser);
         return "redirect:/login";
