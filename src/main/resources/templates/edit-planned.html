@@ -1,33 +1,44 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+    <style>
+        .error {
+            color: red
+        }
+    </style>
 <body>
     <h2>Editing a Planned Exercise Log</h2>
-    <form th:action="@{/edit-planned/{id}(id=${plannedExerciseLog.id})}" method="post">
-        <label for="exerciseName">Exercise:</label>
-        <input type="text" id="exerciseName" name="name" th:value="${plannedExerciseLog.exercise.name}" placeholder="New or existing exercise name" required>
-        <br>
+    <form th:action="@{/edit-planned/{id}(id=${plannedExerciseLogForm.id})}" th:object="${plannedExerciseLogForm}" method="post">
+            <input type="hidden" th:field="*{userId}"/>
+            <label for="exerciseName">Exercise:</label>
+            <input type="text" id="exerciseName" th:field="*{exerciseName}">
+            <div th:if="${#fields.hasErrors('exerciseName')}" th:errors="*{exerciseName}" class="error"></div>
+            <br>
 
-        <label for="muscleGroup">Muscle Group (optional if selecting existing exercise name):</label>
-        <input type="text" id="muscleGroup" name="muscleGroup" th:value="${plannedExerciseLog.exercise.muscleGroup}">
-        <br>
+            <label for="muscleGroup">Muscle Group (optional if selecting existing exercise name):</label>
+            <input type="text" id="muscleGroup" th:field="*{muscleGroup}">
+            <div th:if="${#fields.hasErrors('muscleGroup')}" th:errors="*{muscleGroup}" class="error"></div>
+            <br>
 
-        <label for="goalSets">Goal Sets:</label>
-        <input type="number" id="goalSets" name="goalSets" th:value="${plannedExerciseLog.plannedSets}" step="1.0" required>
-        <br>
+            <label for="plannedSets">Sets:</label>
+            <input type="number" id="plannedSets" th:field="*{plannedSets}" step="1.0" required>
+            <div th:if="${#fields.hasErrors('plannedSets')}" th:errors="*{plannedSets}" class="error"></div>
+            <br>
 
-        <label for="goalReps">Goal Reps:</label>
-        <input type="number" id="goalReps" name="goalReps" th:value="${plannedExerciseLog.plannedReps}" step="1.0" required>
-        <br>
+            <label for="plannedReps">Reps:</label>
+            <input type="number" id="plannedReps" th:field="*{plannedReps}" step="1.0" required>
+            <div th:if="${#fields.hasErrors('plannedReps')}" th:errors="*{plannedReps}" class="error"></div>
+            <br>
 
-        <label for="goalWeight">Goal Weight (kg):</label>
-        <input type="number" id="goalWeight" name="goalWeight" th:value="${plannedExerciseLog.plannedWeight}" step="0.5" required>
-        <br>
+            <label for="plannedWeight">Weight (kg):</label>
+            <input type="number" id="plannedWeight" th:field="*{plannedWeight}" step="0.5" required>
+            <div th:if="${#fields.hasErrors('plannedWeight')}" th:errors="*{plannedWeight}" class="error"></div>
+            <br>
 
-        <label for="notes">Notes (optional):</label>
-        <input type="text" id="notes" name="notes" th:value="${plannedExerciseLog.notes}">
-        <br>
+            <label for="notes">Notes (optional):</label>
+            <input type="text" id="notes" th:field="*{notes}">
+            <br>
 
-        <button type="submit">Save Changes</button>
-    </form>
+            <button type="submit">Save Changes</button>
+        </form>
 </body>
 </html>

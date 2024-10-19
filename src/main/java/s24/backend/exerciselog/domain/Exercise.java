@@ -2,11 +2,7 @@ package s24.backend.exerciselog.domain;
 
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 @Entity
 public class Exercise {
@@ -14,20 +10,29 @@ public class Exercise {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "exercise")
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
     private List<ExerciseLog> exerciseLogs;
 
-    @OneToMany(mappedBy = "exercise")
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
     private List<PlannedExerciseLog> plannedExerciseLogs;
+    
+    @ManyToOne
+    @JoinColumn(name = "exercise_id")
+    private User user;
 
     private String name;
     private String muscleGroup;
 
-    public Exercise() {
-    }
+    public Exercise() {}
     public Exercise(String name, String muscleGroup) {
         this.name = name;
         this.muscleGroup = muscleGroup;
+    }
+    public User getUser() {
+        return user;
+    }
+    public void setUser(User user) {
+        this.user = user;
     }
     public List<PlannedExerciseLog> getPlannedExerciseLogs() {
         return plannedExerciseLogs;
