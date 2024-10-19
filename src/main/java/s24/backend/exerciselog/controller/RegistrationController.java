@@ -34,19 +34,16 @@ public class RegistrationController {
     }
     @PostMapping("/register")
     public String registerUser(@Valid @ModelAttribute("user") UserRegistrationDto userDto, BindingResult result, Model model) {
-        if(result.hasErrors()) {
-            return "register";
-        }
         if(!userDto.getPassword().equals(userDto.getConfirmPassword())) {
-            model.addAttribute("errorMessage", "Passwords do not match");
-            return "register";
+            result.rejectValue("confirmPassword", "error.user", "Passwords do not match");
         }
         if(userRepository.findByUsername(userDto.getUsername()).isPresent()) {
-            model.addAttribute("errorMessage", "Username is already taken");
-            return "register";
+            result.rejectValue("username", "error.user", "Username is already taken");
         }
         if(userRepository.findByEmail(userDto.getEmail()).isPresent()) {
-            model.addAttribute("errorMessage", "An account with this email is already registered");
+            result.rejectValue("email", "error.user", "An account with this email is already registered");
+        }
+        if(result.hasErrors()) {
             return "register";
         }
 
