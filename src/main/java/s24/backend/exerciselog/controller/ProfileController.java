@@ -11,7 +11,7 @@ import s24.backend.exerciselog.repository.UserRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class ProfileController {
+public class ProfileController { // TODO show userDto, allow changing password, allow changing email?
     @Autowired
     private UserRepository userRepository;
 

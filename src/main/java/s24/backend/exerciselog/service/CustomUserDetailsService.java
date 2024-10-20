@@ -11,6 +11,7 @@ import s24.backend.exerciselog.repository.UserRepository;
 import s24.backend.exerciselog.domain.User;
 
 
+//Fix for role not passing correctly to SecurityConfig
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
     @Autowired

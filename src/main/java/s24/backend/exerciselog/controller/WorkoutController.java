@@ -7,17 +7,13 @@ import org.springframework.ui.Model;
 import s24.backend.exerciselog.dto.WorkoutCompletionForm;
 import s24.backend.exerciselog.service.WorkoutService;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Controller
-public class WorkoutController {
+public class WorkoutController { // TODO user input validation
     @Autowired
     private WorkoutService workoutService;
 

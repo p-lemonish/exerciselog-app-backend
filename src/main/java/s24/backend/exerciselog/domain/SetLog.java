@@ -8,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 // Contains info on a specific exerciselog's exercise set
-// TODO when implementing inter-set data for workouts
 @Entity
 public class SetLog {
     @Id

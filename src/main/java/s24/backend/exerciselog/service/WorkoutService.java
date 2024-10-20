@@ -30,10 +30,11 @@ public class WorkoutService {
     private WorkoutMapper workoutMapper;
 
     @Transactional
-    public void getAllAttributes(Model model) { //TODO findAll -> findByUser
-        model.addAttribute("workouts", workoutRepository.findAll());
-        model.addAttribute("completedWorkouts", completedWorkoutRepository.findAll());
-        model.addAttribute("plannedExercises", plannedExerciseLogRepository.findAll());
+    public void getAllAttributes(Model model) {
+        User user = SecurityUtils.getCurrentUser();
+        model.addAttribute("workouts", workoutRepository.findByUser(user));
+        model.addAttribute("completedWorkouts", completedWorkoutRepository.findByUser(user));
+        model.addAttribute("plannedExercises", plannedExerciseLogRepository.findByUser(user));
     }
     @Transactional
     public void startWorkout(Long workoutId, Model model) {
