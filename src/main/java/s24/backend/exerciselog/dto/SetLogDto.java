@@ -1,10 +1,20 @@
 package s24.backend.exerciselog.dto;
 
-public class SetData {
+import jakarta.validation.constraints.Min;
+
+/*
+ * int setNumber
+ * int reps
+ * double weight
+ */
+
+public class SetLogDto {
     private int setNumber;
+    @Min(value = 0, message = "Reps must be non-negative")
     private int reps;
+    @Min(value = 0, message = "Weight must be non-negative")
     private double weight;
-    public SetData() {
+    public SetLogDto() {
     }
     public int getSetNumber() {
         return setNumber;

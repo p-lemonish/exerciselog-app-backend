@@ -1,21 +1,36 @@
 package s24.backend.exerciselog.dto;
 
 import java.util.List;
+
+import jakarta.validation.Valid;
+
 import java.time.LocalDate;
 
-public class ExerciseCompletionData {
+/*
+ * Long exerciseId
+ * List<SetLogDto> setData 
+ *      - int setNumber
+ *        int reps
+ *        double weight
+ * String exerciseNotes
+ * String exerciseName
+ * LocalDate date => date of completion
+ */
+
+public class ExerciseLogDto {
     
     private Long exerciseId;
-    private List<SetData> setData;
+    @Valid
+    private List<SetLogDto> setData;
     private String exerciseNotes;
     private String exerciseName;
     private LocalDate date;
-    public ExerciseCompletionData() {
+    public ExerciseLogDto() {
     }
-    public List<SetData> getSetData() {
+    public List<SetLogDto> getSetData() {
         return setData;
     }
-    public void setSetData(List<SetData> setData) {
+    public void setSetData(List<SetLogDto> setData) {
         this.setData = setData;
     }
     public String getExerciseName() {

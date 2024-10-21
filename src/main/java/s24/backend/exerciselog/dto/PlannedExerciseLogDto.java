@@ -2,7 +2,18 @@ package s24.backend.exerciselog.dto;
 
 import jakarta.validation.constraints.*;
 
-public class PlannedExerciseLogForm {
+/*
+ * Long id => PlannedExerciseLog id
+ * Long userId
+ * String exerciseName
+ * String muscleGroup
+ * String notes
+ * int plannedSets
+ * int plannedReps
+ * double plannedWeight
+ */
+
+public class PlannedExerciseLogDto {
     private Long id;
 
     @NotNull(message = "Exercise must have a name")
@@ -26,7 +37,7 @@ public class PlannedExerciseLogForm {
 
     private String notes;
 
-    public PlannedExerciseLogForm() {}
+    public PlannedExerciseLogDto() {}
     public String getExerciseName() {
         return exerciseName;
     }

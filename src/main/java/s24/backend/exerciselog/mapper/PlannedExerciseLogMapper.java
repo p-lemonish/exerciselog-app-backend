@@ -8,16 +8,16 @@ import s24.backend.exerciselog.domain.*;
 import s24.backend.exerciselog.dto.*;
 
 @Mapper(componentModel = "spring")
-public interface PlannedExerciseLogFormMapper {
+public interface PlannedExerciseLogMapper {
 
     @Mapping(source = "userId", target = "user.id")
     @Mapping(source = "exerciseName", target = "exercise.name")
-    PlannedExerciseLog toPlannedExerciseLog(PlannedExerciseLogForm plannedExerciseLogForm);
+    PlannedExerciseLog toPlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogForm);
 
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "exerciseName", source = "exercise.name")
-    PlannedExerciseLogForm toDto(PlannedExerciseLog plannedExerciseLog);
+    PlannedExerciseLogDto toDto(PlannedExerciseLog plannedExerciseLog);
 
-    List<PlannedExerciseLog> toPlannedExerciseLogs(List<PlannedExerciseLogForm> plannedExerciseLogForms);
-    List<PlannedExerciseLogForm> toDtos(List<PlannedExerciseLog> plannedExerciseLogs);
+    List<PlannedExerciseLog> toPlannedExerciseLogs(List<PlannedExerciseLogDto> plannedExerciseLogForms);
+    List<PlannedExerciseLogDto> toDtos(List<PlannedExerciseLog> plannedExerciseLogs);
 }
