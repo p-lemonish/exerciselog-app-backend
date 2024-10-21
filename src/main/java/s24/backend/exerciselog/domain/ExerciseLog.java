@@ -3,17 +3,10 @@ package s24.backend.exerciselog.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 @Entity
-public class ExerciseLog {
+public class ExerciseLog { //TODO Remove all relations to entities and make it hold only info that you'd want the user to see from their past workouts
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -29,15 +22,15 @@ public class ExerciseLog {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "workout_id")
+    @JoinColumn(name = "workout_id", nullable = true)
     private Workout workout;
 
     @ManyToOne
-    @JoinColumn(name = "completed_workout_id")
+    @JoinColumn(name = "completed_workout_id", nullable = true)
     private CompletedWorkout completedWorkout;
 
     @ManyToOne
-    @JoinColumn(name = "planned_exercise_log_id")
+    @JoinColumn(name = "planned_exercise_log_id", nullable = true)
     private PlannedExerciseLog plannedExerciseLog;
 
     @OneToMany(mappedBy = "exerciseLog", cascade = CascadeType.ALL)

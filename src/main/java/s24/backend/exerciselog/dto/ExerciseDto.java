@@ -2,6 +2,13 @@ package s24.backend.exerciselog.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 
+/*
+ * Long exerciseId
+ * Long userId
+ * String name
+ * String muscleGroup
+ */
+
 public class ExerciseDto {
     private Long exerciseId;
     private Long userId;

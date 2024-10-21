@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
 import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.PlannedExerciseLogForm;
+import s24.backend.exerciselog.dto.PlannedExerciseLogDto;
 import s24.backend.exerciselog.mapper.*;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.util.SecurityUtils;
@@ -29,26 +29,26 @@ public class PlannedExerciseLogController {
     private UserRepository userRepository;
 
     @Autowired
-    private PlannedExerciseLogFormMapper plannedExerciseLogFormMapper;
+    private PlannedExerciseLogMapper plannedExerciseLogFormMapper;
 
     @Autowired
     private ExerciseMapper exerciseMapper;
 
     @GetMapping("/planned")
-    public String getAllPlannedExerciseLogs(Model model) { // TODO add dropdown for exercises in Plan a New Exercise -form
+    public String getAllPlannedExerciseLogs(Model model) { // TODO take it into PlannedExerciseLogService
         User user = SecurityUtils.getCurrentUser();
         List<Exercise> exercises = exerciseRepository.findByUser(user);
         List<PlannedExerciseLog> plannedExerciseLogs = plannedExerciseLogRepository.findByUser(user);
         model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogFormMapper.toDtos(plannedExerciseLogs) );
         model.addAttribute("exerciseDtos", exerciseMapper.toDtos(exercises));
-        PlannedExerciseLogForm plannedExerciseLogForm = new PlannedExerciseLogForm();
+        PlannedExerciseLogDto plannedExerciseLogForm = new PlannedExerciseLogDto();
         plannedExerciseLogForm.setUserId(user.getId());
         model.addAttribute("plannedExerciseLogForm", plannedExerciseLogForm);
         return "planned";
     }
 
     @PostMapping("/add-planned")
-    public String addPlannedExerciseLog(@Valid @ModelAttribute PlannedExerciseLogForm plannedExerciseLogForm, BindingResult result, Model model) {
+    public String addPlannedExerciseLog(@Valid @ModelAttribute PlannedExerciseLogDto plannedExerciseLogForm, BindingResult result, Model model) {
         if(result.hasErrors()) {
             User user = SecurityUtils.getCurrentUser();
             List<Exercise> exercises = exerciseRepository.findByUser(user);
@@ -86,7 +86,7 @@ public class PlannedExerciseLogController {
         return "redirect:/planned";
     }
 
-    @PostMapping("/delete-planned/{id}")
+    @PostMapping("/delete-planned/{id}") //TODO let user delete planned workout with ExerciseLog persisting
     public String deletePlannedExerciseLog(@PathVariable Long id) {
         plannedExerciseLogRepository.deleteById(id);
         return "redirect:/planned";
@@ -96,7 +96,7 @@ public class PlannedExerciseLogController {
     public String showEditPlannedExerciseLogForm(@PathVariable Long id, Model model) {
         Optional<PlannedExerciseLog> plannedExerciseLogOptional = plannedExerciseLogRepository.findById(id);
         if (plannedExerciseLogOptional.isPresent()) {
-            PlannedExerciseLogForm plannedExerciseLogForm = plannedExerciseLogFormMapper.toDto(plannedExerciseLogOptional.get());
+            PlannedExerciseLogDto plannedExerciseLogForm = plannedExerciseLogFormMapper.toDto(plannedExerciseLogOptional.get());
             model.addAttribute("plannedExerciseLogForm", plannedExerciseLogForm);
             return "edit-planned";
         } else {
@@ -105,7 +105,7 @@ public class PlannedExerciseLogController {
     }
 
     @PostMapping("/edit-planned/{id}")
-    public String updatePlannedExerciseLog(@Valid @ModelAttribute PlannedExerciseLogForm plannedExerciseLogForm, BindingResult result, Model model) {
+    public String updatePlannedExerciseLog(@Valid @ModelAttribute PlannedExerciseLogDto plannedExerciseLogForm, BindingResult result, Model model) {
         if(result.hasErrors()) {
             model.addAttribute("plannedExerciseLogForm", plannedExerciseLogForm);
             return "edit-planned";

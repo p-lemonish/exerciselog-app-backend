@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.ExerciseCompletionData;
+import s24.backend.exerciselog.dto.ExerciseLogDto;
 import s24.backend.exerciselog.mapper.ExerciseLogMapper;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.util.SecurityUtils;
@@ -34,8 +34,8 @@ public class ExerciseLogController {
         } else {
             exerciseLogs = exerciseLogRepository.findByUserOrderByCompletedWorkout_DateDesc(user);
         }
-        List<ExerciseCompletionData> exerciseCompletionDataList = exerciseLogMapper.toExerciseCompletionDataList(exerciseLogs);
-        model.addAttribute("exerciseLogs", exerciseCompletionDataList);
+        List<ExerciseLogDto> exerciseLogDtoList = exerciseLogMapper.toExerciseLogDtoListFromExerciseLogs(exerciseLogs);
+        model.addAttribute("exerciseLogs", exerciseLogDtoList);
         return "logs";
     }
     

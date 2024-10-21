@@ -1,13 +1,6 @@
 package s24.backend.exerciselog.domain;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +21,7 @@ public class CompletedWorkout {
     private String workoutNotes;
     private LocalDate plannedDate; // date for which workout was planned for
 
-    @OneToMany(mappedBy = "completedWorkout", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "completedWorkout")
     private List<ExerciseLog> exerciseLogs;
 
     public CompletedWorkout(User user, LocalDate date, String notes, List<ExerciseLog> exerciseLogs) {

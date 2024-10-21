@@ -2,6 +2,13 @@ package s24.backend.exerciselog.dto;
 
 import jakarta.validation.constraints.*;
 
+/*
+ * String username
+ * String email
+ * String password
+ * String confirmPassword
+ */
+
 public class UserRegistrationDto {
     @NotEmpty(message = "Username is required")
     @Size(min = 4, message = "Username must be at least 4 characters long")

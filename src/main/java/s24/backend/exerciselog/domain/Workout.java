@@ -3,16 +3,7 @@ package s24.backend.exerciselog.domain;
 import java.time.LocalDate;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 @Entity
 public class Workout {
@@ -24,7 +15,7 @@ public class Workout {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "workout")
     private List<ExerciseLog> exerciseLog;
 
     @ManyToMany
