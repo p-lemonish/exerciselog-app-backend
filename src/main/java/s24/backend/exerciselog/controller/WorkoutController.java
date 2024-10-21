@@ -3,11 +3,14 @@ package s24.backend.exerciselog.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
-import s24.backend.exerciselog.dto.WorkoutCompletionForm;
+import s24.backend.exerciselog.dto.WorkoutDto;
 import s24.backend.exerciselog.service.WorkoutService;
 
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
 
 import java.util.*;
 import java.time.LocalDate;
@@ -25,11 +28,18 @@ public class WorkoutController { // TODO user input validation
     
     @PostMapping("/add-workout")
     public String addWorkout(@RequestParam String name, 
-                            @RequestParam LocalDate date, 
-                            @RequestParam(required = false) String notes, 
-                            @RequestParam List<Long> plannedExerciseIds) {
-        workoutService.addWorkout(name, date, notes, plannedExerciseIds);
-        return "redirect:/workouts";
+        @RequestParam LocalDate date, 
+        @RequestParam(required = false) String notes, 
+        @RequestParam (required = false, defaultValue = "") List<Long> plannedExerciseIds,
+        Model model) {
+        if(plannedExerciseIds == null || plannedExerciseIds.isEmpty()) {
+            model.addAttribute("error", "Please select at least one exercise");
+            workoutService.getAllAttributes(model);
+            return "workouts";
+        } else {
+            workoutService.addWorkout(name, date, notes, plannedExerciseIds);
+            return "redirect:/workouts";
+        }
     }
 
     @GetMapping("/workouts/start/{id}")
@@ -39,7 +49,12 @@ public class WorkoutController { // TODO user input validation
     }
 
     @PostMapping("/workouts/complete/{id}")
-    public String completeWorkout(@PathVariable Long id, @ModelAttribute WorkoutCompletionForm workoutCompletionForm) {
+    public String completeWorkout(@PathVariable Long id, 
+        @Valid @ModelAttribute WorkoutDto workoutCompletionForm, BindingResult result, Model model) {
+        if(result.hasErrors()) {
+            model.addAttribute("workoutCompletionForm", workoutCompletionForm);
+            return "start-workout";
+        }
         workoutService.completeWorkout(id, workoutCompletionForm);
         return "redirect:/workouts";
     }
@@ -50,9 +65,11 @@ public class WorkoutController { // TODO user input validation
         return "redirect:/workouts";
     }
 
+    /* Perhaps dont let it happen TODO decide if let user delete completed workouts, if yes => delete logs or no?
     @PostMapping("/workouts/delete-completed-workout/{id}")
     public String deleteCompletedWorkout(@PathVariable Long id) {
         workoutService.deleteCompletedWorkout(id);
         return "redirect:/workouts";
     }
+     */
 }

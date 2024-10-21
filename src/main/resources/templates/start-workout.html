@@ -1,44 +1,60 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
 <body>
     <a th:href="@{/workouts}" class="btn">Back to Workouts</a>
-    <h2 th:text="'Start Workout: ' + ${workout.name}">Start Workout</h2>
-    <form th:action="@{/workouts/complete/{id}(id=${workout.id})}" th:object="${workoutCompletionForm}" method="post">
+    <h2 th:text="'Start Workout: ' + ${workoutDto.workoutName}">Start Workout</h2>
+    <form th:action="@{/workouts/complete/{id}(id=${workoutDto.id})}" th:object="${workoutDto}" method="post">
         <h3>Exercises</h3>
         <ul>
-            <li th:each="exerciseData, exerciseStat : ${workoutCompletionForm.exercises}">
-                <strong th:text="${exerciseData.exerciseName}">Exercise Name</strong>
-                <p>
-                    <input type="hidden" th:field="*{exercises[__${exerciseStat.index}__].exerciseId}">
-                    <input type="hidden" th:field="*{exercises[__${exerciseStat.index}__].exerciseName}">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Set #</th>
-                                <th>Reps</th>
-                                <th>Weight</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="setData, setStat : ${exerciseData.setData}">
-                                <td>
-                                    <input type="hidden" th:field="*{exercises[__${exerciseStat.index}__].setData[__${setStat.index}__].setNumber}" th:value="${setData.setNumber}">
-                                    <span th:text="${setData.setNumber}">Set Number</span>
-                                </td>
-                                <td>
-                                    <input type="number" th:field="*{exercises[__${exerciseStat.index}__].setData[__${setStat.index}__].reps}" step="1" required>
-                                </td>
-                                <td>
-                                    <input type="number" th:field="*{exercises[__${exerciseStat.index}__].setData[__${setStat.index}__].weight}" step="0.50" required>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    Exercise Notes (optional):
-                    <input type="text" th:field="*{exercises[__${exerciseStat.index}__].exerciseNotes}">
-                    <br>
-                </p>
-            </li>
+        <li th:each="exerciseData, exerciseStat : ${workoutDto.exercises}">
+            <strong th:text="${exerciseData.exerciseName}">Exercise Name</strong>
+            <p>
+            <!--
+                exerciseStat => holds info of index and count while doing th:each-loop
+                MUST reference to index with __underscores__ due to pre-processing and how thymeleaf handles variables at render time
+                so if I need to find any value within the current exercises-array's variables => exercises[ __${exerciseStat.index}__ ].variable
+                same goes for array within array exercises[i].setData[j], i and j are exerciseStat and setStat monstrosities.
+                Looks bad but is simple.
+            -->
+            <input type="hidden" th:field="*{exercises[__${exerciseStat.index}__].exerciseId}">
+            <input type="hidden" th:field="*{exercises[__${exerciseStat.index}__].exerciseName}">
+            <table>
+                <thead>
+                <tr>
+                <th>Set #</th>
+                <th>Reps</th>
+                <th>Weight</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="setData, setStat : ${exerciseData.setData}">
+                        <td>
+                        <input type="hidden" th:field="*{exercises[__${exerciseStat.index}__].setData[__${setStat.index}__].setNumber}" th:value="${setData.setNumber}">
+                        <span th:text="${setData.setNumber}">Set Number</span>
+                        </td>
+                        <td>
+                        <input type="number" th:field="*{exercises[__${exerciseStat.index}__].setData[__${setStat.index}__].reps}" step="1" required>
+                        <div th:if="${#fields.hasErrors('exercises[__${exerciseStat.index}__].setData[__${setStat.index}__].reps')}" 
+                        th:errors="*{exercises[__${exerciseStat.index}__].setData[__${setStat.index}__].reps}" class="error"></div>
+                        </td>
+                        <td>
+                        <input type="number" th:field="*{exercises[__${exerciseStat.index}__].setData[__${setStat.index}__].weight}" step="0.50" required>
+                        <div th:if="${#fields.hasErrors('exercises[__${exerciseStat.index}__].setData[__${setStat.index}__].weight')}"
+                        th:errors="*{exercises[__${exerciseStat.index}__].setData[__${setStat.index}__].weight}" class="error"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            Exercise Notes (optional):
+            <input type="text" th:field="*{exercises[__${exerciseStat.index}__].exerciseNotes}">
+            <br>
+            </p>
+        </li>
         </ul>
         <label for="workoutNotes">Workout Notes (optional):</label><br>
         <textarea th:field="*{workoutNotes}" rows="4" cols="50"></textarea><br><br>

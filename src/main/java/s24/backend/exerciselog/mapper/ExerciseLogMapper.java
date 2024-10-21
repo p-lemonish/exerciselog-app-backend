@@ -13,27 +13,46 @@ public interface ExerciseLogMapper {
     @Mapping(target = "name", source = "plannedExerciseLog.exercise.name")
     @Mapping(target = "exercise", source = "plannedExerciseLog.exercise")
     @Mapping(target = "plannedExerciseLog", source = "plannedExerciseLog")
-    @Mapping(target = "notes", source = "dto.exerciseNotes")
+    @Mapping(target = "notes", source = "exerciseLogDto.exerciseNotes")
     @Mapping(target = "user", source = "currentUser")
     @Mapping(target = "workout", source = "workout")
     @Mapping(target = "completedWorkout", source = "completedWorkout")
     @Mapping(target = "id", ignore = true)
-    ExerciseLog toExerciseLog(ExerciseCompletionData dto, PlannedExerciseLog plannedExerciseLog, Workout workout, User currentUser, CompletedWorkout completedWorkout);
+    @Mapping(target = "setLogs", ignore = true) // manual mapping done 
+    ExerciseLog toExerciseLog(ExerciseLogDto exerciseLogDto, PlannedExerciseLog plannedExerciseLog, Workout workout, User currentUser, CompletedWorkout completedWorkout);
 
     @Mapping(target = "exerciseLog", source = "exerciseLog")
-    SetLog toSetLog(SetData setData, ExerciseLog exerciseLog);
+    SetLog toSetLog(SetLogDto setLogDto, ExerciseLog exerciseLog);
 
     @Mapping(target = "exerciseId", source = "exercise.id")
     @Mapping(target = "exerciseName", source = "name")
     @Mapping(target = "exerciseNotes", source = "notes")
     @Mapping(target = "setData", source = "setLogs")
     @Mapping(target = "date", source = "completedWorkout.date")
-    ExerciseCompletionData toExerciseCompletionData(ExerciseLog exerciseLog);
+    ExerciseLogDto toExerciseLogDtoFromExerciseLog(ExerciseLog exerciseLog);
+    @Named("toExerciseLogDtoListFromExerciseLogs")
+    List<ExerciseLogDto> toExerciseLogDtoListFromExerciseLogs(List<ExerciseLog> exerciseLogs);
 
-    List<ExerciseCompletionData> toExerciseCompletionDataList(List<ExerciseLog> exerciseLogs);
+    @Mapping(target = "exerciseId", source = "plannedExerciseLog.id")
+    @Mapping(target = "exerciseName", source = "plannedExerciseLog.exercise.name")
+    @Mapping(target = "setData", expression = "java(mapSetLogDto(plannedExerciseLog))")
+    @Mapping(target = "date", expression = "java(java.time.LocalDate.now())") // date of completion
+    @Mapping(target = "exerciseNotes", ignore = true)
+    ExerciseLogDto toExerciseLogDtoFromPlannedExerciseLog(PlannedExerciseLog plannedExerciseLog);
+    List<ExerciseLogDto> toExerciseLogDtoListFromPlannedExerciseLogs(List<PlannedExerciseLog> plannedExerciseLogs);
 
-    SetData toSetData(SetLog setLog);
+    SetLogDto toSetLogDto(SetLog setLog);
+    List<SetLogDto> toSetLogDtoList(List<SetLog> setLogs);
 
-    List<SetData> toSetDataList(List<SetLog> setLogs);
+    default List<SetLogDto> mapSetLogDto(PlannedExerciseLog plannedExerciseLog) {
+        List <SetLogDto> sets = new ArrayList<>();
+            for(int i = 1; i <= plannedExerciseLog.getPlannedSets(); i++) {
+                SetLogDto setLogDto = new SetLogDto();
+                setLogDto.setSetNumber(i);
+                setLogDto.setReps(plannedExerciseLog.getPlannedReps());
+                setLogDto.setWeight(plannedExerciseLog.getPlannedWeight());
+                sets.add(setLogDto);
+            }
+            return sets;
+    }
 }
-

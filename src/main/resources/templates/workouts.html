@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<style>
+    .error {
+        color: red;
+    }
+</style>
 <body>
     <div class="header">
         <h1>ExerciseLog</h1>
@@ -22,8 +27,8 @@
         <div th:if="${workouts.size() > 0}">
             <ul>
                 <li th:each="workout : ${workouts}">
-                    <span th:text="${workout.name}">Workout Name</span> - 
-                    <span th:text="${workout.date}">Workout Date</span>
+                    <span th:text="${workout.workoutName}">Workout Name</span> - 
+                    <span th:text="${workout.plannedDate}">Workout Date</span>
                     <a th:href="@{/workouts/start/{id}(id=${workout.id})}">Start Workout</a>
                     <form th:action="@{/workouts/delete-planned-workout/{id}(id=${workout.id})}" method="post" style="display:inline;">
                     <button type="submit" class="btn">delete</button>
@@ -49,10 +54,11 @@
         <br>
 
         <h3>Your Planned Exercises:</h3>
+        <div th:if="${error}" class="error" th:text="${error}"></div>
         <ul>
             <li th:each="plannedExercise : ${plannedExercises}">
                 <input type="checkbox" th:name="plannedExerciseIds" th:value="${plannedExercise.id}">
-                <span th:text="${plannedExercise.exercise.name}">Exercise Name</span> -
+                <span th:text="${plannedExercise.exerciseName}">Exercise Name</span> -
                 <span th:text="${plannedExercise.plannedSets}">Sets</span> x
                 <span th:text="${plannedExercise.plannedReps}">Reps</span> @
                 <span th:text="${plannedExercise.plannedWeight}">Weight</span> kg
@@ -67,8 +73,10 @@
                 <li th:each="completedWorkout : ${completedWorkouts}">
                     <span th:text="${completedWorkout.workoutName}">Completed Workout Name</span> - 
                     <span th:text="${completedWorkout.date}">Completed Workout Date</span>
+                    <!-- Perhaps dont let it happen
                     <form th:action="@{/workouts/delete-completed-workout/{id}(id=${completedWorkout.id})}" method="post" style="display:inline;">
                     <button type="submit" class="btn">delete</button>
+                    -->
                 </li>
             </ul>
         </div>
