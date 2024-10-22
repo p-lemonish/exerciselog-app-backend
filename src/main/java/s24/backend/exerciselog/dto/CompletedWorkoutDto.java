@@ -3,6 +3,8 @@ package s24.backend.exerciselog.dto;
 import java.time.LocalDate;
 import java.util.*;
 
+import jakarta.validation.Valid;
+
 public class CompletedWorkoutDto {
     private Long id;
     private Long userId;
@@ -13,6 +15,7 @@ public class CompletedWorkoutDto {
     private LocalDate date; // completion date
     private LocalDate plannedDate; // date for which workout was planned for
 
+    @Valid
     private List<ExerciseLogDto> exercises;
 
     public CompletedWorkoutDto() {}
