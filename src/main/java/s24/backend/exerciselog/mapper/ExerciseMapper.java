@@ -9,6 +9,7 @@ import s24.backend.exerciselog.dto.*;
 
 @Mapper(componentModel = "spring")
 public interface ExerciseMapper {
+
     @Mapping(target = "id", source = "exerciseId")
     @Mapping(target = "user", ignore = true) // Set in service or after mapping if needed
     @Mapping(target = "exerciseLogs", ignore = true)
