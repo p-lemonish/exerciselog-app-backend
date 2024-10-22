@@ -41,6 +41,7 @@ public class PlannedExerciseLogController {
     @PostMapping("/add-planned")
     public String addPlannedExerciseLog(@Valid @ModelAttribute PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result, Model model) {
 
+        // Check for general validation errors
         if(result.hasErrors()) {
             // Reload user data
             User user = SecurityUtils.getCurrentUser();
@@ -53,6 +54,7 @@ public class PlannedExerciseLogController {
         
         plannedExerciseLogService.addPlannedExerciseLog(plannedExerciseLogDto, result);
 
+        // Check once more if errors arised with muscleGroup missing
         if(result.hasErrors()) {
             // Reload user data
             User user = SecurityUtils.getCurrentUser();
@@ -81,12 +83,14 @@ public class PlannedExerciseLogController {
     @PostMapping("/edit-planned/{id}")
     public String updatePlannedExerciseLog(@Valid @ModelAttribute PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result, Model model) {
 
+        // Check for general validation errors
         if(result.hasErrors()) {
             return "edit-planned";
         }
 
         plannedExerciseLogService.updatePlannedExerciseLog(plannedExerciseLogDto, result);
 
+        // Check once more for errors with muscleGroup
         if(result.hasErrors()) {
             return "edit-planned";
         }
