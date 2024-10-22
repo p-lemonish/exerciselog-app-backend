@@ -35,7 +35,7 @@ public class WorkoutService {
     private PlannedExerciseLogMapper plannedExerciseLogMapper;
 
     @Transactional
-    public void getAllAttributes(Model model) { //TODO addattribute DTO's
+    public void getAllAttributes(Model model) {
         User user = SecurityUtils.getCurrentUser();
         List<WorkoutDto> workoutsDto = workoutMapper.toDtoList(workoutRepository.findByUser(user));
         List<CompletedWorkoutDto> completedWorkoutDtos = completedWorkoutMapper.toDtoList(completedWorkoutRepository.findByUser(user));
@@ -47,13 +47,17 @@ public class WorkoutService {
     @Transactional
     public void startWorkout(Long workoutId, Model model) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
-        WorkoutDto workoutDto = workoutMapper.toDto(workout);
+        CompletedWorkoutDto completedWorkoutDto = new CompletedWorkoutDto();
+        completedWorkoutDto.setWorkoutName(workout.getName());
+        completedWorkoutDto.setPlannedDate(workout.getDate());
+        completedWorkoutDto.setId(workoutId);
 
         //Initialize exercises within workout
         List<ExerciseLogDto> exercises = exerciseLogMapper.plannedExerciseLogListToDtoList(workout.getPlannedExerciseLogs());
-        workoutDto.setExercises(exercises);
-        model.addAttribute("workoutDto", workoutDto);
+        completedWorkoutDto.setExercises(exercises);
+        model.addAttribute("completedWorkoutDto", completedWorkoutDto);
     }
+
     @Transactional
     public void addWorkout(String name, LocalDate date, String notes, List<Long> plannedExerciseIds) {
         User user = SecurityUtils.getCurrentUser();
@@ -66,6 +70,7 @@ public class WorkoutService {
         Workout newWorkout = new Workout(user, selectedPlannedExercises, name, notes, date);
         workoutRepository.save(newWorkout);
     }
+
     @Transactional
     public void deletePlannedWorkout(Long workoutId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
@@ -74,6 +79,34 @@ public class WorkoutService {
             exerciseLogRepository.save(log);
         }
         workoutRepository.delete(workout);
+    }
+
+    @Transactional
+    public void completeWorkout(Long workoutId, CompletedWorkoutDto completedWorkoutDto) {
+        User currentUser = SecurityUtils.getCurrentUser();
+        Workout workout = workoutRepository.findById(workoutId)
+            .orElseThrow(() -> new RuntimeException("Workout not found"));
+        CompletedWorkout completedWorkout = completedWorkoutMapper.toEntity(completedWorkoutDto);
+        completedWorkout.setUser(currentUser);
+        completedWorkout.setDate(LocalDate.now());
+        completedWorkout.setWorkoutName(workout.getName());
+        completedWorkout.setPlannedDate(workout.getDate());
+        completedWorkoutRepository.save(completedWorkout);
+
+        for (ExerciseLogDto exerciseDto : completedWorkoutDto.getExercises()) {
+            PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(exerciseDto.getExerciseId())
+                .orElseThrow(() -> new RuntimeException("Planned Exercise not found"));
+            ExerciseLog exerciseLog = exerciseLogMapper.toEntity(
+                exerciseDto,
+                new ExerciseLog(),
+                plannedExerciseLog,
+                currentUser,
+                workout,
+                completedWorkout
+            );
+            exerciseLog.setCompletedWorkout(completedWorkout);
+            exerciseLogRepository.save(exerciseLog);
+        }
     }
 
     /* Perhaps dont let it happen
@@ -86,33 +119,5 @@ public class WorkoutService {
         }
         completedWorkoutRepository.delete(completedWorkout);
     }
-     */
-    @Transactional
-    public void completeWorkout(Long workoutId, CompletedWorkoutDto completedWorkoutDto) {
-    User currentUser = SecurityUtils.getCurrentUser();
-    Workout workout = workoutRepository.findById(workoutId)
-        .orElseThrow(() -> new RuntimeException("Workout not found"));
-    CompletedWorkout completedWorkout = completedWorkoutMapper.toEntity(completedWorkoutDto);
-    completedWorkout.setUser(currentUser);
-    completedWorkout.setDate(LocalDate.now());
-    completedWorkout.setWorkoutName(workout.getName());
-    completedWorkout.setPlannedDate(workout.getDate());
-    completedWorkoutRepository.save(completedWorkout);
-
-    for (ExerciseLogDto exerciseDto : completedWorkoutDto.getExercises()) {
-        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(exerciseDto.getExerciseId())
-            .orElseThrow(() -> new RuntimeException("Planned Exercise not found"));
-        ExerciseLog exerciseLog = exerciseLogMapper.toEntity(
-            exerciseDto,
-            new ExerciseLog(),
-            plannedExerciseLog,
-            currentUser,
-            workout,
-            completedWorkout
-        );
-        exerciseLog.setCompletedWorkout(completedWorkout);
-        exerciseLogRepository.save(exerciseLog);
-    }
-}
-
+    */
 }

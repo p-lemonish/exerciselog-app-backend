@@ -7,16 +7,11 @@
     </style>
 <body>
     <a th:href="@{/workouts}" class="btn">Back to Workouts</a>
-    <h2 th:text="'Start Workout: ' + ${workoutDto.workoutName}">Start Workout</h2>
-    <form th:action="@{/workouts/complete/{id}(id=${workoutDto.id})}" th:object="${workoutDto}" method="post">
+    <h2 th:text="'Start Workout: ' + ${completedWorkoutDto.workoutName}">Start Workout</h2>
+    <form th:action="@{/workouts/complete/{id}(id=${completedWorkoutDto.id})}" th:object="${completedWorkoutDto}" method="post">
         <h3>Exercises</h3>
         <ul>
-            <!--
-                Note: WorkoutDto is now the th:object that we use for displaying workout details
-                but upon the user completing their workout in completeWorkout it will retrieve the workoutDto as completedWorkoutDto
-                so there is a conversion from WorkoutDto => CompletedWorkoutDto that happens within this template
-            -->
-        <li th:each="exerciseData, exerciseStat : ${workoutDto.exercises}">
+        <li th:each="exerciseData, exerciseStat : ${completedWorkoutDto.exercises}">
             <strong th:text="${exerciseData.exerciseName}">Exercise Name</strong>
             <p>
             <!--
