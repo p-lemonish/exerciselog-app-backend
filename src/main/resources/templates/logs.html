@@ -65,13 +65,13 @@
                 <td th:text="${log.date}">Date</td>
                 <td th:text="${log.exerciseName}">Exercise Name</td>
                 <td>
-                    <span th:each="set, iterStat : ${log.setData}">
+                    <span th:each="set, iterStat : ${log.setLogDtoList}">
                         <span th:text="${set.reps}"></span>
                         <span th:if="${!iterStat.last}">,</span>
                     </span>
                 </td>
                 <td>
-                    <span th:text="${log.setData[0].weight + ' kg'}">Weight</span>
+                    <span th:text="${log.setLogDtoList[0].weight + ' kg'}">Weight</span>
                 </td>
                 <td th:text="${log.exerciseNotes}">Exercise Notes</td>
             </tr>
