@@ -37,10 +37,14 @@ public class PlannedExerciseLogController {
     @GetMapping("/planned")
     public String getAllPlannedExerciseLogs(Model model) { // TODO take it into PlannedExerciseLogService
         User user = SecurityUtils.getCurrentUser();
+
+        // Show all planned exercises by user
         List<Exercise> exercises = exerciseRepository.findByUser(user);
         List<PlannedExerciseLog> plannedExerciseLogs = plannedExerciseLogRepository.findByUser(user);
         model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogMapper.toDtoList(plannedExerciseLogs) );
         model.addAttribute("exerciseDtos", exerciseMapper.toDtoList(exercises));
+
+        // Creation of new exercise
         PlannedExerciseLogDto plannedExerciseLogDto = new PlannedExerciseLogDto();
         plannedExerciseLogDto.setUserId(user.getId());
         model.addAttribute("plannedExerciseLogDto", plannedExerciseLogDto);
