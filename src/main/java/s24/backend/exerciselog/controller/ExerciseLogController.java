@@ -34,7 +34,7 @@ public class ExerciseLogController {
         } else {
             exerciseLogs = exerciseLogRepository.findByUserOrderByCompletedWorkout_DateDesc(user);
         }
-        List<ExerciseLogDto> exerciseLogDtoList = exerciseLogMapper.toExerciseLogDtoListFromExerciseLogs(exerciseLogs);
+        List<ExerciseLogDto> exerciseLogDtoList = exerciseLogMapper.toDtoList(exerciseLogs);
         model.addAttribute("exerciseLogs", exerciseLogDtoList);
         return "logs";
     }

@@ -50,7 +50,7 @@ public class RegistrationController {
         Role roleUser = roleRepository.findByName("USER").orElseThrow(() -> new RuntimeException("Default role not found"));
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 
-        User newUser = userMapper.toUser(userDto);
+        User newUser = userMapper.toEntity(userDto);
         newUser.setPassword(encodedPassword);
         newUser.setRole(roleUser);
 

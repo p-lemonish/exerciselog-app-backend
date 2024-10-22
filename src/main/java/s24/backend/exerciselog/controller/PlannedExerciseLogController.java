@@ -39,8 +39,8 @@ public class PlannedExerciseLogController {
         User user = SecurityUtils.getCurrentUser();
         List<Exercise> exercises = exerciseRepository.findByUser(user);
         List<PlannedExerciseLog> plannedExerciseLogs = plannedExerciseLogRepository.findByUser(user);
-        model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogFormMapper.toDtos(plannedExerciseLogs) );
-        model.addAttribute("exerciseDtos", exerciseMapper.toDtos(exercises));
+        model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogFormMapper.toDtoList(plannedExerciseLogs) );
+        model.addAttribute("exerciseDtos", exerciseMapper.toDtoList(exercises));
         PlannedExerciseLogDto plannedExerciseLogForm = new PlannedExerciseLogDto();
         plannedExerciseLogForm.setUserId(user.getId());
         model.addAttribute("plannedExerciseLogForm", plannedExerciseLogForm);
@@ -54,8 +54,8 @@ public class PlannedExerciseLogController {
             List<Exercise> exercises = exerciseRepository.findByUser(user);
             List<PlannedExerciseLog> plannedExerciseLogs = plannedExerciseLogRepository.findByUser(user);
             model.addAttribute("plannedExerciseLogForm", plannedExerciseLogForm);
-            model.addAttribute("exerciseDtos", exerciseMapper.toDtos(exercises));
-            model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogFormMapper.toDtos(plannedExerciseLogs));
+            model.addAttribute("exerciseDtos", exerciseMapper.toDtoList(exercises));
+            model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogFormMapper.toDtoList(plannedExerciseLogs));
             return "planned";
         }
 
@@ -70,8 +70,8 @@ public class PlannedExerciseLogController {
                 List<Exercise> exercises = exerciseRepository.findByUser(user);
                 List<PlannedExerciseLog> plannedExerciseLogs = plannedExerciseLogRepository.findByUser(user);
                 model.addAttribute("plannedExerciseLogForm", plannedExerciseLogForm);
-                model.addAttribute("exerciseDtos", exerciseMapper.toDtos(exercises));
-                model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogFormMapper.toDtos(plannedExerciseLogs));
+                model.addAttribute("exerciseDtos", exerciseMapper.toDtoList(exercises));
+                model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogFormMapper.toDtoList(plannedExerciseLogs));
                 return "planned";
             }
             exercise = new Exercise(plannedExerciseLogForm.getExerciseName(), plannedExerciseLogForm.getMuscleGroup());
@@ -79,7 +79,7 @@ public class PlannedExerciseLogController {
         }
 
         User user = userRepository.findById(plannedExerciseLogForm.getUserId()).orElseThrow(() -> new RuntimeException("User with ID " + plannedExerciseLogForm.getUserId() + " not found"));
-        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogFormMapper.toPlannedExerciseLog(plannedExerciseLogForm);
+        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogFormMapper.toEntity(plannedExerciseLogForm, user, exercise);
         plannedExerciseLog.setExercise(exercise);
         user.getPlannedExerciseLogs().add(plannedExerciseLog);
         userRepository.save(user);
@@ -126,7 +126,7 @@ public class PlannedExerciseLogController {
         }
 
         User user = userRepository.findById(plannedExerciseLogForm.getUserId()).orElseThrow(() -> new RuntimeException("User with ID " + plannedExerciseLogForm.getUserId() + " not found"));
-        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogFormMapper.toPlannedExerciseLog(plannedExerciseLogForm);
+        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogFormMapper.toEntity(plannedExerciseLogForm, user, exercise);
         plannedExerciseLog.setExercise(exercise);
         user.getPlannedExerciseLogs().add(plannedExerciseLog);
         userRepository.save(user);

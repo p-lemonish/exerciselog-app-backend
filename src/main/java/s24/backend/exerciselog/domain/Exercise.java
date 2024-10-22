@@ -37,7 +37,7 @@ public class Exercise {
     public List<PlannedExerciseLog> getPlannedExerciseLogs() {
         return plannedExerciseLogs;
     }
-    public void setPlannedExercises(List<PlannedExerciseLog> plannedExerciseLogs) {
+    public void setPlannedExerciseLogs(List<PlannedExerciseLog> plannedExerciseLogs) {
         this.plannedExerciseLogs = plannedExerciseLogs;
     }
     public List<ExerciseLog> getExerciseLogs() {
