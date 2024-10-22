@@ -13,7 +13,7 @@ import jakarta.validation.Valid;
  * LocalDate date
  * List<ExerciseLogDto> exercises
  *     - Long exerciseId
- *     - List<SetLogDto> setData 
+ *     - List<SetLogDto> setLogDtoList 
  *            - int setNumber
  *            - int reps
  *            - double weight

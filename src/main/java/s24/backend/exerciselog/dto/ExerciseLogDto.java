@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 /*
  * Long exerciseId
- * List<SetLogDto> setData 
+ * List<SetLogDto> setLogDtoList 
  *      - int setNumber
  *        int reps
  *        double weight
@@ -21,17 +21,17 @@ public class ExerciseLogDto {
     
     private Long exerciseId;
     @Valid
-    private List<SetLogDto> setData;
+    private List<SetLogDto> setLogDtoList;
     private String exerciseNotes;
     private String exerciseName;
     private LocalDate date;
     public ExerciseLogDto() {
     }
-    public List<SetLogDto> getSetData() {
-        return setData;
+    public List<SetLogDto> getSetLogDtoList() {
+        return setLogDtoList;
     }
-    public void setSetData(List<SetLogDto> setData) {
-        this.setData = setData;
+    public void setSetLogDtoList(List<SetLogDto> setLogDtoList) {
+        this.setLogDtoList = setLogDtoList;
     }
     public String getExerciseName() {
         return exerciseName;
