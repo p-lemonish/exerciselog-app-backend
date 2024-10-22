@@ -5,7 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import s24.backend.exerciselog.dto.WorkoutDto;
+import s24.backend.exerciselog.dto.*;
 import s24.backend.exerciselog.service.WorkoutService;
 
 import org.springframework.web.bind.annotation.*;
@@ -50,7 +50,7 @@ public class WorkoutController { // TODO user input validation
 
     @PostMapping("/workouts/complete/{id}")
     public String completeWorkout(@PathVariable Long id, 
-        @Valid @ModelAttribute WorkoutDto workoutCompletionForm, BindingResult result, Model model) {
+        @Valid @ModelAttribute CompletedWorkoutDto workoutCompletionForm, BindingResult result, Model model) {
         if(result.hasErrors()) {
             model.addAttribute("workoutCompletionForm", workoutCompletionForm);
             return "start-workout";
