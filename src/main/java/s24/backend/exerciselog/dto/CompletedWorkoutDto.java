@@ -7,14 +7,13 @@ public class CompletedWorkoutDto {
     private Long id;
     private Long userId;
 
-    private String notes;
     private String workoutName;
     private String workoutNotes;
 
     private LocalDate date; // completion date
     private LocalDate plannedDate; // date for which workout was planned for
 
-    private List<ExerciseLogDto> exerciseLogDtos;
+    private List<ExerciseLogDto> exercises;
 
     public CompletedWorkoutDto() {}
     public Long getId() {
@@ -28,12 +27,6 @@ public class CompletedWorkoutDto {
     }
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-    public String getNotes() {
-        return notes;
-    }
-    public void setNotes(String notes) {
-        this.notes = notes;
     }
     public String getWorkoutName() {
         return workoutName;
@@ -59,10 +52,10 @@ public class CompletedWorkoutDto {
     public void setPlannedDate(LocalDate plannedDate) {
         this.plannedDate = plannedDate;
     }
-    public List<ExerciseLogDto> getExerciseLogDtos() {
-        return exerciseLogDtos;
+    public List<ExerciseLogDto> getExercises() {
+        return exercises;
     }
-    public void setExerciseLogDtos(List<ExerciseLogDto> exerciseLogDtos) {
-        this.exerciseLogDtos = exerciseLogDtos;
+    public void setExercises(List<ExerciseLogDto> exercises) {
+        this.exercises = exercises;
     }
 }
