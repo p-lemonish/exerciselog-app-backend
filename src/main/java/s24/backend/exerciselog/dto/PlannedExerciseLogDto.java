@@ -16,22 +16,18 @@ import jakarta.validation.constraints.*;
 public class PlannedExerciseLogDto {
     private Long id;
 
-    @NotNull(message = "Exercise must have a name")
     @NotEmpty(message = "Exercise must have a name")
     private String exerciseName;
     private String muscleGroup;
 
     private Long userId;
 
-    @NotNull(message = "Reps must be a number greater than 0")
     @Min(value = 1, message = "Reps must be a number greater than 0")
     private int plannedReps;
 
-    @NotNull(message = "Sets must be a number greater than 0")
     @Min(value = 1, message = "Sets must be a number greater than 0")
     private int plannedSets;
 
-    @NotNull(message = "Weight must be a number greater than 0")
     @Min(value = 0, message = "Weight must be a number greater than 0")
     private double plannedWeight;
 

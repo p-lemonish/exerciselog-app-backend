@@ -39,7 +39,7 @@
         </ul>
 
         <h2>Plan a New Exercise</h2>
-        <form th:action="@{/add-planned}" th:object="${plannedExerciseLogForm}" method="post">
+        <form th:action="@{/add-planned}" th:object="${plannedExerciseLogDto}" method="post">
             <input type="hidden" th:field="*{userId}"/>
             <label for="exerciseName">Exercise:</label>
             <input type="text" id="exerciseName" th:field="*{exerciseName}">
