@@ -109,7 +109,6 @@ public class WorkoutService {
         }
     }
 
-    /* Perhaps dont let it happen
     @Transactional
     public void deleteCompletedWorkout(Long workoutId) {
         CompletedWorkout completedWorkout = completedWorkoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Completed workout not found"));
@@ -119,5 +118,4 @@ public class WorkoutService {
         }
         completedWorkoutRepository.delete(completedWorkout);
     }
-    */
 }

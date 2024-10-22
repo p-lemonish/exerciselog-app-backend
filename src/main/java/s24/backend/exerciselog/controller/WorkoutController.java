@@ -18,7 +18,7 @@ import java.util.*;
 import java.time.LocalDate;
 
 @Controller
-public class WorkoutController { // TODO user input validation
+public class WorkoutController {
     @Autowired
     private WorkoutService workoutService;
     @Autowired
@@ -56,7 +56,7 @@ public class WorkoutController { // TODO user input validation
     public String completeWorkout(@PathVariable Long id, 
         @Valid @ModelAttribute CompletedWorkoutDto completedWorkoutDto, BindingResult result, Model model) {
         if(result.hasErrors()) {
-            //completedWorkoutDto will be missing workoutName, workoutDate, workoutId 
+            // completedWorkoutDto will be missing workoutName, workoutDate, workoutId so add them back into the template
             Workout workout = workoutRepository.findById(id).orElseThrow(() -> new RuntimeException("Workout not found"));
             completedWorkoutDto.setWorkoutName(workout.getName());
             completedWorkoutDto.setPlannedDate(workout.getDate());
@@ -74,11 +74,9 @@ public class WorkoutController { // TODO user input validation
         return "redirect:/workouts";
     }
 
-    /* Perhaps dont let it happen TODO decide if let user delete completed workouts, if yes => delete logs or no?
     @PostMapping("/workouts/delete-completed-workout/{id}")
     public String deleteCompletedWorkout(@PathVariable Long id) {
         workoutService.deleteCompletedWorkout(id);
         return "redirect:/workouts";
     }
-     */
 }

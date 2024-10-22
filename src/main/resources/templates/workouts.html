@@ -73,10 +73,8 @@
                 <li th:each="completedWorkout : ${completedWorkouts}">
                     <span th:text="${completedWorkout.workoutName}">Completed Workout Name</span> - 
                     <span th:text="${completedWorkout.date}">Completed Workout Date</span>
-                    <!-- Perhaps dont let it happen
                     <form th:action="@{/workouts/delete-completed-workout/{id}(id=${completedWorkout.id})}" method="post" style="display:inline;">
                     <button type="submit" class="btn">delete</button>
-                    -->
                 </li>
             </ul>
         </div>
