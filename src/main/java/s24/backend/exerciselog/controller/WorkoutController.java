@@ -7,70 +7,101 @@ import org.springframework.validation.BindingResult;
 
 import s24.backend.exerciselog.domain.*;
 import s24.backend.exerciselog.dto.*;
-import s24.backend.exerciselog.repository.WorkoutRepository;
 import s24.backend.exerciselog.service.WorkoutService;
+import s24.backend.exerciselog.util.SecurityUtils;
 
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
 import java.util.*;
-import java.time.LocalDate;
 
 @Controller
 public class WorkoutController {
     @Autowired
     private WorkoutService workoutService;
-    @Autowired
-    private WorkoutRepository workoutRepository;
 
     @GetMapping("/workouts")
     public String getWorkoutsPage(Model model) {
-        workoutService.getAllAttributes(model);
+        User user = SecurityUtils.getCurrentUser();
+
+        List<WorkoutDto> workoutDtos = workoutService.getUserWorkouts(user);
+        List<CompletedWorkoutDto> completedWorkoutDtos = workoutService.getUserCompletedWorkouts(user);
+        List<PlannedExerciseLogDto> plannedExerciseLogDtos = workoutService.getUserPlannedExercises(user);
+
+        model.addAttribute("workoutDtos", workoutDtos);
+        model.addAttribute("completedWorkoutDtos", completedWorkoutDtos);
+        model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogDtos);
+
+        WorkoutDto workoutDto = new WorkoutDto();
+        model.addAttribute("workoutDto", workoutDto);
         return "workouts";
     }
     
     @PostMapping("/add-workout")
-    public String addWorkout(@RequestParam String name, 
-        @RequestParam LocalDate date, 
-        @RequestParam(required = false) String notes, 
-        @RequestParam (required = false, defaultValue = "") List<Long> plannedExerciseIds,
-        Model model) {
-        if(plannedExerciseIds == null || plannedExerciseIds.isEmpty()) {
-            model.addAttribute("error", "Please select at least one exercise");
-            workoutService.getAllAttributes(model);
+    public String addWorkout(@Valid @ModelAttribute WorkoutDto workoutDto, BindingResult result, Model model) {
+
+        User user = SecurityUtils.getCurrentUser();
+
+        // Check for validation errors
+        if(result.hasErrors()) {
+            List<WorkoutDto> workoutDtos = workoutService.getUserWorkouts(user);
+            List<CompletedWorkoutDto> completedWorkoutDtos = workoutService.getUserCompletedWorkouts(user);
+            List<PlannedExerciseLogDto> plannedExerciseLogDtos = workoutService.getUserPlannedExercises(user);
+
+            model.addAttribute("workoutDtos", workoutDtos);
+            model.addAttribute("completedWorkoutDtos", completedWorkoutDtos);
+            model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogDtos);
             return "workouts";
-        } else {
-            workoutService.addWorkout(name, date, notes, plannedExerciseIds);
-            return "redirect:/workouts";
         }
+        
+        workoutService.addWorkout(workoutDto, user, result);
+
+        // Check for new validation errors
+        if(result.hasErrors()) {
+            List<WorkoutDto> workoutDtos = workoutService.getUserWorkouts(user);
+            List<CompletedWorkoutDto> completedWorkoutDtos = workoutService.getUserCompletedWorkouts(user);
+            List<PlannedExerciseLogDto> plannedExerciseLogDtos = workoutService.getUserPlannedExercises(user);
+
+            model.addAttribute("workoutDtos", workoutDtos);
+            model.addAttribute("completedWorkoutDtos", completedWorkoutDtos);
+            model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogDtos);
+            return "workouts";
+        }
+        return "redirect:/workouts";
     }
 
     @GetMapping("/workouts/start/{id}")
     public String startWorkout(@PathVariable Long id, Model model) {
-        workoutService.startWorkout(id, model);
+        CompletedWorkoutDto completedWorkoutDto = workoutService.startWorkout(id);
+        model.addAttribute("completedWorkoutDto", completedWorkoutDto);
         return "start-workout";
     }
 
     @PostMapping("/workouts/complete/{id}")
     public String completeWorkout(@PathVariable Long id, 
         @Valid @ModelAttribute CompletedWorkoutDto completedWorkoutDto, BindingResult result, Model model) {
+
+        // Check for validation errors
         if(result.hasErrors()) {
-            // completedWorkoutDto will be missing workoutName, workoutDate, workoutId so add them back into the template
-            Workout workout = workoutRepository.findById(id).orElseThrow(() -> new RuntimeException("Workout not found"));
-            completedWorkoutDto.setWorkoutName(workout.getName());
-            completedWorkoutDto.setPlannedDate(workout.getDate());
-            completedWorkoutDto.setId(id);
-            model.addAttribute("completedWorkoutDto", completedWorkoutDto);
+            CompletedWorkoutDto freshDto = workoutService.startWorkout(id);
+            model.addAttribute("completedWorkoutDto", freshDto);
             return "start-workout";
         }
-        workoutService.completeWorkout(id, completedWorkoutDto);
+
+        workoutService.completeWorkout(id, completedWorkoutDto, result);
+
+        // Check for validation errors again
+        if(result.hasErrors()) {
+            CompletedWorkoutDto freshDto = workoutService.startWorkout(id);
+            model.addAttribute("completedWorkoutDto", freshDto);
+            return "start-workout";
+        }
         return "redirect:/workouts";
     }
 
     @PostMapping("/workouts/delete-planned-workout/{id}")
     public String deletePlannedWorkout(@PathVariable Long id) {
-        workoutService.deletePlannedWorkout(id);
         return "redirect:/workouts";
     }
 

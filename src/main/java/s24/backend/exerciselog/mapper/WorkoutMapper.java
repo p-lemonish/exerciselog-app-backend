@@ -19,14 +19,14 @@ public interface WorkoutMapper {
     Workout toEntity(WorkoutDto dto, @Context User user);
 
     @AfterMapping
-    default void setUser(@MappingTarget CompletedWorkout entity, @Context User user) {
+    default void setUser(@MappingTarget Workout entity, @Context User user) {
         entity.setUser(user);
     }
 
     @Mapping(target = "workoutName", source = "name")
     @Mapping(target = "workoutNotes", source = "notes")
     @Mapping(target = "plannedDate", source = "date")
-    @Mapping(target = "exercises", ignore = true) // Will be set manually (WorkoutService -> startWorkout)
+    @Mapping(target = "exercises", ignore = true)
     WorkoutDto toDto(Workout entity);
 
     List<WorkoutDto> toDtoList(List<Workout> entities);

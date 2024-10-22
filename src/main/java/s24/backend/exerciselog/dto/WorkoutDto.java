@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
  * String workoutName
  * LocalDate plannedDate
  * LocalDate date
+ * List<Long> selectedExerciseIds => for selecting exercises when creating a new workout (addWorkout)
  * List<ExerciseLogDto> exercises
  *     - Long exerciseId
  *     - List<SetLogDto> setLogDtoList 
@@ -26,12 +27,19 @@ public class WorkoutDto {
     
     private Long id;
     private String workoutNotes;
+    private List<Long> selectedExerciseIds;
     @Valid
     private List<ExerciseLogDto> exercises;
     private String workoutName;
     private LocalDate plannedDate; //date the workout was planned for
     private LocalDate date; //workout completion date
     public WorkoutDto() {}
+    public List<Long> getSelectedExerciseIds() {
+        return selectedExerciseIds;
+    }
+    public void setSelectedExerciseIds(List<Long> selectedExerciseIds) {
+        this.selectedExerciseIds = selectedExerciseIds;
+    }
     public Long getId() {
         return id;
     }

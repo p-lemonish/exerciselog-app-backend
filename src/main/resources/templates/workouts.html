@@ -24,61 +24,60 @@
         <p>Here you will manage your workouts. It will also serve as a display page for your workouts. A completed workout will log all the completed exercises and their data to a separate page for tracking.</p>
     </div>
     <h3>Planned Workouts</h3>
-        <div th:if="${workouts.size() > 0}">
+        <div th:if="${workoutDtos.size() > 0}">
             <ul>
-                <li th:each="workout : ${workouts}">
-                    <span th:text="${workout.workoutName}">Workout Name</span> - 
-                    <span th:text="${workout.plannedDate}">Workout Date</span>
-                    <a th:href="@{/workouts/start/{id}(id=${workout.id})}">Start Workout</a>
-                    <form th:action="@{/workouts/delete-planned-workout/{id}(id=${workout.id})}" method="post" style="display:inline;">
-                    <button type="submit" class="btn">delete</button>
-            </form>
-                </li>
+            <li th:each="workout : ${workoutDtos}">
+                <span th:text="${workout.workoutName}">Workout Name</span> - 
+                <span th:text="${workout.plannedDate}">Workout Date</span>
+                <a th:href="@{/workouts/start/{id}(id=${workout.id})}">Start Workout</a>
+                <form th:action="@{/workouts/delete-planned-workout/{id}(id=${workout.id})}" method="post" style="display:inline;">
+                <button type="submit" class="btn">delete</button>
+                </form>
+            </li>
             </ul>
         </div>
-        <div th:if="${workouts.size() == 0}">
+        <div th:if="${workoutDtos.size() == 0}">
             <p>No planned workouts found. <a th:href="@{/planned}">Plan some exercises first</a> or add a new workout below.</p>
         </div>
     <h3>Add New Workout</h3>
-    <form action="#" th:action="@{/add-workout}" method="post">
+    <form action="#" th:action="@{/add-workout}" th:object="${workoutDto}" method="post">
         <label for="name">Workout Name:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" th:field="*{workoutName}" required>
         <br>
 
         <label for="date">Workout Date:</label>
-        <input type="date" id="date" name="date" required>
+        <input type="date" th:field="*{plannedDate}" required>
         <br>
 
         <label for="notes">Notes (optional):</label>
-        <input type="text" id="notes" name="notes">
+        <input type="text" th:field="*{workoutNotes}">
         <br>
 
         <h3>Your Planned Exercises:</h3>
-        <div th:if="${error}" class="error" th:text="${error}"></div>
+        <div th:if="${#fields.hasErrors('selectedExerciseIds')}" th:errors="*{selectedExerciseIds}" class="error"></div>
         <ul>
-            <li th:each="plannedExercise : ${plannedExercises}">
-                <input type="checkbox" th:name="plannedExerciseIds" th:value="${plannedExercise.id}">
-                <span th:text="${plannedExercise.exerciseName}">Exercise Name</span> -
-                <span th:text="${plannedExercise.plannedSets}">Sets</span> x
-                <span th:text="${plannedExercise.plannedReps}">Reps</span> @
-                <span th:text="${plannedExercise.plannedWeight}">Weight</span> kg
-            </li>
+        <li th:each="plannedExercise, iterStat : ${plannedExerciseLogDtos}">
+            <input type="checkbox" th:field="*{selectedExerciseIds}" th:value="${plannedExercise.id}">
+            <span th:text="${plannedExercise.exerciseName}">Exercise Name</span> -
+            <span th:text="${plannedExercise.plannedSets}">Sets</span> x
+            <span th:text="${plannedExercise.plannedReps}">Reps</span> @
+            <span th:text="${plannedExercise.plannedWeight}">Weight</span> kg
+        </li>
         </ul>
-
         <button type="submit">Create Workout</button>
     </form>
     <h3>Completed Workouts</h3>
-        <div th:if="${completedWorkouts.size() > 0}">
+        <div th:if="${completedWorkoutDtos.size() > 0}">
             <ul>
-                <li th:each="completedWorkout : ${completedWorkouts}">
-                    <span th:text="${completedWorkout.workoutName}">Completed Workout Name</span> - 
-                    <span th:text="${completedWorkout.date}">Completed Workout Date</span>
-                    <form th:action="@{/workouts/delete-completed-workout/{id}(id=${completedWorkout.id})}" method="post" style="display:inline;">
-                    <button type="submit" class="btn">delete</button>
-                </li>
+            <li th:each="completedWorkout : ${completedWorkoutDtos}">
+                <span th:text="${completedWorkout.workoutName}">Completed Workout Name</span> - 
+                <span th:text="${completedWorkout.date}">Completed Workout Date</span>
+                <form th:action="@{/workouts/delete-completed-workout/{id}(id=${completedWorkout.id})}" method="post" style="display:inline;">
+                <button type="submit" class="btn">delete</button>
+            </li>
             </ul>
         </div>
-        <div th:if="${completedWorkouts.size() == 0}">
+        <div th:if="${completedWorkoutDtos.size() == 0}">
             <p>No completed workouts yet!</p>
         </div>
 </body>
