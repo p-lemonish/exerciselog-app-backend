@@ -6,24 +6,28 @@ import org.mapstruct.*;
 import s24.backend.exerciselog.domain.*;
 import s24.backend.exerciselog.dto.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {ExerciseLogMapper.class})
 public interface WorkoutMapper {
 
-    @Mapping(target = "workoutName", source = "workout.name")
-    @Mapping(target = "workoutNotes", source = "workout.notes")
-    @Mapping(target = "plannedDate", source = "workout.date") // date of planned workout
-    @Mapping(target = "date", expression = "java(java.time.LocalDate.now())") // date of completion
-    @Mapping(target = "user", source = "currentUser")
-    @Mapping(target = "notes", source = "workoutDto.workoutNotes")
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true) // Set in @AfterMapping
+    @Mapping(target = "date", expression = "java(java.time.LocalDate.now())")
+    @Mapping(target = "notes", source = "workoutNotes")
     @Mapping(target = "exerciseLogs", ignore = true)
-    CompletedWorkout toCompletedWorkout(WorkoutDto workoutDto, Workout workout, User currentUser);
+    @Mapping(target = "plannedExerciseLogs", ignore = true)
+    @Mapping(target = "name", source = "workoutName")
+    Workout toEntity(WorkoutDto dto, @Context User user);
 
-    @Mapping(target = "workoutNotes", source = "workout.notes")
-    @Mapping(target= "workoutName", source = "workout.name")
-    @Mapping(target = "plannedDate", source = "workout.date") // date of planned workout
-    @Mapping(target = "date", expression = "java(java.time.LocalDate.now())") // date of completion
-    @Mapping(target = "exercises", ignore = true)
-    WorkoutDto toWorkoutDto(Workout workout);
-    List<WorkoutDto> toWorkoutDtos(List<Workout> workouts);
+    @AfterMapping
+    default void setUser(@MappingTarget CompletedWorkout entity, @Context User user) {
+        entity.setUser(user);
+    }
+
+    @Mapping(target = "workoutName", source = "name")
+    @Mapping(target = "workoutNotes", source = "notes")
+    @Mapping(target = "plannedDate", source = "date")
+    @Mapping(target = "exercises", ignore = true) // Will be set manually (WorkoutService -> startWorkout)
+    WorkoutDto toDto(Workout entity);
+
+    List<WorkoutDto> toDtoList(List<Workout> entities);
 }

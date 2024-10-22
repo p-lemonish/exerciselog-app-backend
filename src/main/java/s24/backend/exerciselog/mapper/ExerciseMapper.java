@@ -9,13 +9,15 @@ import s24.backend.exerciselog.dto.*;
 
 @Mapper(componentModel = "spring")
 public interface ExerciseMapper {
-    @Mapping(source = "exerciseId", target = "id")
-    @Mapping(source = "userId", target = "user.id")
-    Exercise toExercise(ExerciseDto dto);
-    List<Exercise> toExercises(List<ExerciseDto> dtos);
+    @Mapping(target = "id", source = "exerciseId")
+    @Mapping(target = "user", ignore = true) // Set in service or after mapping if needed
+    @Mapping(target = "exerciseLogs", ignore = true)
+    @Mapping(target = "plannedExerciseLogs", ignore = true)
+    Exercise toEntity(ExerciseDto dto);
+    List<Exercise> toEntityList(List<ExerciseDto> dtos);
 
     @Mapping(target = "exerciseId", source = "id")
     @Mapping(target = "userId", source = "user.id")
     ExerciseDto toDto(Exercise exercise);
-    List<ExerciseDto> toDtos(List<Exercise> exercises);
+    List<ExerciseDto> toDtoList(List<Exercise> exercises);
 }

@@ -8,8 +8,15 @@ import s24.backend.exerciselog.dto.CompletedWorkoutDto;
 
 @Mapper(componentModel = "spring", uses = {ExerciseLogMapper.class})
 public interface CompletedWorkoutMapper {
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "user", ignore = true) // Will be set in service (completeWorkout) along with most other relevant context
+    @Mapping(target = "exerciseLogs", ignore = true)
+    CompletedWorkout toEntity(CompletedWorkoutDto dto);
+
     @Mapping(target = "userId", source = "user.id")
-    @Mapping(target = "exerciseLogDtos", source = "exerciseLogs", qualifiedByName = "toExerciseLogDtoListFromExerciseLogs")
-    CompletedWorkoutDto toCompletedWorkoutDto(CompletedWorkout completedWorkout);
-    List<CompletedWorkoutDto> toCompletedWorkoutDtos(List<CompletedWorkout> completedWorkouts);
+    @Mapping(target = "exercises", source = "exerciseLogs")
+    CompletedWorkoutDto toDto(CompletedWorkout entity);
+
+    List<CompletedWorkoutDto> toDtoList(List<CompletedWorkout> entities);
 }

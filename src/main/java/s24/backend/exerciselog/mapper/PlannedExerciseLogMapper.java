@@ -10,14 +10,20 @@ import s24.backend.exerciselog.dto.*;
 @Mapper(componentModel = "spring")
 public interface PlannedExerciseLogMapper {
 
-    @Mapping(source = "userId", target = "user.id")
-    @Mapping(source = "exerciseName", target = "exercise.name")
-    PlannedExerciseLog toPlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogForm);
-
-    @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "exerciseName", source = "exercise.name")
-    PlannedExerciseLogDto toDto(PlannedExerciseLog plannedExerciseLog);
+    @Mapping(target = "muscleGroup", source = "exercise.muscleGroup")
+    @Mapping(target = "userId", source = "user.id")
+    PlannedExerciseLogDto toDto(PlannedExerciseLog entity);
 
-    List<PlannedExerciseLog> toPlannedExerciseLogs(List<PlannedExerciseLogDto> plannedExerciseLogForms);
-    List<PlannedExerciseLogDto> toDtos(List<PlannedExerciseLog> plannedExerciseLogs);
+    @Mapping(target = "exercise", ignore = true) // Will be set after mapping
+    @Mapping(target = "user", ignore = true) // Will be set after mapping
+    PlannedExerciseLog toEntity(PlannedExerciseLogDto dto, @Context User user, @Context Exercise exercise);
+
+    @AfterMapping
+    default void setUserAndExercise(@MappingTarget PlannedExerciseLog entity, @Context User user, @Context Exercise exercise) {
+        entity.setUser(user);
+        entity.setExercise(exercise);
+    }
+
+    List<PlannedExerciseLogDto> toDtoList(List<PlannedExerciseLog> entities);
 }
