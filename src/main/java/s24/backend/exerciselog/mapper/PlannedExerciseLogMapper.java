@@ -15,7 +15,6 @@ public interface PlannedExerciseLogMapper {
     @Mapping(target = "userId", source = "user.id")
     PlannedExerciseLogDto toDto(PlannedExerciseLog entity);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "exercise", ignore = true) // Will be set after mapping
     @Mapping(target = "user", ignore = true) // Will be set after mapping
     PlannedExerciseLog toEntity(PlannedExerciseLogDto dto, @Context User user, @Context Exercise exercise);
