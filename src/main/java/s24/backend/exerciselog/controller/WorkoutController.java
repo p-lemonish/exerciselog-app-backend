@@ -5,7 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
+import s24.backend.exerciselog.domain.*;
 import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.repository.WorkoutRepository;
 import s24.backend.exerciselog.service.WorkoutService;
 
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,8 @@ import java.time.LocalDate;
 public class WorkoutController { // TODO user input validation
     @Autowired
     private WorkoutService workoutService;
+    @Autowired
+    private WorkoutRepository workoutRepository;
 
     @GetMapping("/workouts")
     public String getWorkoutsPage(Model model) {
@@ -50,12 +54,17 @@ public class WorkoutController { // TODO user input validation
 
     @PostMapping("/workouts/complete/{id}")
     public String completeWorkout(@PathVariable Long id, 
-        @Valid @ModelAttribute CompletedWorkoutDto workoutCompletionForm, BindingResult result, Model model) {
+        @Valid @ModelAttribute CompletedWorkoutDto completedWorkoutDto, BindingResult result, Model model) {
         if(result.hasErrors()) {
-            model.addAttribute("workoutCompletionForm", workoutCompletionForm);
+            //completedWorkoutDto will be missing workoutName, workoutDate, workoutId 
+            Workout workout = workoutRepository.findById(id).orElseThrow(() -> new RuntimeException("Workout not found"));
+            completedWorkoutDto.setWorkoutName(workout.getName());
+            completedWorkoutDto.setPlannedDate(workout.getDate());
+            completedWorkoutDto.setId(id);
+            model.addAttribute("completedWorkoutDto", completedWorkoutDto);
             return "start-workout";
         }
-        workoutService.completeWorkout(id, workoutCompletionForm);
+        workoutService.completeWorkout(id, completedWorkoutDto);
         return "redirect:/workouts";
     }
 
