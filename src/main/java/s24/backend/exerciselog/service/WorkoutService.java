@@ -55,7 +55,6 @@ public class WorkoutService {
 
         if(selectedExerciseIds == null || selectedExerciseIds.isEmpty()) {
             result.rejectValue("selectedExerciseIds", "error.workoutDto", "Please select at least one exercise");
-            System.out.println(result);
             return;
         }
 

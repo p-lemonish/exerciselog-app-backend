@@ -102,6 +102,7 @@ public class WorkoutController {
 
     @PostMapping("/workouts/delete-planned-workout/{id}")
     public String deletePlannedWorkout(@PathVariable Long id) {
+        workoutService.deletePlannedWorkout(id);
         return "redirect:/workouts";
     }
 
