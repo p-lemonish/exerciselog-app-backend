@@ -49,7 +49,7 @@ public class PlannedExerciseLogService {
     }
 
     @Transactional
-    public void deletePlannedExerciseLog(Long id) {
+    public void deletePlannedExerciseLog(Long id) { //TODO handle deletion without errors
         plannedExerciseLogRepository.deleteById(id);
     }
 
