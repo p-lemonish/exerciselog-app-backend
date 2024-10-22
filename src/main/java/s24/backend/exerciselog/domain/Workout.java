@@ -16,7 +16,7 @@ public class Workout {
     private User user;
 
     @OneToMany(mappedBy = "workout")
-    private List<ExerciseLog> exerciseLog;
+    private List<ExerciseLog> exerciseLogs;
 
     @ManyToMany
     @JoinTable(
@@ -42,7 +42,7 @@ public class Workout {
     public List<PlannedExerciseLog> getPlannedExerciseLogs() {
         return plannedExerciseLogs;
     }
-    public void setPlannedExercises(List<PlannedExerciseLog> plannedExerciseLogs) {
+    public void setPlannedExerciseLogs(List<PlannedExerciseLog> plannedExerciseLogs) {
         this.plannedExerciseLogs = plannedExerciseLogs;
     }
     public User getUser() {
@@ -75,10 +75,10 @@ public class Workout {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-    public List<ExerciseLog> getExerciseLog() {
-        return exerciseLog;
+    public List<ExerciseLog> getExerciseLogs() {
+        return exerciseLogs;
     }
-    public void setExerciseLog(List<ExerciseLog> exerciseLog) {
-        this.exerciseLog = exerciseLog;
+    public void setExerciseLogs(List<ExerciseLog> exerciseLogs) {
+        this.exerciseLogs = exerciseLogs;
     }
 }
