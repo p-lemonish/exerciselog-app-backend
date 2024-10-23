@@ -1,5 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<style>
+    .error {
+        color: red;
+    }
+</style>
 <body>
     <div class="header">
         <h1>ExerciseLog</h1>
@@ -23,6 +28,24 @@
         <div th:if="${user.roleName == 'ADMIN'}">
             <a th:href="@{/admin/users}">Go to Admin Dashboard</a>
         </div>
+        <h2>Change Password</h2>
+        <form th:action="@{/change-password}" th:object="${passwordChangeDto}" th:method="post">
+            <label>Current password:</label>
+            <input type="password" th:field="*{currentPassword}">
+            <div th:if="${#fields.hasErrors('currentPassword')}" th:errors="*{currentPassword}" class="error"></div>
+            <br><br>
+            <label>New password:</label>
+            <input type="password" th:field="*{newPassword}">
+            <div th:if="${#fields.hasErrors('newPassword')}" th:errors="*{newPassword}" class="error"></div>
+            <br><br>
+            <label>Confirm new password:</label>
+            <input type="password" th:field="*{confirmNewPassword}">
+            <div th:if="${#fields.hasErrors('confirmNewPassword')}" th:errors="*{confirmNewPassword}" class="error"></div>
+            <br><br>
+            <button type="submit">Change Password</button>
+        </form>
+
+        <div th:if="${message}" th:text="${message}" class="success"></div>
     </div>
 </body>
 </html>
