@@ -3,7 +3,6 @@ package s24.backend.exerciselog.service;
 import java.util.*;
 
 import org.apache.coyote.BadRequestException;
-import org.hibernate.boot.registry.classloading.spi.ClassLoaderService.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
