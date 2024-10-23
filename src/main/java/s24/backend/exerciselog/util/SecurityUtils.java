@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import s24.backend.exerciselog.domain.User;
+import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.repository.UserRepository;
 
 @Component
@@ -21,7 +22,7 @@ public class SecurityUtils {
             throw new RuntimeException("User is not authenticated.");
         }
         String username = authentication.getName();
-        User currentUser = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        User currentUser = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return currentUser;
     }
 }

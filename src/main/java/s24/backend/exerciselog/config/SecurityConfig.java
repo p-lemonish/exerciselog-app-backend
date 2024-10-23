@@ -22,7 +22,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/login","/h2-console/**","/register").permitAll()
+                .requestMatchers("/login","/h2-console/**","/register","/access-denied").permitAll()
                 .anyRequest().authenticated())
             .formLogin(form -> form
             .loginPage("/login")
@@ -31,7 +31,8 @@ public class SecurityConfig {
             .rememberMe(remember -> remember.tokenValiditySeconds(1209600)) // 14 day token for rememberme
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())) //fix for h2-console not working
-            .userDetailsService(customUserDetailsService);
+            .userDetailsService(customUserDetailsService)
+            .exceptionHandling(ex -> ex.accessDeniedPage("/access-denied"));
         return http.build();
     }
 

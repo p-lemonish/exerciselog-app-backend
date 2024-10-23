@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import s24.backend.exerciselog.repository.UserRepository;
 import s24.backend.exerciselog.domain.User;
+import s24.backend.exerciselog.exception.ResourceNotFoundException;
 
 
 //Fix for role not passing correctly to SecurityConfig
@@ -19,7 +20,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         String role = "ROLE_" + user.getRole().getName(); //Spring security wants roles as ROLE_rolename
         return new org.springframework.security.core.userdetails.User(
             user.getUsername(),

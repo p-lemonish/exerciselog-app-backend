@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import s24.backend.exerciselog.domain.*;
+import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.util.SecurityUtils;
 
@@ -33,7 +34,7 @@ public class AdminController {
     @PostMapping("/delete-user/{id}")
     public String deleteUser(@PathVariable Long id, Model model) {
         User currentUser = SecurityUtils.getCurrentUser();
-        User userToDelete = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+        User userToDelete = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (userToDelete.getUsername().equals(currentUser.getUsername())) {
             model.addAttribute("errorMessage", "You cannot delete your own account.");
@@ -48,8 +49,8 @@ public class AdminController {
     public String updateUserRole(@PathVariable Long id, @RequestParam String newRole, Model model) {
         User currentUser = SecurityUtils.getCurrentUser();
 
-        User userToUpdate = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-        Role roleToSet = roleRepository.findByName(newRole).orElseThrow(() -> new RuntimeException("Role not found"));
+        User userToUpdate = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Role roleToSet = roleRepository.findByName(newRole).orElseThrow(() -> new ResourceNotFoundException("Role not found"));
 
         if (userToUpdate.getUsername().equals(currentUser.getUsername())) {
             model.addAttribute("errorMessage", "You cannot change your own role.");

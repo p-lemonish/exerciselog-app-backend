@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import jakarta.transaction.Transactional;
 import s24.backend.exerciselog.domain.*;
 import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.mapper.*;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.util.SecurityUtils;
@@ -69,7 +70,7 @@ public class WorkoutService {
     public void completeWorkout(Long workoutId, CompletedWorkoutDto completedWorkoutDto, BindingResult result) {
         User currentUser = SecurityUtils.getCurrentUser();
         Workout workout = workoutRepository.findById(workoutId)
-            .orElseThrow(() -> new RuntimeException("Workout not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Workout not found"));
         
         LocalDate now = LocalDate.now();
         CompletedWorkout completedWorkout = completedWorkoutMapper.toEntity(completedWorkoutDto);
@@ -81,7 +82,7 @@ public class WorkoutService {
 
         for (ExerciseLogDto exerciseDto : completedWorkoutDto.getExercises()) {
             PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(exerciseDto.getExerciseId())
-                .orElseThrow(() -> new RuntimeException("Planned Exercise not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Planned Exercise not found"));
             ExerciseLog exerciseLog = exerciseLogMapper.toEntity(
                 exerciseDto,
                 new ExerciseLog(),
@@ -95,7 +96,7 @@ public class WorkoutService {
     }
     @Transactional
     public CompletedWorkoutDto startWorkout(Long workoutId) {
-        Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
+        Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new ResourceNotFoundException("Workout not found"));
 
         CompletedWorkoutDto completedWorkoutDto = new CompletedWorkoutDto();
         completedWorkoutDto.setWorkoutName(workout.getName());
@@ -110,7 +111,7 @@ public class WorkoutService {
     }
     @Transactional
     public void deletePlannedWorkout(Long workoutId) {
-        Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
+        Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new ResourceNotFoundException("Workout not found"));
 
         // Set workout = null to avoid null references
         List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByWorkout(workout);
@@ -121,7 +122,7 @@ public class WorkoutService {
     }
     @Transactional
     public void deleteCompletedWorkout(Long workoutId) {
-        CompletedWorkout completedWorkout = completedWorkoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Completed Workout not found"));
+        CompletedWorkout completedWorkout = completedWorkoutRepository.findById(workoutId).orElseThrow(() -> new ResourceNotFoundException("Completed Workout not found"));
         completedWorkoutRepository.delete(completedWorkout);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 
 import s24.backend.exerciselog.domain.*;
 import s24.backend.exerciselog.dto.UserRegistrationDto;
+import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.mapper.UserMapper;
 import s24.backend.exerciselog.repository.*;
 import org.springframework.web.bind.annotation.*;
@@ -47,7 +48,7 @@ public class RegistrationController {
             return "register";
         }
 
-        Role roleUser = roleRepository.findByName("USER").orElseThrow(() -> new RuntimeException("Default role not found"));
+        Role roleUser = roleRepository.findByName("USER").orElseThrow(() -> new ResourceNotFoundException("Default role not found"));
         String encodedPassword = passwordEncoder.encode(userDto.getPassword());
 
         User newUser = userMapper.toEntity(userDto);
