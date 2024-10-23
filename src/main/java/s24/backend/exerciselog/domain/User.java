@@ -17,7 +17,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<CompletedWorkout> completedWorkouts;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<PlannedExerciseLog> plannedExerciseLogs;
 
     @OneToMany(mappedBy = "user")

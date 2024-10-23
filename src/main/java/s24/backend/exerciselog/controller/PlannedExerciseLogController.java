@@ -2,6 +2,7 @@ package s24.backend.exerciselog.controller;
 
 import java.util.*;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -68,7 +69,7 @@ public class PlannedExerciseLogController {
     }
 
     @PostMapping("/delete-planned/{id}")
-    public String deletePlannedExerciseLog(@PathVariable Long id) {
+    public String deletePlannedExerciseLog(@PathVariable Long id) throws BadRequestException {
         plannedExerciseLogService.deletePlannedExerciseLog(id);
         return "redirect:/planned";
     }

@@ -1,6 +1,9 @@
 package s24.backend.exerciselog.service;
 
 import java.util.*;
+
+import org.apache.coyote.BadRequestException;
+import org.hibernate.boot.registry.classloading.spi.ClassLoaderService.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -9,6 +12,7 @@ import jakarta.transaction.Transactional;
 
 import s24.backend.exerciselog.domain.*;
 import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.mapper.*;
 import s24.backend.exerciselog.repository.*;
 
@@ -26,6 +30,8 @@ public class PlannedExerciseLogService {
     private ExerciseMapper exerciseMapper;
     @Autowired
     private ExerciseLogRepository exerciseLogRepository;
+    @Autowired
+    private WorkoutRepository workoutRepository;
 
     @Transactional
     public List<PlannedExerciseLogDto> getAllPlannedExerciseLogs(User user) {
@@ -45,14 +51,14 @@ public class PlannedExerciseLogService {
         if(result.hasErrors()) {
             return;
         }
-        User user = userRepository.findById(plannedExerciseLogDto.getUserId()).orElseThrow(() -> new RuntimeException("User with ID " + plannedExerciseLogDto.getUserId() + " not found"));
+        User user = userRepository.findById(plannedExerciseLogDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user, exercise);
         plannedExerciseLogRepository.save(plannedExerciseLog);
     }
 
     @Transactional
     public PlannedExerciseLogDto getPlannedExerciseLogDtoById(Long id) {
-        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id).orElseThrow(() -> new RuntimeException("PlannedExerciseLog not found"));
+        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("PlannedExerciseLog not found"));
         return plannedExerciseLogMapper.toDto(plannedExerciseLog);
     }
 
@@ -62,7 +68,7 @@ public class PlannedExerciseLogService {
         if(result.hasErrors()) {
             return;
         }
-        User user = userRepository.findById(plannedExerciseLogDto.getUserId()).orElseThrow(() -> new RuntimeException("User with ID " + plannedExerciseLogDto.getUserId() + " not found"));
+        User user = userRepository.findById(plannedExerciseLogDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user, exercise);
         plannedExerciseLog.setExercise(exercise);
         user.getPlannedExerciseLogs().add(plannedExerciseLog);
@@ -70,9 +76,12 @@ public class PlannedExerciseLogService {
     }
 
     @Transactional
-    public void deletePlannedExerciseLog(Long id) { 
-        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id).orElseThrow(() -> new RuntimeException("Planned exercise log not found"));
-
+    public void deletePlannedExerciseLog(Long id) throws BadRequestException { 
+        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Planned exercise log not found"));
+        List<Workout> workouts = workoutRepository.findByPlannedExerciseLogs(plannedExerciseLog);
+        if(!(workouts.isEmpty() || workouts == null)) {
+            throw new BadRequestException("Cannot delete a planned exercise that is being used by a planned workout!");
+        }
         // Set completedWorkout = null to avoid null references
         List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByPlannedExerciseLog(plannedExerciseLog);
         for(ExerciseLog exerciseLog : exerciseLogs) {
