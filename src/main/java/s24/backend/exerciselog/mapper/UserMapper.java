@@ -2,8 +2,8 @@ package s24.backend.exerciselog.mapper;
 
 import org.mapstruct.*;
 
-import s24.backend.exerciselog.domain.User;
-import s24.backend.exerciselog.dto.UserRegistrationDto;
+import s24.backend.exerciselog.domain.*;
+import s24.backend.exerciselog.dto.*;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
@@ -17,4 +17,7 @@ public interface UserMapper {
 
     @Mapping(target = "confirmPassword", ignore = true)
     UserRegistrationDto toDto(User entity);
+
+    @Mapping(target = "roleName", source = "role.name")
+    UserProfileDto toProfileDto(User entity);
 }

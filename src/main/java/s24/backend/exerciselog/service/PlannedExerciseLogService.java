@@ -70,7 +70,7 @@ public class PlannedExerciseLogService {
     }
 
     @Transactional
-    public void deletePlannedExerciseLog(Long id) { //TODO handle deletion without errors
+    public void deletePlannedExerciseLog(Long id) { 
         PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id).orElseThrow(() -> new RuntimeException("Planned exercise log not found"));
 
         // Set completedWorkout = null to avoid null references

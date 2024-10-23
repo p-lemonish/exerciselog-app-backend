@@ -7,7 +7,7 @@ import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
-public class ExerciseLog { //TODO Remove all relations to entities and make it hold only info that you'd want the user to see from their past workouts
+public class ExerciseLog { 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

@@ -109,7 +109,7 @@ public class WorkoutService {
         return completedWorkoutDto;
     }
     @Transactional
-    public void deletePlannedWorkout(Long workoutId) { //TODO handle deletion without errors
+    public void deletePlannedWorkout(Long workoutId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
 
         // Set workout = null to avoid null references
@@ -120,7 +120,7 @@ public class WorkoutService {
         workoutRepository.delete(workout);
     }
     @Transactional
-    public void deleteCompletedWorkout(Long workoutId) { //TODO handle deletion without errors
+    public void deleteCompletedWorkout(Long workoutId) {
         CompletedWorkout completedWorkout = completedWorkoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Completed Workout not found"));
         completedWorkoutRepository.delete(completedWorkout);
     }

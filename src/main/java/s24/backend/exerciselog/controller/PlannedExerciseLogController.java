@@ -67,7 +67,7 @@ public class PlannedExerciseLogController {
         return "redirect:/planned";
     }
 
-    @PostMapping("/delete-planned/{id}") //TODO let user delete planned workout with ExerciseLog persisting
+    @PostMapping("/delete-planned/{id}")
     public String deletePlannedExerciseLog(@PathVariable Long id) {
         plannedExerciseLogService.deletePlannedExerciseLog(id);
         return "redirect:/planned";
