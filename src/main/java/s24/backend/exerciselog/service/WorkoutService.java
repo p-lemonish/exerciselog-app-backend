@@ -71,9 +71,10 @@ public class WorkoutService {
         Workout workout = workoutRepository.findById(workoutId)
             .orElseThrow(() -> new RuntimeException("Workout not found"));
         
+        LocalDate now = LocalDate.now();
         CompletedWorkout completedWorkout = completedWorkoutMapper.toEntity(completedWorkoutDto);
         completedWorkout.setUser(currentUser);
-        completedWorkout.setDate(LocalDate.now());
+        completedWorkout.setDate(now);
         completedWorkout.setWorkoutName(workout.getName());
         completedWorkout.setPlannedDate(workout.getDate());
         completedWorkoutRepository.save(completedWorkout);
@@ -86,10 +87,9 @@ public class WorkoutService {
                 new ExerciseLog(),
                 plannedExerciseLog,
                 currentUser,
-                workout,
-                completedWorkout
+                workout
             );
-            exerciseLog.setCompletedWorkout(completedWorkout);
+            exerciseLog.setDate(now);
             exerciseLogRepository.save(exerciseLog);
         }
     }
@@ -111,6 +111,12 @@ public class WorkoutService {
     @Transactional
     public void deletePlannedWorkout(Long workoutId) { //TODO handle deletion without errors
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new RuntimeException("Workout not found"));
+
+        // Set workout = null to avoid null references
+        List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByWorkout(workout);
+        for(ExerciseLog exerciseLog : exerciseLogs) {
+            exerciseLog.setWorkout(null);
+        }
         workoutRepository.delete(workout);
     }
     @Transactional

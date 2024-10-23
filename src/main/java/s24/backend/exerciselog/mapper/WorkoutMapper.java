@@ -27,6 +27,7 @@ public interface WorkoutMapper {
     @Mapping(target = "workoutNotes", source = "notes")
     @Mapping(target = "plannedDate", source = "date")
     @Mapping(target = "exercises", ignore = true)
+    @Mapping(target = "selectedExerciseIds", ignore = true)
     WorkoutDto toDto(Workout entity);
 
     List<WorkoutDto> toDtoList(List<Workout> entities);

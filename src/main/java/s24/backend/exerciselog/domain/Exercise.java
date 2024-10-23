@@ -10,10 +10,10 @@ public class Exercise {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "exercise")
     private List<ExerciseLog> exerciseLogs;
 
-    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "exercise")
     private List<PlannedExerciseLog> plannedExerciseLogs;
     
     @ManyToOne

@@ -24,6 +24,8 @@ public class PlannedExerciseLogService {
     private UserRepository userRepository;
     @Autowired
     private ExerciseMapper exerciseMapper;
+    @Autowired
+    private ExerciseLogRepository exerciseLogRepository;
 
     @Transactional
     public List<PlannedExerciseLogDto> getAllPlannedExerciseLogs(User user) {
@@ -49,11 +51,6 @@ public class PlannedExerciseLogService {
     }
 
     @Transactional
-    public void deletePlannedExerciseLog(Long id) { //TODO handle deletion without errors
-        plannedExerciseLogRepository.deleteById(id);
-    }
-
-    @Transactional
     public PlannedExerciseLogDto getPlannedExerciseLogDtoById(Long id) {
         PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id).orElseThrow(() -> new RuntimeException("PlannedExerciseLog not found"));
         return plannedExerciseLogMapper.toDto(plannedExerciseLog);
@@ -70,6 +67,18 @@ public class PlannedExerciseLogService {
         plannedExerciseLog.setExercise(exercise);
         user.getPlannedExerciseLogs().add(plannedExerciseLog);
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void deletePlannedExerciseLog(Long id) { //TODO handle deletion without errors
+        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id).orElseThrow(() -> new RuntimeException("Planned exercise log not found"));
+
+        // Set completedWorkout = null to avoid null references
+        List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByPlannedExerciseLog(plannedExerciseLog);
+        for(ExerciseLog exerciseLog : exerciseLogs) {
+            exerciseLog.setPlannedExerciseLog(null);
+        }
+        plannedExerciseLogRepository.deleteById(id);
     }
 
     // Helper method for finding an existing exercise or creating a new one if not found
