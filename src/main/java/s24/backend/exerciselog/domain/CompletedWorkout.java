@@ -20,7 +20,7 @@ public class CompletedWorkout {
     private String workoutNotes;
     private LocalDate plannedDate; // date for which workout was planned for
 
-    @OneToMany(mappedBy = "completedWorkout")
+    @OneToMany
     private List<ExerciseLog> exerciseLogs;
 
     public CompletedWorkout(User user, LocalDate date, List<ExerciseLog> exerciseLogs) {

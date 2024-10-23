@@ -1,5 +1,6 @@
 package s24.backend.exerciselog.domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +13,10 @@ public class ExerciseLog { //TODO Remove all relations to entities and make it h
     private Long id;
     private String name;
     private String notes;
+    private LocalDate date; // date of completion, set in WorkoutService
 
     @ManyToOne
-    @JoinColumn(name = "exercise_id")
+    @JoinColumn(name = "exercise_id", nullable = true)
     private Exercise exercise;
 
     @ManyToOne
@@ -24,10 +26,6 @@ public class ExerciseLog { //TODO Remove all relations to entities and make it h
     @ManyToOne
     @JoinColumn(name = "workout_id", nullable = true)
     private Workout workout;
-
-    @ManyToOne
-    @JoinColumn(name = "completed_workout_id", nullable = true)
-    private CompletedWorkout completedWorkout;
 
     @ManyToOne
     @JoinColumn(name = "planned_exercise_log_id", nullable = true)
@@ -55,12 +53,6 @@ public class ExerciseLog { //TODO Remove all relations to entities and make it h
     }
     public void setPlannedExerciseLog(PlannedExerciseLog plannedExerciseLog) {
         this.plannedExerciseLog = plannedExerciseLog;
-    }
-    public CompletedWorkout getCompletedWorkout() {
-        return completedWorkout;
-    }
-    public void setCompletedWorkout(CompletedWorkout completedWorkout) {
-        this.completedWorkout = completedWorkout;
     }
     public Long getId() {
         return id;
@@ -97,5 +89,11 @@ public class ExerciseLog { //TODO Remove all relations to entities and make it h
     }
     public void setUser(User user) {
         this.user = user;
+    }
+    public LocalDate getDate() {
+        return date;
+    }
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

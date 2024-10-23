@@ -11,11 +11,11 @@ import s24.backend.exerciselog.dto.*;
 public interface ExerciseLogMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "date", ignore = true) // Set in WorkoutService completeWorkout
     @Mapping(target = "exercise", source = "plannedExerciseLog.exercise")
     @Mapping(target = "plannedExerciseLog", source = "plannedExerciseLog")
     @Mapping(target = "user", source = "user")
     @Mapping(target = "workout", source = "workout")
-    @Mapping(target = "completedWorkout", source = "completedWorkout")
     @Mapping(target = "setLogs", source = "dto.setLogDtoList")
     @Mapping(target = "name", source = "dto.exerciseName")
     @Mapping(target = "notes", source = "dto.exerciseNotes")
@@ -24,15 +24,14 @@ public interface ExerciseLogMapper {
         @MappingTarget ExerciseLog entity,
         PlannedExerciseLog plannedExerciseLog,
         User user,
-        Workout workout,
-        CompletedWorkout completedWorkout
+        Workout workout
     );
 
     @Mapping(target = "exerciseId", source = "exercise.id")
     @Mapping(target = "exerciseName", source = "name")
     @Mapping(target = "exerciseNotes", source = "notes")
     @Mapping(target = "setLogDtoList", source = "setLogs")
-    @Mapping(target = "date", source = "completedWorkout.date")
+    @Mapping(target = "date", source = "date")
     ExerciseLogDto toDto(ExerciseLog entity);
 
     List<ExerciseLogDto> toDtoList(List<ExerciseLog> entities);

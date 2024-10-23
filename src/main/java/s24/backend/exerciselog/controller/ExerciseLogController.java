@@ -30,9 +30,9 @@ public class ExerciseLogController {
         User user = SecurityUtils.getCurrentUser();
         List<ExerciseLog> exerciseLogs;
         if(exerciseName != null && !exerciseName.isEmpty()) {
-            exerciseLogs = exerciseLogRepository.findByUserAndNameIgnoreCaseOrderByCompletedWorkout_DateDesc(user, exerciseName);
+            exerciseLogs = exerciseLogRepository.findByUserAndNameIgnoreCaseOrderByDate(user, exerciseName);
         } else {
-            exerciseLogs = exerciseLogRepository.findByUserOrderByCompletedWorkout_DateDesc(user);
+            exerciseLogs = exerciseLogRepository.findByUserOrderByDate(user);
         }
         List<ExerciseLogDto> exerciseLogDtoList = exerciseLogMapper.toDtoList(exerciseLogs);
         model.addAttribute("exerciseLogs", exerciseLogDtoList);
