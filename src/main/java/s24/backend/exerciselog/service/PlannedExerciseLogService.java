@@ -5,7 +5,6 @@ import java.util.*;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 import jakarta.transaction.Transactional;
 
@@ -45,11 +44,8 @@ public class PlannedExerciseLogService {
     }
 
     @Transactional
-    public void addPlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result) {
-        Exercise exercise = findOrCreateExercise(plannedExerciseLogDto, result);
-        if(result.hasErrors()) {
-            return;
-        }
+    public void addPlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto, Exercise exercise) throws BadRequestException {
+
         User user = userRepository.findById(plannedExerciseLogDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user, exercise);
         plannedExerciseLogRepository.save(plannedExerciseLog);
@@ -62,12 +58,19 @@ public class PlannedExerciseLogService {
     }
 
     @Transactional
-    public void updatePlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result) {
-        Exercise exercise = findOrCreateExercise(plannedExerciseLogDto, result);
-        if(result.hasErrors()) {
-            return;
-        }
+    public void updatePlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto) throws BadRequestException {
+
         User user = userRepository.findById(plannedExerciseLogDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Exercise exercise = exerciseRepository.findByName(plannedExerciseLogDto.getExerciseName()).orElseThrow(() -> new ResourceNotFoundException("Exercise not found in planned exercises"));
+
+        // Check if user changed exercise name or muscle group
+        if(!(plannedExerciseLogDto.getExerciseName().equals(exercise.getName())
+            && plannedExerciseLogDto.getMuscleGroup().equals(exercise.getMuscleGroup()))) {
+            
+            exercise.setName(plannedExerciseLogDto.getExerciseName());
+            exercise.setMuscleGroup(plannedExerciseLogDto.getMuscleGroup());
+        }
+
         PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user, exercise);
         plannedExerciseLog.setExercise(exercise);
         user.getPlannedExerciseLogs().add(plannedExerciseLog);
@@ -90,15 +93,14 @@ public class PlannedExerciseLogService {
     }
 
     // Helper method for finding an existing exercise or creating a new one if not found
-    private Exercise findOrCreateExercise(PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result) {
+    public Exercise findOrCreateExercise(PlannedExerciseLogDto plannedExerciseLogDto) throws BadRequestException {
         Optional<Exercise> exerciseOptional = exerciseRepository.findByName(plannedExerciseLogDto.getExerciseName());
         Exercise exercise;
         if(exerciseOptional.isPresent()) {
             exercise = exerciseOptional.get();
         } else {
             if(plannedExerciseLogDto.getMuscleGroup().isEmpty() || plannedExerciseLogDto.getMuscleGroup() == null) {
-                result.rejectValue("muscleGroup", "error.plannedExerciseLogDto", "Muscle group must be added if adding a new exercise name");
-                return null;
+                throw new BadRequestException("Muscle group must be added if adding a new exercise name");
             }
             exercise = new Exercise(plannedExerciseLogDto.getExerciseName(), plannedExerciseLogDto.getMuscleGroup());
             exerciseRepository.save(exercise);

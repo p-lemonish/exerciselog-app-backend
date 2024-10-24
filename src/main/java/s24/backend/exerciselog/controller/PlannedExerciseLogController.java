@@ -40,7 +40,7 @@ public class PlannedExerciseLogController {
     }
 
     @PostMapping("/add-planned")
-    public String addPlannedExerciseLog(@Valid @ModelAttribute PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result, Model model) {
+    public String addPlannedExerciseLog(@Valid @ModelAttribute PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result, Model model) throws BadRequestException {
 
         // Check for general validation errors
         if(result.hasErrors()) {
@@ -53,18 +53,9 @@ public class PlannedExerciseLogController {
             return "planned";
         }
         
-        plannedExerciseLogService.addPlannedExerciseLog(plannedExerciseLogDto, result);
+        Exercise exercise = plannedExerciseLogService.findOrCreateExercise(plannedExerciseLogDto);
+        plannedExerciseLogService.addPlannedExerciseLog(plannedExerciseLogDto, exercise);
 
-        // Check once more if errors arised with muscleGroup missing
-        if(result.hasErrors()) {
-            // Reload user data
-            User user = SecurityUtils.getCurrentUser();
-            List<ExerciseDto> exerciseDtos = plannedExerciseLogService.getUserExercises(user);
-            List<PlannedExerciseLogDto> plannedExerciseLogDtos = plannedExerciseLogService.getAllPlannedExerciseLogs(user);
-            model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogDtos);
-            model.addAttribute("exerciseDtos", exerciseDtos);
-            return "planned";
-        }
         return "redirect:/planned";
     }
 
@@ -82,19 +73,15 @@ public class PlannedExerciseLogController {
     }
 
     @PostMapping("/edit-planned/{id}")
-    public String updatePlannedExerciseLog(@Valid @ModelAttribute PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result, Model model) {
+    public String updatePlannedExerciseLog(@Valid @ModelAttribute PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result, Model model) throws BadRequestException {
 
         // Check for general validation errors
         if(result.hasErrors()) {
             return "edit-planned";
         }
 
-        plannedExerciseLogService.updatePlannedExerciseLog(plannedExerciseLogDto, result);
+        plannedExerciseLogService.updatePlannedExerciseLog(plannedExerciseLogDto);
 
-        // Check once more for errors with muscleGroup
-        if(result.hasErrors()) {
-            return "edit-planned";
-        }
         return "redirect:/planned";
     }
 
