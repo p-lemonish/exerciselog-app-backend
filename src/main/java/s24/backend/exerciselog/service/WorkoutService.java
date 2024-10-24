@@ -5,7 +5,6 @@ import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.BindingResult;
 
 import jakarta.transaction.Transactional;
 import s24.backend.exerciselog.domain.*;
@@ -50,14 +49,9 @@ public class WorkoutService {
         return plannedExerciseLogMapper.toDtoList(plannedExerciseLogs);
     }
     @Transactional
-    public void addWorkout(WorkoutDto workoutDto, User user, BindingResult result) {
+    public void addWorkout(WorkoutDto workoutDto, User user) {
 
         List<Long> selectedExerciseIds = workoutDto.getSelectedExerciseIds();
-
-        if(selectedExerciseIds == null || selectedExerciseIds.isEmpty()) {
-            result.rejectValue("selectedExerciseIds", "error.workoutDto", "Please select at least one exercise");
-            return;
-        }
 
         List<PlannedExerciseLog> selectedPlannedExerciseLogs = plannedExerciseLogRepository.findAllById(selectedExerciseIds);
 
@@ -67,7 +61,7 @@ public class WorkoutService {
     }
 
     @Transactional
-    public void completeWorkout(Long workoutId, CompletedWorkoutDto completedWorkoutDto, BindingResult result) {
+    public void completeWorkout(Long workoutId, CompletedWorkoutDto completedWorkoutDto) {
         User currentUser = SecurityUtils.getCurrentUser();
         Workout workout = workoutRepository.findById(workoutId)
             .orElseThrow(() -> new ResourceNotFoundException("Workout not found"));
@@ -94,6 +88,7 @@ public class WorkoutService {
             exerciseLogRepository.save(exerciseLog);
         }
     }
+
     @Transactional
     public CompletedWorkoutDto startWorkout(Long workoutId) {
         Workout workout = workoutRepository.findById(workoutId).orElseThrow(() -> new ResourceNotFoundException("Workout not found"));

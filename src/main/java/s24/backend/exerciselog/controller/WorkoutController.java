@@ -43,6 +43,11 @@ public class WorkoutController {
 
         User user = SecurityUtils.getCurrentUser();
 
+        // Check for empty selected exercise ids
+        if(workoutDto.getSelectedExerciseIds() == null || workoutDto.getSelectedExerciseIds().isEmpty()) {
+            result.rejectValue("selectedExerciseIds", "error.workoutDto", "Please select at least one exercise");
+        }
+
         // Check for validation errors
         if(result.hasErrors()) {
             List<WorkoutDto> workoutDtos = workoutService.getUserWorkouts(user);
@@ -55,19 +60,8 @@ public class WorkoutController {
             return "workouts";
         }
         
-        workoutService.addWorkout(workoutDto, user, result);
+        workoutService.addWorkout(workoutDto, user);
 
-        // Check for new validation errors
-        if(result.hasErrors()) {
-            List<WorkoutDto> workoutDtos = workoutService.getUserWorkouts(user);
-            List<CompletedWorkoutDto> completedWorkoutDtos = workoutService.getUserCompletedWorkouts(user);
-            List<PlannedExerciseLogDto> plannedExerciseLogDtos = workoutService.getUserPlannedExercises(user);
-
-            model.addAttribute("workoutDtos", workoutDtos);
-            model.addAttribute("completedWorkoutDtos", completedWorkoutDtos);
-            model.addAttribute("plannedExerciseLogDtos", plannedExerciseLogDtos);
-            return "workouts";
-        }
         return "redirect:/workouts";
     }
 
@@ -84,19 +78,11 @@ public class WorkoutController {
 
         // Check for validation errors
         if(result.hasErrors()) {
-            CompletedWorkoutDto freshDto = workoutService.startWorkout(id);
-            model.addAttribute("completedWorkoutDto", freshDto);
             return "start-workout";
         }
 
-        workoutService.completeWorkout(id, completedWorkoutDto, result);
+        workoutService.completeWorkout(id, completedWorkoutDto);
 
-        // Check for validation errors again
-        if(result.hasErrors()) {
-            CompletedWorkoutDto freshDto = workoutService.startWorkout(id);
-            model.addAttribute("completedWorkoutDto", freshDto);
-            return "start-workout";
-        }
         return "redirect:/workouts";
     }
 
