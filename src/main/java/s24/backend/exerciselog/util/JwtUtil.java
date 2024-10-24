@@ -1,25 +1,30 @@
 package s24.backend.exerciselog.util;
 
-import java.security.Key;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class JwtUtil {
     
-    private final String SECRET_KEY = "c75f1b894929751cf4fdcc5451b035b7f44d903cf019323177f21ac1ec5d3c19";
-    private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-
+    @Value("${jwt.secret}")
+    private String SECRET_KEY;
+    private SecretKey key;
     private final long EXPIRATION_TIME = 1000L * 60 * 60 * 24 * 30;
 
+    @PostConstruct
+    public void init() {
+        this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+    }
+
     public String generateToken(UserDetails userDetails) {
-        Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
         return Jwts.builder()
             .subject(userDetails.getUsername())
             .issuedAt(new Date())
@@ -30,7 +35,7 @@ public class JwtUtil {
 
     public String extractUsername(String token) {
         return Jwts.parser()
-            .setSigningKey(key)
+            .verifyWith(key)
             .build()
             .parseSignedClaims(token)
             .getPayload()
@@ -44,7 +49,7 @@ public class JwtUtil {
 
     private boolean isTokenExpired(String token) {
         Date expiration = Jwts.parser()
-            .setSigningKey(key)
+            .verifyWith(key)
             .build()
             .parseSignedClaims(token)
             .getPayload()
