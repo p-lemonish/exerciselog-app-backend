@@ -58,7 +58,6 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable()) // TODO disable for web based now?
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/register", "/h2-console/**", "/access-denied").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")

@@ -6,19 +6,8 @@
         }
     </style>
 <body>
-    <div class="header">
-        <h1>ExerciseLog</h1>
-        <div>
-            <a th:href="@{/profile}">Profile</a>
-            <a th:href="@{/logout}">Logout</a>
-        </div>
-    </div>
-    <div class="nav">
-        <a th:href="@{/home}">Home</a>
-        <a th:href="@{/workouts}">Workouts</a>
-        <a th:href="@{/planned}">Exercise Planning</a>
-        <a th:href="@{/logs}">Exercise Logs</a>
-    </div>
+    <div th:replace="~{fragments :: header}"></div>
+    <div th:replace="~{fragments :: nav}"></div>
     <div class="content">
         <h2>Exercise planning</h2>
         <p>Here you will plan your exercises. After planning exercises, you can go on to Workouts and plan a workout based on these planned exercises.</p>

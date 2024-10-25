@@ -1,19 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <div class="header">
-        <h1>ExerciseLog</h1>
-        <div>
-            <a th:href="@{/profile}">Profile</a>
-            <a th:href="@{/logout}">Logout</a>
-        </div>
-    </div>
-    <div class="nav">
-        <a th:href="@{/home}">Home</a>
-        <a th:href="@{/workouts}">Workouts</a>
-        <a th:href="@{/planned}">Exercise Planning</a>
-        <a th:href="@{/logs}">Exercise Logs</a>
-    </div>
+    <div th:replace="~{fragments :: header}"></div>
+    <div th:replace="~{fragments :: nav}"></div>
     <div class="content">
         <h2>Welcome to ExerciseLog!</h2>
         <p>Select an option from the menu to get started.</p>

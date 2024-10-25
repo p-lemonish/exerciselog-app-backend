@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+    <div th:fragment="header">
+        <div class="header">
+            <h1>ExerciseLog</h1>
+            <div>
+                <form th:action="@{/logout}" method="post">
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div th:fragment="nav">
+        <div class="nav">
+            <a th:href="@{/profile}">Profile</a>
+            <a th:href="@{/home}">Home</a>
+            <a th:href="@{/workouts}">Workouts</a>
+            <a th:href="@{/planned}">Exercise Planning</a>
+            <a th:href="@{/logs}">Exercise Logs</a>
+        </div>
+    </div>
+    </body>
+</html>

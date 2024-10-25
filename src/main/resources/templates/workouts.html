@@ -6,19 +6,8 @@
     }
 </style>
 <body>
-    <div class="header">
-        <h1>ExerciseLog</h1>
-        <div>
-            <a th:href="@{/profile}">Profile</a>
-            <a th:href="@{/logout}">Logout</a>
-        </div>
-    </div>
-    <div class="nav">
-        <a th:href="@{/home}">Home</a>
-        <a th:href="@{/workouts}">Workouts</a>
-        <a th:href="@{/planned}">Exercise Planning</a>
-        <a th:href="@{/logs}">Exercise Logs</a>
-    </div>
+    <div th:replace="~{fragments :: header}"></div>
+    <div th:replace="~{fragments :: nav}"></div>
     <div class="content">
         <h2>Workouts</h2>
         <p>Here you will manage your workouts. It will also serve as a display page for your workouts. A completed workout will log all the completed exercises and their data to a separate page for tracking.</p>
@@ -41,15 +30,15 @@
         </div>
     <h3>Add New Workout</h3>
     <form action="#" th:action="@{/add-workout}" th:object="${workoutDto}" method="post">
-        <label for="name">Workout Name:</label>
+        <label th:for="*{workoutName}">Workout Name:</label>
         <input type="text" th:field="*{workoutName}" required>
         <br>
 
-        <label for="date">Workout Date:</label>
+        <label th:for="*{plannedDate}">Workout Date:</label>
         <input type="date" th:field="*{plannedDate}" required>
         <br>
 
-        <label for="notes">Notes (optional):</label>
+        <label th:for="*{workoutNotes}">Notes (optional):</label>
         <input type="text" th:field="*{workoutNotes}">
         <br>
 
