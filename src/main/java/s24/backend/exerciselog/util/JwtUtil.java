@@ -9,18 +9,17 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
 
 @Component
 public class JwtUtil {
     
-    @Value("${jwt.secret}")
-    private String SECRET_KEY;
+    private final String SECRET_KEY;
     private SecretKey key;
     private final long EXPIRATION_TIME = 1000L * 60 * 60 * 24 * 30;
 
-    @PostConstruct
-    public void init() {
+    // Constructor injection for setting SECRET_KEY with Dotenv
+    public JwtUtil(@Value("${jwt.secret}") String secretKey) {
+        this.SECRET_KEY = secretKey;
         this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 

@@ -9,19 +9,32 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import s24.backend.exerciselog.domain.Exercise;
-import s24.backend.exerciselog.domain.PlannedExerciseLog;
-import s24.backend.exerciselog.domain.Role;
-import s24.backend.exerciselog.domain.User;
-import s24.backend.exerciselog.repository.ExerciseLogRepository;
-import s24.backend.exerciselog.repository.ExerciseRepository;
-import s24.backend.exerciselog.repository.PlannedExerciseLogRepository;
-import s24.backend.exerciselog.repository.RoleRepository;
-import s24.backend.exerciselog.repository.UserRepository;
-import s24.backend.exerciselog.repository.WorkoutRepository;
+import io.github.cdimascio.dotenv.Dotenv;
+import s24.backend.exerciselog.domain.*;
+import s24.backend.exerciselog.repository.*;
 
 @SpringBootApplication
 public class ExerciselogApplication {
+
+	static{
+		/*
+		 * Get SECRET_KEY for Jwts from a secure, .gitignored .env-file
+		 * 
+		 * My .env is being loaded from directory before src for some reason
+		 * 
+		 * Using a static-block because otherwise the SECRET_KEY won't be 
+		 * loaded when Maven does it's test run during mvn clean install
+		 */
+		Dotenv dotenv = Dotenv.configure()
+			.ignoreIfMissing()
+			.load();
+		
+		String secretKey = dotenv.get("SECRET_KEY");
+        if (secretKey == null || secretKey.isEmpty()) {
+            throw new IllegalStateException("SECRET_KEY was not found in the .env file");
+        }
+		System.setProperty("SECRET_KEY", secretKey);
+	}	
 
 	public static void main(String[] args) {
 		SpringApplication.run(ExerciselogApplication.class, args);
