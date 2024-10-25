@@ -17,7 +17,7 @@ public class JwtUtil {
     private SecretKey key;
     private final long EXPIRATION_TIME = 1000L * 60 * 60 * 24 * 30;
 
-    // Constructor injection for setting SECRET_KEY with Dotenv
+    // Constructor injection for setting SECRET_KEY with Dotenv (ExerciseLogApplication.java static-block)
     public JwtUtil(@Value("${jwt.secret}") String secretKey) {
         this.SECRET_KEY = secretKey;
         this.key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
