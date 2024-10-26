@@ -15,7 +15,7 @@ public class Role {
     private Long id;
     private String name;
 
-    //TODO @ManyToMany, TRIAL, VIP roles etc
+    //TODO @ManyToMany, TRIAL, VIP roles etc, also fix SecurityConfig if additional access levels for them
     @OneToMany(mappedBy = "role")
     private List<User> users;
 

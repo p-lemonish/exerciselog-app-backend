@@ -67,6 +67,9 @@ public class PlannedExerciseLogService {
         if(!(plannedExerciseLogDto.getExerciseName().equals(exercise.getName())
             && plannedExerciseLogDto.getMuscleGroup().equals(exercise.getMuscleGroup()))) {
             
+            if((plannedExerciseLogDto.getMuscleGroup().isBlank()) || (plannedExerciseLogDto.getMuscleGroup() == null)) {
+                throw new BadRequestException("Can't set muscle group as null or empty");
+            }
             exercise.setName(plannedExerciseLogDto.getExerciseName());
             exercise.setMuscleGroup(plannedExerciseLogDto.getMuscleGroup());
         }

@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import jakarta.servlet.http.HttpServletResponse;
 import s24.backend.exerciselog.filter.JwtAuthenticationFilter;
 import s24.backend.exerciselog.service.CustomUserDetailsService;
 
@@ -50,7 +49,7 @@ public class SecurityConfig {
         return http.build();
     } 
 
-    // SecurityConfig for web based application
+    // SecurityConfig for web based application TODO not working correctly due to apiChain intercepting requests..
     @Bean
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
