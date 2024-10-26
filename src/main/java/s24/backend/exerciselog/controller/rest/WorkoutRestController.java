@@ -1,27 +1,53 @@
 package s24.backend.exerciselog.controller.rest;
 
+import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+
+import jakarta.validation.Valid;
+import s24.backend.exerciselog.domain.*;
+import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.service.WorkoutService;
+import s24.backend.exerciselog.util.SecurityUtils;
+import s24.backend.exerciselog.util.ValidationUtil;
 
 
 
 @RestController
 public class WorkoutRestController {
+    @Autowired
+    private WorkoutService workoutService;
     
     @GetMapping("/api/workouts")
-    public String getAllWorkouts(@RequestParam String param) {
-        //TODO
-        return new String();
+    public ResponseEntity<List<WorkoutDto>> getAllWorkouts() {
+        User user = SecurityUtils.getCurrentUser();
+        List<WorkoutDto> workouts = workoutService.getUserWorkouts(user);
+        return ResponseEntity.status(HttpStatus.OK).body(workouts);
     }
 
+    @GetMapping("/api/workouts/completed")
+    public ResponseEntity<List<CompletedWorkoutDto>> getAllCompletedWorkouts() {
+        User user = SecurityUtils.getCurrentUser();
+        List<CompletedWorkoutDto> completedWorkouts = workoutService.getUserCompletedWorkouts(user);
+        return ResponseEntity.status(HttpStatus.OK).body(completedWorkouts);
+    }
+
+
     @PostMapping("/api/workouts")
-    public String addWorkout(@RequestBody String entity) {
-        //TODO: process POST request
-        
-        return entity;
+    public ResponseEntity<?> addWorkout(@Valid @RequestBody WorkoutDto workoutDto, BindingResult result) {
+        ResponseEntity<Map<String, String>> validationErrors = ValidationUtil.handleValidationErrors(result);
+        if(validationErrors != null) {
+            return validationErrors;
+        }
+
+        User user = SecurityUtils.getCurrentUser();
+        workoutService.addWorkout(workoutDto, user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     
     @GetMapping("/api/workouts/start/{id}")

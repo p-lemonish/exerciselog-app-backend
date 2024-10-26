@@ -1,6 +1,8 @@
 package s24.backend.exerciselog.mapper;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 import org.mapstruct.*;
 
 import s24.backend.exerciselog.domain.*;
@@ -14,7 +16,7 @@ public interface WorkoutMapper {
     @Mapping(target = "date", expression = "java(java.time.LocalDate.now())")
     @Mapping(target = "notes", source = "workoutNotes")
     @Mapping(target = "exerciseLogs", ignore = true)
-    @Mapping(target = "plannedExerciseLogs", ignore = true)
+    @Mapping(target = "plannedExerciseLogs", ignore = true) // Set in service
     @Mapping(target = "name", source = "workoutName")
     Workout toEntity(WorkoutDto dto, @Context User user);
 
@@ -27,8 +29,18 @@ public interface WorkoutMapper {
     @Mapping(target = "workoutNotes", source = "notes")
     @Mapping(target = "plannedDate", source = "date")
     @Mapping(target = "exercises", ignore = true)
-    @Mapping(target = "selectedExerciseIds", ignore = true)
+    @Mapping(target = "selectedExerciseIds", expression = "java(mapPlannedExerciseLogsToIds(entity.getPlannedExerciseLogs()))") // Set in @Aftermapping
     WorkoutDto toDto(Workout entity);
 
     List<WorkoutDto> toDtoList(List<Workout> entities);
+
+    @AfterMapping
+    default List<Long> mapPlannedExerciseLogsToIds(List<PlannedExerciseLog> plannedExerciseLogs) {
+        if(plannedExerciseLogs == null) {
+            return null;
+        }
+        return plannedExerciseLogs.stream()
+            .map(PlannedExerciseLog::getId)
+            .collect(Collectors.toList());
+    }
 }

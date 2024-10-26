@@ -4,6 +4,8 @@ import java.util.List;
 import java.time.LocalDate;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 /*
  * Long id => workoutId
@@ -27,11 +29,13 @@ public class WorkoutDto {
     
     private Long id;
     private String workoutNotes;
+    @NotEmpty(message = "Select at least one exercise")
     private List<Long> selectedExerciseIds;
     @Valid
     private List<ExerciseLogDto> exercises;
+    @NotBlank(message = "Workout must have a name")
     private String workoutName;
-    private LocalDate plannedDate; //date the workout was planned for
+    private LocalDate plannedDate; //date the workout was planned for TODO maybe set default date as now(), and let the user also set it if needed
     private LocalDate date; //workout completion date
     public WorkoutDto() {}
     public List<Long> getSelectedExerciseIds() {

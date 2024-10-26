@@ -37,7 +37,7 @@ public class PlannedExerciseLogRestController {
     }
     
     @PostMapping
-    public ResponseEntity<?> addPlannedExerciseLog( // TODO disallow userId in payload. Also fix user adding exercise to another user when setting userId. Fixable by not doign userRepo.findById. use securityUtils
+    public ResponseEntity<?> addPlannedExerciseLog(
         @Valid @RequestBody PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result) throws BadRequestException {
 
         ResponseEntity<Map<String, String>> validationErrors = ValidationUtil.handleValidationErrors(result);

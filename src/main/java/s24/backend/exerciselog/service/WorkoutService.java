@@ -52,9 +52,7 @@ public class WorkoutService {
     public void addWorkout(WorkoutDto workoutDto, User user) {
 
         List<Long> selectedExerciseIds = workoutDto.getSelectedExerciseIds();
-
         List<PlannedExerciseLog> selectedPlannedExerciseLogs = plannedExerciseLogRepository.findAllById(selectedExerciseIds);
-
         Workout workout = workoutMapper.toEntity(workoutDto, user);
         workout.setPlannedExerciseLogs(selectedPlannedExerciseLogs);
         workoutRepository.save(workout);
