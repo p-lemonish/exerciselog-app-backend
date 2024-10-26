@@ -36,17 +36,14 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
-            .securityMatcher("/api/**")
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/login", "/api/register").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/**").hasRole("USER")
                 .anyRequest().authenticated())
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .exceptionHandling(ex -> ex
-                .authenticationEntryPoint((request, response, authException) ->
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .userDetailsService(customUserDetailsService);
 
