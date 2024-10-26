@@ -2,6 +2,7 @@ package s24.backend.exerciselog.controller.rest;
 
 import java.util.*;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,27 +52,34 @@ public class WorkoutRestController {
     }
     
     @GetMapping("/api/workouts/start/{id}")
-    public String startWorkout(@RequestParam String param) {
-        //TODO
-        return new String();
+    public ResponseEntity<CompletedWorkoutDto> startWorkout(@PathVariable Long id) {
+        CompletedWorkoutDto completedWorkoutDto = workoutService.startWorkout(id);
+        return ResponseEntity.status(HttpStatus.OK).body(completedWorkoutDto);
     }
 
     @PostMapping("/api/workouts/complete/{id}")
-    public String completeWorkout(@RequestBody String entity) {
-        //TODO: process POST request
+    public ResponseEntity<?> completeWorkout(
+        @PathVariable Long id, 
+        @Valid @RequestBody CompletedWorkoutDto completedWorkoutDto, BindingResult result) throws BadRequestException {
         
-        return entity;
+        ResponseEntity<Map<String, String>> validationErrors = ValidationUtil.handleValidationErrors(result);
+        if(validationErrors != null) {
+            return validationErrors;
+        }
+
+        workoutService.completeWorkout(id, completedWorkoutDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     
     @DeleteMapping("/api/workouts/delete-planned/{id}")
-    public String deletePlannedWorkout(@PathVariable Long id) {
-        //TODO
-        return null;
+    public ResponseEntity<?> deletePlannedWorkout(@PathVariable Long id) {
+        workoutService.deletePlannedWorkout(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     
     @DeleteMapping("/api/workouts/delete-completed/{id}")
-    public String deleteCompletedWorkout(@PathVariable Long id) {
-        //TODO
-        return null;
+    public ResponseEntity<?> deleteCompletedWorkout(@PathVariable Long id) {
+        workoutService.deleteCompletedWorkout(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

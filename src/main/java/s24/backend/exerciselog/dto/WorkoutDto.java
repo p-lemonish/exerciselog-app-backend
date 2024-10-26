@@ -32,7 +32,7 @@ public class WorkoutDto {
     @NotEmpty(message = "Select at least one exercise")
     private List<Long> selectedExerciseIds;
     @Valid
-    private List<ExerciseLogDto> exercises;
+    private List<ExerciseLogDto> exercises; // TODO this might be useless in workoutDto, but not sure anymore. Delete later if found useless
     @NotBlank(message = "Workout must have a name")
     private String workoutName;
     private LocalDate plannedDate; //date the workout was planned for TODO maybe set default date as now(), and let the user also set it if needed

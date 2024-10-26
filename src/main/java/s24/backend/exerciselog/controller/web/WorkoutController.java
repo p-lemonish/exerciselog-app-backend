@@ -1,5 +1,6 @@
 package s24.backend.exerciselog.controller.web;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -74,7 +75,7 @@ public class WorkoutController {
 
     @PostMapping("/workouts/complete/{id}")
     public String completeWorkout(@PathVariable Long id, 
-        @Valid @ModelAttribute CompletedWorkoutDto completedWorkoutDto, BindingResult result, Model model) {
+        @Valid @ModelAttribute CompletedWorkoutDto completedWorkoutDto, BindingResult result, Model model) throws BadRequestException {
 
         // Check for validation errors
         if(result.hasErrors()) {

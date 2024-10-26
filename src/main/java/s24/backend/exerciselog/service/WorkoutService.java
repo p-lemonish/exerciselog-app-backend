@@ -2,7 +2,9 @@ package s24.backend.exerciselog.service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -59,10 +61,23 @@ public class WorkoutService {
     }
 
     @Transactional
-    public void completeWorkout(Long workoutId, CompletedWorkoutDto completedWorkoutDto) {
+    public void completeWorkout(Long workoutId, CompletedWorkoutDto completedWorkoutDto) throws BadRequestException {
         User currentUser = SecurityUtils.getCurrentUser();
         Workout workout = workoutRepository.findById(workoutId)
             .orElseThrow(() -> new ResourceNotFoundException("Workout not found"));
+        
+        //Check if exerciseIds were changed in API request
+        WorkoutDto workoutDto = workoutMapper.toDto(workout);
+        List<Long> selectedExerciseIds = workoutDto.getSelectedExerciseIds();
+
+        List<ExerciseLogDto> exerciseLogDtos = completedWorkoutDto.getExercises();
+        List<Long> completedWorkoutDtoExerciseIds = exerciseLogDtos
+            .stream().map(ExerciseLogDto::getExerciseId)
+            .collect(Collectors.toList());
+        
+        if(!selectedExerciseIds.equals(completedWorkoutDtoExerciseIds)) {
+            throw new BadRequestException("SelectedExerciseIds and completedWorkoutDtoExerciseIds do not match");
+        }
         
         LocalDate now = LocalDate.now();
         CompletedWorkout completedWorkout = completedWorkoutMapper.toEntity(completedWorkoutDto);
@@ -70,8 +85,8 @@ public class WorkoutService {
         completedWorkout.setDate(now);
         completedWorkout.setWorkoutName(workout.getName());
         completedWorkout.setPlannedDate(workout.getDate());
-        completedWorkoutRepository.save(completedWorkout);
 
+        List<ExerciseLog> exerciseLogs = new ArrayList<>();
         for (ExerciseLogDto exerciseDto : completedWorkoutDto.getExercises()) {
             PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(exerciseDto.getExerciseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Planned Exercise not found"));
@@ -83,8 +98,11 @@ public class WorkoutService {
                 workout
             );
             exerciseLog.setDate(now);
+            exerciseLogs.add(exerciseLog);
             exerciseLogRepository.save(exerciseLog);
         }
+        completedWorkout.setExerciseLogs(exerciseLogs);
+        completedWorkoutRepository.save(completedWorkout);
     }
 
     @Transactional
