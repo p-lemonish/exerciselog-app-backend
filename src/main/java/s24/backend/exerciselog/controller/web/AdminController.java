@@ -1,4 +1,4 @@
-package s24.backend.exerciselog.controller;
+package s24.backend.exerciselog.controller.web;
 
 import java.util.List;
 

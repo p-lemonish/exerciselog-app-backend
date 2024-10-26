@@ -8,7 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = "s24.backend.exerciselog.controller.rest") //basePackages ... is a fix for GlobalExceptionHandler hogging all the exceptions to itself because RestControllerAdvice is a child of ControllerAdvice
 public class RestExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
