@@ -13,6 +13,7 @@ import s24.backend.exerciselog.dto.*;
 import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.mapper.*;
 import s24.backend.exerciselog.repository.*;
+import s24.backend.exerciselog.util.SecurityUtils;
 
 @Service
 public class PlannedExerciseLogService {
@@ -45,8 +46,10 @@ public class PlannedExerciseLogService {
 
     @Transactional
     public void addPlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto, Exercise exercise) throws BadRequestException {
-
-        User user = userRepository.findById(plannedExerciseLogDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = SecurityUtils.getCurrentUser();
+        if(plannedExerciseLogDto.getId() != null || plannedExerciseLogDto.getUserId() != null) {
+            throw new BadRequestException("UserId or PlannedExerciseLogId must not be present while adding new planned exercise");
+        }
         PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user, exercise);
         plannedExerciseLogRepository.save(plannedExerciseLog);
     }
@@ -59,8 +62,11 @@ public class PlannedExerciseLogService {
 
     @Transactional
     public void updatePlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto) throws BadRequestException {
+        User user = SecurityUtils.getCurrentUser();
+        if(plannedExerciseLogDto.getUserId() != null) {
+            throw new BadRequestException("UserId must not be present while adding new planned exercise");
+        }
 
-        User user = userRepository.findById(plannedExerciseLogDto.getUserId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Exercise exercise = exerciseRepository.findByName(plannedExerciseLogDto.getExerciseName()).orElseThrow(() -> new ResourceNotFoundException("Exercise not found in planned exercises"));
 
         // Check if user changed exercise name or muscle group
