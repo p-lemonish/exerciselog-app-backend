@@ -3,7 +3,6 @@ package s24.backend.exerciselog.dto;
 import java.util.List;
 import java.time.LocalDate;
 
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -14,15 +13,6 @@ import jakarta.validation.constraints.NotEmpty;
  * LocalDate plannedDate
  * LocalDate date
  * List<Long> selectedExerciseIds => for selecting exercises when creating a new workout (addWorkout)
- * List<ExerciseLogDto> exercises
- *     - Long exerciseId
- *     - List<SetLogDto> setLogDtoList 
- *            - int setNumber
- *            - int reps
- *            - double weight
- *     - String exerciseNotes
- *     - String exerciseName
- *     - LocalDate date => date of completion
  */
 
 public class WorkoutDto {
@@ -31,11 +21,9 @@ public class WorkoutDto {
     private String workoutNotes;
     @NotEmpty(message = "Select at least one exercise")
     private List<Long> selectedExerciseIds;
-    @Valid
-    private List<ExerciseLogDto> exercises; // TODO this might be useless in workoutDto, but not sure anymore. Delete later if found useless
     @NotBlank(message = "Workout must have a name")
     private String workoutName;
-    private LocalDate plannedDate; //date the workout was planned for TODO maybe set default date as now(), and let the user also set it if needed
+    private LocalDate plannedDate; //date the workout was planned for 
     private LocalDate date; //workout completion date
     public WorkoutDto() {}
     public List<Long> getSelectedExerciseIds() {
@@ -73,11 +61,5 @@ public class WorkoutDto {
     }
     public void setWorkoutNotes(String workoutNotes) {
         this.workoutNotes = workoutNotes;
-    }
-    public List<ExerciseLogDto> getExercises() {
-        return exercises;
-    }
-    public void setExercises(List<ExerciseLogDto> exercises) {
-        this.exercises = exercises;
     }
 }

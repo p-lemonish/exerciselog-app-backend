@@ -8,7 +8,6 @@
 <body>
     <h2>Editing a Planned Exercise Log</h2>
     <form th:action="@{/edit-planned/{id}(id=${plannedExerciseLogDto.id})}" th:object="${plannedExerciseLogDto}" method="post">
-            <input type="hidden" th:field="*{userId}"/>
             <label for="exerciseName">Exercise:</label>
             <input type="text" id="exerciseName" th:field="*{exerciseName}" required>
             <div th:if="${#fields.hasErrors('exerciseName')}" th:errors="*{exerciseName}" class="error"></div>

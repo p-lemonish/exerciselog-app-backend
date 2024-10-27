@@ -67,7 +67,17 @@ public class PlannedExerciseLogService {
             throw new BadRequestException("UserId must not be present while adding new planned exercise");
         }
 
-        Exercise exercise = exerciseRepository.findByName(plannedExerciseLogDto.getExerciseName()).orElseThrow(() -> new ResourceNotFoundException("Exercise not found in planned exercises"));
+        Optional<Exercise> exerciseOptional = exerciseRepository.findByName(plannedExerciseLogDto.getExerciseName());
+        Exercise exercise;
+        if(!exerciseOptional.isPresent()) {
+            if((plannedExerciseLogDto.getMuscleGroup().isBlank()) || (plannedExerciseLogDto.getMuscleGroup() == null)) {
+                throw new BadRequestException("Can't set muscle group as null or empty");
+            }
+            exercise = new Exercise(plannedExerciseLogDto.getExerciseName(), plannedExerciseLogDto.getMuscleGroup());
+            exerciseRepository.save(exercise);
+        } else {
+            exercise = exerciseOptional.get();
+        }
 
         // Check if user changed exercise name or muscle group
         if(!(plannedExerciseLogDto.getExerciseName().equals(exercise.getName())

@@ -35,6 +35,7 @@ public class SecurityConfig {
     @Order(1)
     public SecurityFilterChain apiSecurityFilterChain(HttpSecurity http) throws Exception {
         http
+            .securityMatcher("/api/**") // apiSecurityChain will ONLY filter endpoints with /api/-beginning
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/login", "/api/register").permitAll()
@@ -49,7 +50,7 @@ public class SecurityConfig {
         return http.build();
     } 
 
-    // SecurityConfig for web based application TODO not working correctly due to apiChain intercepting requests..
+    // SecurityConfig for web based application 
     @Bean
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {

@@ -80,7 +80,7 @@ public class PlannedExerciseLogController {
             return "edit-planned";
         }
 
-        plannedExerciseLogService.updatePlannedExerciseLog(plannedExerciseLogDto); //TODO check if it works correctly, on API we had to input the pathvariable id with .setId to DTO
+        plannedExerciseLogService.updatePlannedExerciseLog(plannedExerciseLogDto); 
 
         return "redirect:/planned";
     }
