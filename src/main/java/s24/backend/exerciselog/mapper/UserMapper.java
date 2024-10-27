@@ -1,5 +1,7 @@
 package s24.backend.exerciselog.mapper;
 
+import java.util.List;
+
 import org.mapstruct.*;
 
 import s24.backend.exerciselog.domain.*;
@@ -20,4 +22,6 @@ public interface UserMapper {
 
     @Mapping(target = "roleName", source = "role.name")
     UserProfileDto toProfileDto(User entity);
+
+    List<UserProfileDto> toProfileDtoList(List<User> entity);
 }

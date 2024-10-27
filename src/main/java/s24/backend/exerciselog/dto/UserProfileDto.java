@@ -2,6 +2,7 @@ package s24.backend.exerciselog.dto;
 
 public class UserProfileDto {
 
+    private Long id;
     private String username;
     private String email;
     private String roleName;
@@ -24,5 +25,11 @@ public class UserProfileDto {
     }
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+    public Long getId() {
+        return id;
+    }
+    public void setId(Long id) {
+        this.id = id;
     }
 }
