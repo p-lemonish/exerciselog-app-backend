@@ -8,24 +8,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import s24.backend.exerciselog.domain.Role;
 import s24.backend.exerciselog.domain.User;
 import s24.backend.exerciselog.dto.RoleDto;
 import s24.backend.exerciselog.dto.UserProfileDto;
 import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.mapper.UserMapper;
-import s24.backend.exerciselog.repository.RoleRepository;
 import s24.backend.exerciselog.repository.UserRepository;
-import s24.backend.exerciselog.util.SecurityUtils;
+import s24.backend.exerciselog.service.AdminService;
 
 @RestController
 public class AdminRestController {
 
     @Autowired
     private UserRepository userRepository;
-    
+
     @Autowired
-    private RoleRepository roleRepository;
+    private AdminService adminService;
 
     @Autowired
     private UserMapper userMapper;
@@ -46,33 +44,13 @@ public class AdminRestController {
 
     @PutMapping("/api/admin/users/{id}")
     public ResponseEntity<?> editUserRole(@PathVariable Long id, @RequestBody RoleDto roleDto) throws ResourceNotFoundException, BadRequestException {
-        String roleName = roleDto.getRoleName();
-        if(roleName == null || roleName == "") {
-            throw new BadRequestException("Role name must not be empty");
-        }
-        User currentUser = SecurityUtils.getCurrentUser();
-        User userToUpdate = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Role roleToSet = roleRepository.findByName(roleName).orElseThrow(() -> new ResourceNotFoundException("Role not found"));
-
-        if (userToUpdate.getUsername().equals(currentUser.getUsername())) {
-            throw new BadRequestException("You cannot change your own role");
-        }
-
-        userToUpdate.setRole(roleToSet);
-        userRepository.save(userToUpdate);
+        adminService.updateUserRole(id, roleDto);
         return ResponseEntity.status(HttpStatus.OK).body("User role updated");
     }
 
     @DeleteMapping("/api/admin/users/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) throws BadRequestException {
-        User currentUser = SecurityUtils.getCurrentUser();
-        User userToDelete = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        if (userToDelete.getUsername().equals(currentUser.getUsername())) {
-            throw new BadRequestException("Cannot delete your own account");
-        }
-
-        userRepository.deleteById(id);
+        adminService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
     

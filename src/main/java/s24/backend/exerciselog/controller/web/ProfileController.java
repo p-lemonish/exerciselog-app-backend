@@ -1,5 +1,6 @@
 package s24.backend.exerciselog.controller.web;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -9,7 +10,7 @@ import org.springframework.validation.BindingResult;
 import s24.backend.exerciselog.domain.*;
 import s24.backend.exerciselog.dto.*;
 import s24.backend.exerciselog.mapper.*;
-import s24.backend.exerciselog.repository.*;
+import s24.backend.exerciselog.service.ProfileService;
 import s24.backend.exerciselog.util.SecurityUtils;
 
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +22,11 @@ import jakarta.validation.Valid;
 @Controller
 public class ProfileController {
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private UserMapper userMapper;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private ProfileService profileService;
 
     @GetMapping("/profile")
     public String getUserProfile(Model model) {
@@ -40,7 +41,8 @@ public class ProfileController {
     
     @PostMapping("/change-password")
     public String changePassword(@Valid @ModelAttribute PasswordChangeDto passwordChangeDto, 
-        BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+        BindingResult result, Model model, RedirectAttributes redirectAttributes) throws BadRequestException {
+
         User user = SecurityUtils.getCurrentUser();
         UserProfileDto userProfileDto = userMapper.toProfileDto(user);
 
@@ -64,9 +66,7 @@ public class ProfileController {
             return "profile";
         }
 
-        String encodedNewPassword = passwordEncoder.encode(passwordChangeDto.getConfirmNewPassword());
-        user.setPassword(encodedNewPassword);
-        userRepository.save(user);
+        profileService.changeUserPassword(passwordChangeDto);
 
         // model.addAttributes wouldn't work with redirect:/profile
         redirectAttributes.addFlashAttribute("message", "Password changed succesfully");

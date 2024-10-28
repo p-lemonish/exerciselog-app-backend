@@ -1,7 +1,7 @@
 package s24.backend.exerciselog.domain;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 import jakarta.persistence.*;
 

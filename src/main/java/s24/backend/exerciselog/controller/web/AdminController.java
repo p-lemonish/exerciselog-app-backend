@@ -2,14 +2,15 @@ package s24.backend.exerciselog.controller.web;
 
 import java.util.List;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
 import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.exception.ResourceNotFoundException;
+import s24.backend.exerciselog.dto.RoleDto;
 import s24.backend.exerciselog.repository.*;
-import s24.backend.exerciselog.util.SecurityUtils;
+import s24.backend.exerciselog.service.AdminService;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private AdminService adminService;
 
     @GetMapping("/users")
     public String getAllUsers(Model model) {
@@ -32,34 +34,16 @@ public class AdminController {
     }
 
     @PostMapping("/delete-user/{id}")
-    public String deleteUser(@PathVariable Long id, Model model) {
-        User currentUser = SecurityUtils.getCurrentUser();
-        User userToDelete = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-        if (userToDelete.getUsername().equals(currentUser.getUsername())) {
-            model.addAttribute("errorMessage", "You cannot delete your own account.");
-            return getAllUsers(model);
-        }
-
-        userRepository.deleteById(id);
+    public String deleteUser(@PathVariable Long id, Model model) throws BadRequestException {
+        adminService.deleteUser(id);
         return "redirect:/admin/users";
     }
 
     @PostMapping("/update-role/{id}")
-    public String updateUserRole(@PathVariable Long id, @RequestParam String newRole, Model model) {
-        User currentUser = SecurityUtils.getCurrentUser();
-
-        User userToUpdate = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Role roleToSet = roleRepository.findByName(newRole).orElseThrow(() -> new ResourceNotFoundException("Role not found"));
-
-        if (userToUpdate.getUsername().equals(currentUser.getUsername())) {
-            model.addAttribute("errorMessage", "You cannot change your own role.");
-            return getAllUsers(model);
-        }
-
-
-        userToUpdate.setRole(roleToSet);
-        userRepository.save(userToUpdate);
+    public String updateUserRole(@PathVariable Long id, @RequestParam String newRole, Model model) throws BadRequestException {
+        RoleDto roleDto = new RoleDto();
+        roleDto.setRoleName(newRole);
+        adminService.updateUserRole(id, roleDto);
         return "redirect:/admin/users";
     }
 
