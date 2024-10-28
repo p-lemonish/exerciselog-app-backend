@@ -36,16 +36,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username = null;
         String jwt = null;
 
-        // Parse JWT out of the user's request and determine username
+
+            /*
+             * Parse JWT out of the user's request and determine username
+             * Errors in the JWT must be handled and sent here because otherwise
+             * Spring Security will mess it up and pass to the wrong filter possibly
+            */
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             try {
                 username = jwtUtil.extractUsername(jwt);
-            } catch (ExpiredJwtException e) { // TODO both exceptions still show as 403 forbidden instead of what is given here
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token has expired");
+            } catch (ExpiredJwtException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token has expired");
                 return;
             } catch (Exception e) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Invalid token");
                 return;
             }
         }
