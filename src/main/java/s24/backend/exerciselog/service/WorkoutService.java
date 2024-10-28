@@ -86,6 +86,7 @@ public class WorkoutService {
         completedWorkout.setWorkoutName(workout.getName());
         completedWorkout.setPlannedDate(workout.getDate());
 
+        // Create an ExerciseLog instance of the completed workout
         List<ExerciseLog> exerciseLogs = new ArrayList<>();
         for (ExerciseLogDto exerciseDto : completedWorkoutDto.getExercises()) {
             PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(exerciseDto.getExerciseId())
