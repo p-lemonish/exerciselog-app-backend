@@ -11,7 +11,7 @@ import s24.backend.exerciselog.dto.*;
 public interface ExerciseMapper {
 
     @Mapping(target = "id", source = "exerciseId")
-    @Mapping(target = "user", ignore = true) // Set in service or after mapping if needed
+    @Mapping(target = "user", ignore = true) 
     @Mapping(target = "exerciseLogs", ignore = true)
     @Mapping(target = "plannedExerciseLogs", ignore = true)
     Exercise toEntity(ExerciseDto dto);

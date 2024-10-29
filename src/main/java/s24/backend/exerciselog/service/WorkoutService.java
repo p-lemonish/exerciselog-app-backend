@@ -3,6 +3,7 @@ package s24.backend.exerciselog.service;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class WorkoutService {
         Workout workout = workoutRepository.findById(workoutId)
             .orElseThrow(() -> new ResourceNotFoundException("Workout not found"));
         
-        //Check if exerciseIds were changed in API request
+        // Check if exerciseIds were changed in API request
         WorkoutDto workoutDto = workoutMapper.toDto(workout);
         List<Long> selectedExerciseIds = workoutDto.getSelectedExerciseIds();
 
@@ -91,6 +92,17 @@ public class WorkoutService {
         for (ExerciseLogDto exerciseDto : completedWorkoutDto.getExercises()) {
             PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(exerciseDto.getExerciseId())
                 .orElseThrow(() -> new ResourceNotFoundException("Planned Exercise not found"));
+
+            // Check if setNumber in setLogDto was tampered with
+            if(exerciseDto.getSetLogDtoList() != null) {
+                int plannedSets = plannedExerciseLog.getPlannedSets();
+                List<Integer> expectedSetNumbers = IntStream.rangeClosed(1, plannedSets).boxed().collect(Collectors.toList());
+                List<Integer> givenSetNumbers = exerciseDto.getSetLogDtoList().stream().map(SetLogDto::getSetNumber).collect(Collectors.toList());
+                if(!expectedSetNumbers.equals(givenSetNumbers)) {
+                    throw new BadRequestException("Set number values are not as expected");
+                }
+            }
+        
             ExerciseLog exerciseLog = exerciseLogMapper.toEntity(
                 exerciseDto,
                 new ExerciseLog(),
@@ -114,6 +126,9 @@ public class WorkoutService {
         completedWorkoutDto.setWorkoutName(workout.getName());
         completedWorkoutDto.setPlannedDate(workout.getDate());
         completedWorkoutDto.setId(workoutId);
+        if(workout.getUser() != null) {
+            completedWorkoutDto.setUserId(workout.getUser().getId());
+        }
 
         //Initialize exercises within workout
         List<ExerciseLogDto> exercises = exerciseLogMapper.plannedExerciseLogListToDtoList(workout.getPlannedExerciseLogs());

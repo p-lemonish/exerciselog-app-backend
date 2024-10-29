@@ -54,6 +54,11 @@ public interface ExerciseLogMapper {
 
     List<ExerciseLogDto> plannedExerciseLogListToDtoList(List<PlannedExerciseLog> plannedExerciseLogs);
 
+    /*
+    * SetLogDtos are created and pre-filled
+    * upon creation of ExerciseLogDto from a PlannedExerciseLog
+    * -> User is about to fill their workout data based on plans
+    */
     default List<SetLogDto> generateSetLogDtoList(PlannedExerciseLog plannedExerciseLog) {
         List<SetLogDto> setLogDtos = new ArrayList<>();
         int plannedSets = plannedExerciseLog.getPlannedSets();
