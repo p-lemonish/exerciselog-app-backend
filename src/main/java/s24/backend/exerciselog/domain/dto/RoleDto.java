@@ -1,4 +1,4 @@
-package s24.backend.exerciselog.dto;
+package s24.backend.exerciselog.domain.dto;
 
 public class RoleDto {
     public String roleName;

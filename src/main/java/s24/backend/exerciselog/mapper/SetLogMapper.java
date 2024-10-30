@@ -3,8 +3,8 @@ package s24.backend.exerciselog.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import s24.backend.exerciselog.domain.SetLog;
-import s24.backend.exerciselog.dto.SetLogDto;
+import s24.backend.exerciselog.domain.dto.SetLogDto;
+import s24.backend.exerciselog.domain.entity.SetLog;
 
 @Mapper(componentModel = "spring")
 public interface SetLogMapper {

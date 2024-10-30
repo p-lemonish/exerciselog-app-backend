@@ -4,8 +4,10 @@ import org.mapstruct.*;
 
 import java.util.*;
 
-import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.domain.dto.*;
+import s24.backend.exerciselog.domain.entity.Exercise;
+import s24.backend.exerciselog.domain.entity.PlannedExerciseLog;
+import s24.backend.exerciselog.domain.entity.User;
 
 @Mapper(componentModel = "spring")
 public interface PlannedExerciseLogMapper {

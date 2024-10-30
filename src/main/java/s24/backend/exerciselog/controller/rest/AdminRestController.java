@@ -8,9 +8,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import s24.backend.exerciselog.domain.User;
-import s24.backend.exerciselog.dto.RoleDto;
-import s24.backend.exerciselog.dto.UserProfileDto;
+import s24.backend.exerciselog.domain.dto.RoleDto;
+import s24.backend.exerciselog.domain.dto.UserProfileDto;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.mapper.UserMapper;
 import s24.backend.exerciselog.repository.UserRepository;

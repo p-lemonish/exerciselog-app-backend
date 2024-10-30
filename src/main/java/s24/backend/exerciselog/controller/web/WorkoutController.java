@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.domain.dto.*;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.service.WorkoutService;
 import s24.backend.exerciselog.util.SecurityUtils;
 

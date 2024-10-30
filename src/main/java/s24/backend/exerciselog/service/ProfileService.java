@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import s24.backend.exerciselog.domain.User;
-import s24.backend.exerciselog.dto.PasswordChangeDto;
+import s24.backend.exerciselog.domain.dto.PasswordChangeDto;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.repository.UserRepository;
 import s24.backend.exerciselog.util.SecurityUtils;
 

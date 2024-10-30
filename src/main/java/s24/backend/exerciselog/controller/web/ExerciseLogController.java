@@ -8,8 +8,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.ExerciseLogDto;
+import s24.backend.exerciselog.domain.dto.ExerciseLogDto;
+import s24.backend.exerciselog.domain.entity.ExerciseLog;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.mapper.ExerciseLogMapper;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.util.SecurityUtils;

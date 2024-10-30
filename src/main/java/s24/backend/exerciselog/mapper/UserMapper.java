@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.mapstruct.*;
 
-import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.domain.dto.*;
+import s24.backend.exerciselog.domain.entity.User;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

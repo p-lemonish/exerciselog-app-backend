@@ -3,8 +3,8 @@ package s24.backend.exerciselog.mapper;
 import org.mapstruct.*;
 import java.util.*;
 
-import s24.backend.exerciselog.domain.CompletedWorkout;
-import s24.backend.exerciselog.dto.CompletedWorkoutDto;
+import s24.backend.exerciselog.domain.dto.CompletedWorkoutDto;
+import s24.backend.exerciselog.domain.entity.CompletedWorkout;
 
 @Mapper(componentModel = "spring", uses = {ExerciseLogMapper.class})
 public interface CompletedWorkoutMapper {

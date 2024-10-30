@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import jakarta.validation.Valid;
-import s24.backend.exerciselog.domain.User;
-import s24.backend.exerciselog.dto.PasswordChangeDto;
-import s24.backend.exerciselog.dto.UserProfileDto;
+import s24.backend.exerciselog.domain.dto.PasswordChangeDto;
+import s24.backend.exerciselog.domain.dto.UserProfileDto;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.mapper.UserMapper;
 import s24.backend.exerciselog.service.ProfileService;
 import s24.backend.exerciselog.util.SecurityUtils;

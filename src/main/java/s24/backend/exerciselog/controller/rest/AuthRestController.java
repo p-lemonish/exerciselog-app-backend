@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 import jakarta.validation.Valid;
-import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.domain.dto.*;
 import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.service.CustomUserDetailsService;
 import s24.backend.exerciselog.service.RegistrationService;

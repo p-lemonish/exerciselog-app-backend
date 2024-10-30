@@ -4,7 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import s24.backend.exerciselog.domain.User;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.repository.UserRepository;
 

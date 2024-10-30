@@ -7,7 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import io.github.cdimascio.dotenv.Dotenv;
-import s24.backend.exerciselog.domain.*;
+import s24.backend.exerciselog.domain.entity.Role;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.repository.*;
 
 @SpringBootApplication

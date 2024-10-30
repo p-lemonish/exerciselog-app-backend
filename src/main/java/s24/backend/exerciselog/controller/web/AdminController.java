@@ -7,8 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
-import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.RoleDto;
+import s24.backend.exerciselog.domain.dto.RoleDto;
+import s24.backend.exerciselog.domain.entity.Role;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.service.AdminService;
 

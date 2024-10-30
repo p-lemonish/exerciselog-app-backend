@@ -1,4 +1,4 @@
-package s24.backend.exerciselog.domain;
+package s24.backend.exerciselog.domain.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

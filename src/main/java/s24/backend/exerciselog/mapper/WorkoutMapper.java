@@ -5,8 +5,10 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.*;
 
-import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.domain.dto.*;
+import s24.backend.exerciselog.domain.entity.PlannedExerciseLog;
+import s24.backend.exerciselog.domain.entity.User;
+import s24.backend.exerciselog.domain.entity.Workout;
 
 @Mapper(componentModel = "spring", uses = {ExerciseLogMapper.class})
 public interface WorkoutMapper {

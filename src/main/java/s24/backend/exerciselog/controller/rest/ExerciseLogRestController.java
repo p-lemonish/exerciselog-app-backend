@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.domain.dto.*;
+import s24.backend.exerciselog.domain.entity.ExerciseLog;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.mapper.ExerciseLogMapper;
 import s24.backend.exerciselog.repository.ExerciseLogRepository;
 import s24.backend.exerciselog.util.SecurityUtils;

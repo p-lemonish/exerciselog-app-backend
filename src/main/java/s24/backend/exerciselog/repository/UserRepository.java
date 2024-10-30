@@ -2,9 +2,9 @@ package s24.backend.exerciselog.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import s24.backend.exerciselog.domain.entity.User;
 
-import s24.backend.exerciselog.domain.User;
+import java.util.Optional;
 
 
 public interface UserRepository extends JpaRepository<User, Long> {

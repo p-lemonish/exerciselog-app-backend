@@ -10,9 +10,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
-import s24.backend.exerciselog.domain.Exercise;
-import s24.backend.exerciselog.domain.User;
-import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.domain.dto.*;
+import s24.backend.exerciselog.domain.entity.Exercise;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.service.PlannedExerciseLogService;
 import s24.backend.exerciselog.util.SecurityUtils;
 import s24.backend.exerciselog.util.ValidationUtil;

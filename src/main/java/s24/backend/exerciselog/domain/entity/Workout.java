@@ -1,4 +1,4 @@
-package s24.backend.exerciselog.domain;
+package s24.backend.exerciselog.domain.entity;
 
 import java.time.LocalDate;
 import java.util.*;

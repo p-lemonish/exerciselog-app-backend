@@ -13,8 +13,12 @@ import static org.mockito.Mockito.*;
 import java.time.*;
 import java.util.*;
 
-import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.*;
+import s24.backend.exerciselog.domain.dto.*;
+import s24.backend.exerciselog.domain.entity.CompletedWorkout;
+import s24.backend.exerciselog.domain.entity.ExerciseLog;
+import s24.backend.exerciselog.domain.entity.PlannedExerciseLog;
+import s24.backend.exerciselog.domain.entity.User;
+import s24.backend.exerciselog.domain.entity.Workout;
 import s24.backend.exerciselog.exception.*;
 import s24.backend.exerciselog.mapper.*;
 import s24.backend.exerciselog.repository.*;

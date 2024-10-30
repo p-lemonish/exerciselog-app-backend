@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.repository.UserRepository;
-import s24.backend.exerciselog.domain.User;
 
 //Fix for role not passing correctly to SecurityConfig
 @Service

@@ -6,8 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import s24.backend.exerciselog.domain.*;
-import s24.backend.exerciselog.dto.UserRegistrationDto;
+import s24.backend.exerciselog.domain.dto.UserRegistrationDto;
+import s24.backend.exerciselog.domain.entity.Role;
+import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.mapper.UserMapper;
 import s24.backend.exerciselog.repository.*;
