@@ -30,6 +30,8 @@ public class WorkoutRestController {
         return ResponseEntity.status(HttpStatus.OK).body(workouts);
     }
 
+    // TODO Get workout by id, edit workout by id
+
     @GetMapping("/api/workouts/completed")
     public ResponseEntity<List<CompletedWorkoutDto>> getAllCompletedWorkouts() {
         User user = SecurityUtils.getCurrentUser();
