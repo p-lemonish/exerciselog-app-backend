@@ -52,6 +52,7 @@ public class SecurityConfig {
     } 
 
     // SecurityConfig for web based application 
+    /*
     @Bean
     @Order(2)
     public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -73,6 +74,7 @@ public class SecurityConfig {
 
         return http.build();
     }
+    */
 
     @Bean
     public PasswordEncoder passwordEncoder() {
