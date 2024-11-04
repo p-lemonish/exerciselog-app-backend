@@ -65,7 +65,7 @@ public class WorkoutService {
         workoutRepository.save(workout);
     }
 
-    @Transactional
+    @Transactional // TODO user can send API without exerciseName, causing it to be null
     public void completeWorkout(Long workoutId, CompletedWorkoutDto completedWorkoutDto) throws BadRequestException {
         User currentUser = SecurityUtils.getCurrentUser();
         Workout workout = workoutRepository.findById(workoutId)
