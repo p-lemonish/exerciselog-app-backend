@@ -51,31 +51,6 @@ public class SecurityConfig {
         return http.build();
     } 
 
-    // SecurityConfig for web based application 
-    /*
-    @Bean
-    @Order(2)
-    public SecurityFilterChain webSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register", "/h2-console/**", "/access-denied").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated())
-            .formLogin(form -> form
-                .loginPage("/login")
-                .permitAll())
-            .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll())
-            .rememberMe(remember -> remember.tokenValiditySeconds(1209600))
-            .headers(headers -> headers
-                .frameOptions(frameOptions -> frameOptions.sameOrigin()))
-            .exceptionHandling(ex -> ex.accessDeniedPage("/access-denied"))
-            .userDetailsService(customUserDetailsService);
-
-        return http.build();
-    }
-    */
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
