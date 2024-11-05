@@ -15,8 +15,7 @@ import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.service.WorkoutService;
 import s24.backend.exerciselog.util.SecurityUtils;
 import s24.backend.exerciselog.util.ValidationUtil;
-
-
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 public class WorkoutRestController {
@@ -30,7 +29,13 @@ public class WorkoutRestController {
         return ResponseEntity.status(HttpStatus.OK).body(workouts);
     }
 
-    // TODO Get workout by id, edit workout by id
+    @GetMapping("/api/workouts/{id}")
+    public ResponseEntity<WorkoutDto> getWorkoutById(@PathVariable Long id) {
+        User user = SecurityUtils.getCurrentUser();
+        WorkoutDto workout = workoutService.getWorkoutById(user, id);
+        return ResponseEntity.status(HttpStatus.OK).body(workout);
+    }
+    
 
     @GetMapping("/api/workouts/completed")
     public ResponseEntity<List<CompletedWorkoutDto>> getAllCompletedWorkouts() {
@@ -49,6 +54,19 @@ public class WorkoutRestController {
 
         User user = SecurityUtils.getCurrentUser();
         workoutService.addWorkout(workoutDto, user);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("/api/workouts/{id}")
+    public ResponseEntity<?> editWorkout(@Valid @RequestBody WorkoutDto workoutDto, BindingResult result, @PathVariable Long id) throws BadRequestException {
+        ResponseEntity<Map<String, String>> validationErrors = ValidationUtil.handleValidationErrors(result);
+        if(validationErrors != null) {
+            return validationErrors;
+        }
+
+        User user = SecurityUtils.getCurrentUser();
+        workoutService.editWorkout(workoutDto, user, id);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

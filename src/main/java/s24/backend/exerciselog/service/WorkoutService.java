@@ -46,6 +46,12 @@ public class WorkoutService {
         return workoutMapper.toDtoList(workouts);
     }
     @Transactional
+    public WorkoutDto getWorkoutById(User user, Long id) {
+        Workout workout = workoutRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Workout not found"));
+        return workoutMapper.toDto(workout);
+    }
+    @Transactional
     public List<CompletedWorkoutDto> getUserCompletedWorkouts(User user) {
         List<CompletedWorkout> completedWorkouts = completedWorkoutRepository.findByUser(user);
         return completedWorkoutMapper.toDtoList(completedWorkouts);
@@ -65,7 +71,25 @@ public class WorkoutService {
         workoutRepository.save(workout);
     }
 
-    @Transactional // TODO user can send API without exerciseName, causing it to be null
+    @Transactional
+    public void editWorkout(WorkoutDto workoutDto, User user, Long id) throws BadRequestException {
+        if(workoutDto.getId() != id) {
+            throw new BadRequestException("Workout ID and Request ID do not match");
+        }
+        Workout workout = workoutRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Workout not found"));
+        if(workoutDto.getPlannedDate() == null) {
+            workoutDto.setPlannedDate(workout.getDate());
+        }
+
+        List<Long> selectedExerciseIds = workoutDto.getSelectedExerciseIds();
+        List<PlannedExerciseLog> selectedPlannedExerciseLogs = plannedExerciseLogRepository.findAllById(selectedExerciseIds);
+        workout = workoutMapper.toEntity(workoutDto, user);
+        workout.setId(id);
+        workout.setPlannedExerciseLogs(selectedPlannedExerciseLogs);
+        workoutRepository.save(workout);
+    }
+
+    @Transactional 
     public void completeWorkout(Long workoutId, CompletedWorkoutDto completedWorkoutDto) throws BadRequestException {
         User currentUser = SecurityUtils.getCurrentUser();
         Workout workout = workoutRepository.findById(workoutId)
