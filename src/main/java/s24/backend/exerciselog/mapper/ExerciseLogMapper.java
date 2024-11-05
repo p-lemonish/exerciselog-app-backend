@@ -14,8 +14,8 @@ import s24.backend.exerciselog.domain.entity.Workout;
 @Mapper(componentModel = "spring", uses = {SetLogMapper.class})
 public interface ExerciseLogMapper {
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "date", ignore = true) // Set in WorkoutService completeWorkout
+    @Mapping(target = "id", source = "dto.id")
     @Mapping(target = "exercise", source = "plannedExerciseLog.exercise")
     @Mapping(target = "plannedExerciseLog", source = "plannedExerciseLog")
     @Mapping(target = "user", source = "user")
@@ -31,6 +31,7 @@ public interface ExerciseLogMapper {
         Workout workout
     );
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "exerciseId", source = "exercise.id")
     @Mapping(target = "exerciseName", source = "name")
     @Mapping(target = "exerciseNotes", source = "notes")
