@@ -73,7 +73,7 @@ public class WorkoutService {
 
     @Transactional
     public void editWorkout(WorkoutDto workoutDto, User user, Long id) throws BadRequestException {
-        if(workoutDto.getId() != id) {
+        if(workoutDto.getId() == null || !workoutDto.getId().equals(id)) {
             throw new BadRequestException("Workout ID and Request ID do not match");
         }
         Workout workout = workoutRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Workout not found"));
