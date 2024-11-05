@@ -18,7 +18,7 @@ import java.time.LocalDate;
  */
 
 public class ExerciseLogDto {
-    
+    // TODO bring exerciseLog id as well
     private Long exerciseId;
     @Valid
     private List<SetLogDto> setLogDtoList;

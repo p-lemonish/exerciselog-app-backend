@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Min;
  * double weight
  */
 
-public class SetLogDto {
+public class SetLogDto { // TODO does this need a unique id too?
     private int setNumber;
     @Min(value = 0, message = "Reps must be non-negative")
     private int reps;
