@@ -8,7 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import s24.backend.exerciselog.domain.entity.Role;
-import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.repository.*;
 
 @SpringBootApplication
@@ -69,16 +68,6 @@ public class ExerciselogApplication {
 				.orElseGet(() -> roleRepository.save(new Role("TRIALUSER")));
 			Role adminRole = roleRepository.findByName("ADMIN")
 				.orElseGet(() -> roleRepository.save(new Role("ADMIN")));
-
-			// Initialize admin user in database
-			if(userRepository.findByUsername("admin").isEmpty()) {
-				User admin = new User();
-				admin.setUsername("admin");
-				admin.setPassword(passwordEncoder.encode("admin"));
-				admin.setEmail("admin@admin.com");
-				admin.setRole(adminRole);
-				userRepository.save(admin);
-			}
 		};
 	}
 }
