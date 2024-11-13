@@ -32,6 +32,7 @@ public class AdminService {
     @Autowired
     private ExerciseLogRepository exerciseLogRepository;
     
+    @Transactional
     public void updateUserRole(Long id, RoleDto roleDto) throws BadRequestException {
         String roleName = roleDto.getRoleName();
             if(roleName == null || roleName == "") {

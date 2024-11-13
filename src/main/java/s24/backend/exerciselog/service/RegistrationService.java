@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import s24.backend.exerciselog.domain.dto.UserRegistrationDto;
 import s24.backend.exerciselog.domain.entity.Role;
 import s24.backend.exerciselog.domain.entity.User;
@@ -27,7 +28,8 @@ public class RegistrationService {
     @Autowired
     private UserMapper userMapper;
     
-     public void registerUser(UserRegistrationDto userRegistrationDto) throws BadRequestException, ResourceNotFoundException {
+    @Transactional
+    public void registerUser(UserRegistrationDto userRegistrationDto) throws BadRequestException, ResourceNotFoundException {
 
         if(!userRegistrationDto.getPassword().equals(userRegistrationDto.getConfirmPassword())) {
             throw new BadRequestException("Passwords do not match");

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import s24.backend.exerciselog.domain.dto.PasswordChangeDto;
 import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.repository.UserRepository;
@@ -18,6 +19,7 @@ public class ProfileService {
     @Autowired
     private UserRepository userRepository;
     
+    @Transactional
     public void changeUserPassword(PasswordChangeDto passwordChangeDto) throws BadRequestException {
         User user = SecurityUtils.getCurrentUser();
 
