@@ -39,6 +39,7 @@ public class AuthRestController {
     @PostMapping("/api/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRegistrationDto userRegistrationDto, BindingResult result) throws BadRequestException, ResourceNotFoundException {
 
+        /*
         // Check validation errors in RequestBody
         ResponseEntity<Map<String, String>> validationErrors = ValidationUtil.handleValidationErrors(result);
         if(validationErrors != null) {
@@ -48,6 +49,9 @@ public class AuthRestController {
         registrationService.registerUser(userRegistrationDto);
         
         return ResponseEntity.status(HttpStatus.CREATED).body("Registration OK!");
+        */
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Registration is currently disabled.");
     }
 
     @PostMapping("/api/login")
