@@ -114,7 +114,7 @@ public class ExerciselogApplication {
 			boolean updated = false;
 
 			if (user.getUsername() != null) {
-				String username = user.getUsername();
+				String username = user.getUsername().toLowerCase();
 				
 				user.setUsername(username + " ");
 				System.out.println("Saved dummy username: " + user);
@@ -128,7 +128,7 @@ public class ExerciselogApplication {
 			}
 
 			if (user.getEmail() != null) {
-				String email = user.getEmail();
+				String email = user.getEmail().toLowerCase();
 				
 				user.setEmail(email + " ");
 				System.out.println("Saved dummy email: " + user);
@@ -142,7 +142,7 @@ public class ExerciselogApplication {
 			}
 
 			if (user.getUsernameHash() == null || user.getUsernameHash().isEmpty()) {
-				String username = user.getUsername();
+				String username = user.getUsername().toLowerCase();
 				if (username != null && !username.isEmpty()) {
 					String usernameHash = SecurityUtils.hash(username);
 					user.setUsernameHash(usernameHash);
@@ -152,7 +152,7 @@ public class ExerciselogApplication {
 			}
 
 			if (user.getEmailHash() == null || user.getEmailHash().isEmpty()) {
-				String email = user.getEmail();
+				String email = user.getEmail().toLowerCase();
 				if (email != null && !email.isEmpty()) {
 					String emailHash = SecurityUtils.hash(email);
 					user.setEmailHash(emailHash);

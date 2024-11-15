@@ -2,7 +2,6 @@ package s24.backend.exerciselog.service;
 
 import java.security.GeneralSecurityException;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import jakarta.transaction.Transactional;
 import s24.backend.exerciselog.domain.dto.UserRegistrationDto;
 import s24.backend.exerciselog.domain.entity.Role;
 import s24.backend.exerciselog.domain.entity.User;
+import s24.backend.exerciselog.exception.BadRequestException;
 import s24.backend.exerciselog.exception.ResourceNotFoundException;
 import s24.backend.exerciselog.mapper.UserMapper;
 import s24.backend.exerciselog.repository.RoleRepository;
@@ -34,8 +34,10 @@ public class RegistrationService {
     @Transactional
     public void registerUser(UserRegistrationDto userRegistrationDto) throws BadRequestException, ResourceNotFoundException, GeneralSecurityException {
         String username = userRegistrationDto.getUsername().toLowerCase();
+        userRegistrationDto.setUsername(username);
         String usernameHash = SecurityUtils.hash(username);
         String email = userRegistrationDto.getEmail().toLowerCase();
+        userRegistrationDto.setEmail(email);
         String emailHash = SecurityUtils.hash(email);
 
         if(!userRegistrationDto.getPassword().equals(userRegistrationDto.getConfirmPassword())) {

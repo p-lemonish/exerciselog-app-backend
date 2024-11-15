@@ -60,7 +60,7 @@ public class AuthRestController {
 
     @PostMapping("/api/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authRequest) {
-        String username = authRequest.getUsername();
+        String username = authRequest.getUsername().toLowerCase();
         String usernameHash = SecurityUtils.hash(username);
         String password = authRequest.getPassword();
 
