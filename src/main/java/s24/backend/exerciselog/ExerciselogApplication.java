@@ -32,6 +32,12 @@ public class ExerciselogApplication {
         }
 		System.setProperty("SECRET_KEY", secretKey);
 
+		String encryptionSecret = dotenv.get("ENCRYPTION_SECRET");
+		if (encryptionSecret == null || encryptionSecret.isEmpty()) {
+			throw new IllegalStateException("ENCRYPTION_SECRET was not found in the .env file");
+		}
+		System.setProperty("ENCRYPTION_SECRET", encryptionSecret);
+
 		String datasourceUrl = dotenv.get("SPRING_DATASOURCE_URL");
         if (datasourceUrl == null || datasourceUrl.isEmpty()) {
             throw new IllegalStateException("SPRING_DATASOURCE_URL was not found in the .env file");
