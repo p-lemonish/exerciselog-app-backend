@@ -1,35 +1,98 @@
 package s24.backend.exerciselog.exception;
 
-import org.apache.coyote.BadRequestException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@ControllerAdvice(basePackages = "s24.backend.exerciselog.controller.web")
+import jakarta.validation.ConstraintViolationException;
+
+import org.springframework.dao.DataAccessException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+
+import java.security.GeneralSecurityException;
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public String handleResourceNotFound(ResourceNotFoundException ex, Model model) {
-        model.addAttribute("errorMessage", ex.getMessage());
-        return "error/404";
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleBadCredentials(BadCredentialsException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    public String handleUsernameNotFound(UsernameNotFoundException ex, Model model) {
-        model.addAttribute("errorMessage", ex.getMessage());
-        return "error/404";
+    public ResponseEntity<Map<String, String>> handleUsernameNotFound(UsernameNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Username was not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(Exception.class)
-    public String handleGenericException(Exception ex, Model model) {
-        model.addAttribute("errorMessage", "An unexpected error occurred");
-        return "error/500";
+    // Handle custom exceptions
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(BadRequestException.class)
-    public String handleBadRequest(BadRequestException ex, Model model) {
-        model.addAttribute("errorMessage", ex.getMessage());
-        return "error/400";
+    public ResponseEntity<?> handleBadRequestException(BadRequestException ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    // Handle Spring Security access denied exceptions
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access denied.");
+    }
+
+    // Handle validation exceptions
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException ex) {
+        ex.printStackTrace();
+
+        Map<String, String> errors = new HashMap<>();
+        ex.getConstraintViolations().forEach(constraintViolation -> {
+            String propertyPath = constraintViolation.getPropertyPath().toString();
+            String message = constraintViolation.getMessage();
+            errors.put(propertyPath, message);
+        });
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+    }
+
+    // Handle data access exceptions (e.g., database errors)
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<?> handleDataAccessException(DataAccessException ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Database error occurred.");
+    }
+
+    // Handle HTTP method not supported exceptions
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<?> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("HTTP method not supported.");
+    }
+
+    // Handle encryption/decryption exceptions
+    @ExceptionHandler(GeneralSecurityException.class)
+    public ResponseEntity<?> handleGeneralSecurityException(GeneralSecurityException ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Encryption error occurred.");
+    }
+
+    // Handle other exceptions
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception ex) {
+        ex.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
     }
 }
