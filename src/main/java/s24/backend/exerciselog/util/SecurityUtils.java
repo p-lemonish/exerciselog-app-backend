@@ -1,5 +1,10 @@
 package s24.backend.exerciselog.util;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -22,7 +27,18 @@ public class SecurityUtils {
             throw new RuntimeException("User is not authenticated.");
         }
         String username = authentication.getName();
-        User currentUser = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        String usernameHash = hash(username);
+        User currentUser = userRepository.findByUsernameHash(usernameHash).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return currentUser;
+    }
+
+    public static String hash(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+            return Base64.getEncoder().encodeToString(encodedHash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error hashing input", e);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package s24.backend.exerciselog.domain.entity;
 
 import jakarta.persistence.*;
+import s24.backend.exerciselog.util.AttributeEncryptor;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +17,9 @@ public class CompletedWorkout {
     private User user;
 
     private LocalDate date; // completion date
+    @Convert(converter = AttributeEncryptor.class)
     private String workoutName;
+    @Convert(converter = AttributeEncryptor.class)
     private String workoutNotes;
     private LocalDate plannedDate; // date for which workout was planned for
 

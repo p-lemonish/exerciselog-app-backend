@@ -11,6 +11,8 @@ import s24.backend.exerciselog.domain.entity.User;
 public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "usernameHash", ignore = true)
+    @Mapping(target = "emailHash", ignore = true)
     @Mapping(target = "workouts", ignore = true)
     @Mapping(target = "completedWorkouts", ignore = true)
     @Mapping(target = "plannedExerciseLogs", ignore = true)

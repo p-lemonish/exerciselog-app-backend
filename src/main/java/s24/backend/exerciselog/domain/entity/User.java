@@ -3,6 +3,7 @@ package s24.backend.exerciselog.domain.entity;
 import java.util.List;
 
 import jakarta.persistence.*;
+import s24.backend.exerciselog.util.AttributeEncryptor;
 
 @Entity
 @Table(name = "app_user")
@@ -27,9 +28,13 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    @Convert(converter = AttributeEncryptor.class)
     private String username;
+    private String usernameHash;
     private String password;
+    @Convert(converter = AttributeEncryptor.class)
     private String email;
+    private String emailHash;
 
     public User(List<Workout> workouts, List<CompletedWorkout> completedWorkouts,
             List<PlannedExerciseLog> plannedExerciseLogs, Role role, String username, String password, String email) {
@@ -42,6 +47,18 @@ public class User {
         this.email = email;
     }
     public User() {
+    }
+    public String getEmailHash() {
+        return emailHash;
+    }
+    public void setEmailHash(String emailHash) {
+        this.emailHash = emailHash;
+    }
+    public String getUsernameHash() {
+        return usernameHash;
+    }
+    public void setUsernameHash(String usernameHash) {
+        this.usernameHash = usernameHash;
     }
     public List<PlannedExerciseLog> getPlannedExerciseLogs() {
         return plannedExerciseLogs;

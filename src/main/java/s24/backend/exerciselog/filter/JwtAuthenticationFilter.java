@@ -14,11 +14,16 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import s24.backend.exerciselog.domain.entity.User;
+import s24.backend.exerciselog.repository.UserRepository;
 import s24.backend.exerciselog.service.CustomUserDetailsService;
 import s24.backend.exerciselog.util.JwtUtil;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private UserRepository userRepository;
     
     @Autowired
     private JwtUtil jwtUtil;
@@ -33,7 +38,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         FilterChain filterChain) throws ServletException, IOException {
 
         final String authorizationHeader = request.getHeader("Authorization");
-        String username = null;
+        String userIdString = null;
+        Long userId = null;
         String jwt = null;
 
 
@@ -45,7 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             try {
-                username = jwtUtil.extractUsername(jwt);
+                userIdString = jwtUtil.extractUserIdString(jwt);
+                userId = Long.parseLong(userIdString);
             } catch (ExpiredJwtException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Token has expired");
@@ -57,15 +64,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
         
-        // If username is present and is not currently authenticated
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
+        // If userId is present and is not currently authenticated
+        if(userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            User user = userRepository.findById(userId).orElse(null);
 
-            if(jwtUtil.validateToken(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authenticationToken = 
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            if(user != null) {
+                String username = user.getUsername();
+                UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(username);
 
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                if(jwtUtil.validateToken(jwt, user.getId())) {
+                    UsernamePasswordAuthenticationToken authenticationToken = 
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
             }
         }
         filterChain.doFilter(request, response);

@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
+import s24.backend.exerciselog.util.AttributeEncryptor;
 
 @Entity
 public class ExerciseLog { 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String name;
+    private String name; // Exercise name
+    @Convert(converter = AttributeEncryptor.class)
     private String notes;
     private LocalDate date; // date of completion, set in WorkoutService
 

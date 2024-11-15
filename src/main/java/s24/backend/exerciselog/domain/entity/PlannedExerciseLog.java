@@ -1,6 +1,7 @@
 package s24.backend.exerciselog.domain.entity;
 
 import jakarta.persistence.*;
+import s24.backend.exerciselog.util.AttributeEncryptor;
 
 @Entity
 public class PlannedExerciseLog {
@@ -19,6 +20,7 @@ public class PlannedExerciseLog {
     private int plannedReps;
     private int plannedSets;
     private double plannedWeight;
+    @Convert(converter = AttributeEncryptor.class)
     private String notes;
 
     public PlannedExerciseLog(Exercise exercise, User user, int plannedSets, int plannedReps, double plannedWeight,

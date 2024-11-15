@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import jakarta.persistence.*;
+import s24.backend.exerciselog.util.AttributeEncryptor;
 
 @Entity
 public class Workout {
@@ -26,7 +27,9 @@ public class Workout {
     )
     private List<PlannedExerciseLog> plannedExerciseLogs;
     
+    @Convert(converter = AttributeEncryptor.class)
     private String name;
+    @Convert(converter = AttributeEncryptor.class)
     private String notes;
     private LocalDate date;
 
