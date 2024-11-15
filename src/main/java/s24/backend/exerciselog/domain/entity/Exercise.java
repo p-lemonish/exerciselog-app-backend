@@ -4,6 +4,10 @@ import java.util.List;
 
 import jakarta.persistence.*;
 
+/*
+ * TODO Make exercises unique to users only, currently any user can use any exerciseId that exists in the database
+ */
+
 @Entity
 public class Exercise {
     @Id

@@ -19,6 +19,10 @@ import s24.backend.exerciselog.mapper.*;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.util.SecurityUtils;
 
+/*
+ * TODO Fix: Any user with a valid JWT can do for example PUT /api/planned/ANY ID and they will "own" this exercise now
+ */
+
 @Service
 public class PlannedExerciseLogService {
     @Autowired
