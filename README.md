@@ -1,6 +1,6 @@
 # ExerciseLog Backend
 
-This repository contains the backend code for the **ExerciseLog App**, a web-based application designed to help users track, plan, and manage their exercise routines. The backend is built using **Spring Boot** and provides RESTful APIs for the frontend to interact with.
+The ExerciseLog Backend is a Spring Boot application that provides RESTful APIs for the ExerciseLog App—a web-based application designed to help users track, plan, and manage their exercise routines.
 
 ## Table of Contents
 
@@ -10,35 +10,38 @@ This repository contains the backend code for the **ExerciseLog App**, a web-bas
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Running the Application](#running-the-application)
-- [API Endpoints](#api-endpoints)
 - [Testing](#testing)
 - [Deployment](#deployment)
+- [API Endpoints](#api-endpoints)
 - [Contributing](#contributing)
 - [License](#license)
 
 ## Features
 
-- **User Authentication**: Registration and login with JWT-based authentication.
-- **Exercise Logging**: Users can log workouts with details like exercise type, duration, and intensity.
-- **Planned Exercises**: Schedule future workouts and set fitness goals.
-- **Progress Monitoring**: View statistics and analytics of workout data.
-- **Admin Functionality**: Manage user roles and delete user accounts.
+- **User Authentication**: Secure registration and login using JWT tokens.
+- **Exercise Logging**: Log workout details, including exercise type, duration, intensity, and metrics.
+- **Planned Exercises**: Schedule future workouts and set goals.
+- **Progress Monitoring**: Access historical data and visualize progress.
+- **Secure Backend**: Data management with PostgreSQL and secure data encryption.
 
 ## Technologies Used
 
 - **Java 17**
 - **Spring Boot**
-- **PostgreSQL**
+- **Spring Security**
 - **JWT (JSON Web Tokens)**
+- **PostgreSQL**
 - **Hibernate (JPA)**
+- **MapStruct**
 - **Maven**
+- **Docker (optional for containerization)**
 
 ## Prerequisites
 
-- **Java 17** or higher installed
+- **Java 17** or higher
 - **Maven** installed
-- **PostgreSQL** database setup
-- **Git** installed (for cloning the repository)
+- **PostgreSQL** database
+- **Git** (for cloning the repository)
 
 ## Installation
 
@@ -49,7 +52,16 @@ This repository contains the backend code for the **ExerciseLog App**, a web-bas
    cd exerciselog-backend
    ```
 
-2. **Install Dependencies**
+2. **Set Up the Database**
+
+   - Install PostgreSQL if not already installed.
+   - Create a new PostgreSQL database:
+
+     ```sql
+     CREATE DATABASE exerciselog;
+     ```
+
+3. **Install Dependencies**
 
    ```bash
    mvn clean install
@@ -57,105 +69,123 @@ This repository contains the backend code for the **ExerciseLog App**, a web-bas
 
 ## Configuration
 
-The application uses environment variables for sensitive information like database credentials and JWT secret keys. Create a `.env` file in the root directory (note that this file should be gitignored).
+The application requires certain environment variables to be set for proper functioning. These variables are loaded from a `.env` file located in the project's root directory. Create a `.env` file with the following content:
 
-### `.env` File
-
-```
+```env
 SECRET_KEY=your_jwt_secret_key
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/your_database
+ENCRYPTION_SECRET=your_encryption_secret
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/exerciselog
 SPRING_DATASOURCE_USERNAME=your_db_username
 SPRING_DATASOURCE_PASSWORD=your_db_password
 ```
 
-- Replace `your_jwt_secret_key` with a secure secret key for JWT signing.
-- Update the database URL, username, and password according to your PostgreSQL setup.
+- **SECRET_KEY**: A secret key used for JWT token signing.
+- **ENCRYPTION_SECRET**: A secret key used for data encryption.
+- **SPRING_DATASOURCE_URL**: JDBC URL for the PostgreSQL database.
+- **SPRING_DATASOURCE_USERNAME**: Database username.
+- **SPRING_DATASOURCE_PASSWORD**: Database password.
+
+**Note**: Ensure that the `.env` file is included in your `.gitignore` to prevent sensitive information from being committed to version control.
 
 ## Running the Application
 
-### With Maven
+1. **Build the Project**
+
+   ```bash
+   mvn clean package
+   ```
+
+2. **Run the Application**
+
+   ```bash
+   mvn spring-boot:run
+   ```
+
+   The backend server will start on `http://localhost:8080`.
+
+## Testing
+
+To run the tests, execute:
 
 ```bash
-mvn spring-boot:run
+mvn test
 ```
 
-### Packaging as a JAR
+## Deployment
 
-```bash
-mvn clean package
-java -jar target/exerciselog-app.jar
-```
+The backend can be deployed to any platform that supports Java applications, such as Heroku, AWS, or Render.com.
+
+### Docker Deployment (Optional)
+
+1. **Build Docker Image**
+
+   ```bash
+   docker build -t exerciselog-backend .
+   ```
+
+2. **Run Docker Container**
+
+   ```bash
+   docker run -p 8080:8080 --env-file .env exerciselog-backend
+   ```
 
 ## API Endpoints
 
 ### Authentication
 
 - **POST** `/api/register`: Register a new user.
-- **POST** `/api/login`: Authenticate a user and receive a JWT.
+- **POST** `/api/login`: Authenticate a user and receive a JWT token.
 
-### Profile
+### User Profile
 
-- **GET** `/api/profile`: Get current user profile.
-- **POST** `/api/profile/change-password`: Change password for current user.
+- **GET** `/api/profile`: Get the authenticated user's profile.
+- **POST** `/api/profile/change-password`: Change the user's password.
 
 ### Workouts
 
-- **GET** `/api/workouts`: Get all planned workouts.
-- **GET** `/api/workouts/{id}`: Get a specific planned workout.
-- **POST** `/api/workouts`: Add a new planned workout.
-- **PUT** `/api/workouts/{id}`: Edit an existing planned workout.
+- **GET** `/api/workouts`: Retrieve all planned workouts.
+- **GET** `/api/workouts/{id}`: Retrieve a specific workout by ID.
+- **POST** `/api/workouts`: Add a new workout.
+- **PUT** `/api/workouts/{id}`: Edit an existing workout.
 - **DELETE** `/api/workouts/delete-planned/{id}`: Delete a planned workout.
-- **GET** `/api/workouts/start/{id}`: Start a workout session.
-- **POST** `/api/workouts/complete/{id}`: Complete a workout session.
-- **GET** `/api/workouts/completed`: Get all completed workouts.
+- **GET** `/api/workouts/start/{id}`: Start a workout.
+- **POST** `/api/workouts/complete/{id}`: Complete a workout.
 - **DELETE** `/api/workouts/delete-completed/{id}`: Delete a completed workout.
 
-### Planned Exercises
+### Exercises
 
-- **GET** `/api/planned`: Get all planned exercises.
-- **GET** `/api/planned/{id}`: Get a specific planned exercise.
+- **GET** `/api/planned`: Retrieve all planned exercises.
+- **GET** `/api/planned/{id}`: Retrieve a specific planned exercise by ID.
 - **POST** `/api/planned`: Add a new planned exercise.
 - **PUT** `/api/planned/{id}`: Edit a planned exercise.
 - **DELETE** `/api/planned/{id}`: Delete a planned exercise.
 
 ### Exercise Logs
 
-- **GET** `/api/logs`: Get exercise logs, with optional filtering by exercise name.
+- **GET** `/api/logs`: Retrieve exercise logs.
+- **GET** `/api/logs?exerciseName={name}`: Retrieve exercise logs filtered by exercise name.
 
 ### Admin (Requires Admin Role)
 
-- **GET** `/api/admin/users`: Get all users.
-- **GET** `/api/admin/users/{id}`: Get a specific user.
+- **GET** `/api/admin/users`: Retrieve all users.
+- **GET** `/api/admin/users/{id}`: Retrieve a specific user by ID.
 - **PUT** `/api/admin/users/{id}`: Update a user's role.
 - **DELETE** `/api/admin/users/{id}`: Delete a user.
 
-## Testing
-
-The application can be tested using tools like **Postman** or **cURL**. Ensure to include the JWT token in the `Authorization` header for protected endpoints.
-
-Example of setting the `Authorization` header:
-
-```
-Authorization: Bearer your_jwt_token_here
-```
-
-## Deployment
-
-The application is configured for deployment on **Render.com** but can be deployed to any cloud provider that supports Java applications.
-
-### Environment Variables for Deployment
-
-Ensure the following environment variables are set on your deployment platform:
-
-- `SECRET_KEY`
-- `SPRING_DATASOURCE_URL`
-- `SPRING_DATASOURCE_USERNAME`
-- `SPRING_DATASOURCE_PASSWORD`
-
 ## Contributing
 
-Contributions are welcome! Please fork the repository and create a pull request with your changes.
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch: `git checkout -b feature/your-feature-name`.
+3. Commit your changes: `git commit -m 'Add some feature'`.
+4. Push to the branch: `git push origin feature/your-feature-name`.
+5. Open a pull request.
 
 ## License
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+**Note**: Ensure that all environment variables are correctly set and that sensitive information is not exposed. Always follow best practices for security, especially when dealing with authentication and encryption.
