@@ -48,8 +48,8 @@ The ExerciseLog Backend is a Spring Boot application that provides RESTful APIs 
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/p-lemonish/exerciselog-backend.git
-   cd exerciselog-backend
+   git clone https://github.com/p-lemonish/exerciselog-app-backend.git
+   cd exerciselog-app-backend
    ```
 
 2. **Set Up the Database**
@@ -120,13 +120,13 @@ The backend can be deployed to any platform that supports Java applications, suc
 1. **Build Docker Image**
 
    ```bash
-   docker build -t exerciselog-backend .
+   docker build -t exerciselog-app-backend .
    ```
 
 2. **Run Docker Container**
 
    ```bash
-   docker run -p 8080:8080 --env-file .env exerciselog-backend
+   docker run -p 8080:8080 --env-file .env exerciselog-app-backend
    ```
 
 ## API Endpoints
