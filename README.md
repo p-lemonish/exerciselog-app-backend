@@ -48,7 +48,7 @@ The ExerciseLog Backend is a Spring Boot application that provides RESTful APIs 
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/exerciselog-backend.git
+   git clone https://github.com/p-lemonish/exerciselog-backend.git
    cd exerciselog-backend
    ```
 
