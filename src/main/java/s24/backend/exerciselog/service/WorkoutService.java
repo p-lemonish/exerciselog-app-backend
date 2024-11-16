@@ -23,6 +23,7 @@ import s24.backend.exerciselog.util.SecurityUtils;
 
 /*
  * TODO Fix: Any user can access any workout ID
+ * TODO allow user to delete exercise log 
  */
 
 @Service
