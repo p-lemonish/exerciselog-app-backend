@@ -74,9 +74,8 @@ public class EncryptionService {
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
 
             return new String(decryptedBytes, StandardCharsets.UTF_8);
-        } catch (IllegalArgumentException e) { // Replace with GeneralSecurityException later TODO
-            return strToDecrypt;
-            //throw new GeneralSecurityException("Error decrypting data", e);
+        } catch (IllegalArgumentException e) { 
+            throw new GeneralSecurityException("Error decrypting data", e);
         }
     }
 }
