@@ -1,4 +1,4 @@
-package s24.backend.exerciselog.util;
+package s24.backend.exerciselog.service;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;

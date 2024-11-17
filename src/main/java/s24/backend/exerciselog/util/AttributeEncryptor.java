@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import s24.backend.exerciselog.service.EncryptionService;
 
 @Component
 @Converter
