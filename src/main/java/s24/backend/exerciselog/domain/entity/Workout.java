@@ -12,6 +12,7 @@ public class Workout {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // TODO: Add this into workoutDTO and handle problem of any user being able to edit any other user's workouts etc.
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
