@@ -6,7 +6,6 @@ import jakarta.validation.constraints.*;
  * Long id => PlannedExerciseLog id
  * Long userId
  * String exerciseName
- * String muscleGroup
  * String notes
  * int plannedSets
  * int plannedReps
@@ -18,7 +17,6 @@ public class PlannedExerciseLogDto {
 
     @NotEmpty(message = "Exercise must have a name")
     private String exerciseName;
-    private String muscleGroup;
 
     private Long userId;
 
@@ -33,7 +31,9 @@ public class PlannedExerciseLogDto {
 
     private String notes;
 
-    public PlannedExerciseLogDto() {}
+    public PlannedExerciseLogDto() {
+    }
+
     public String getExerciseName() {
         return exerciseName;
     }
@@ -81,16 +81,12 @@ public class PlannedExerciseLogDto {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
-    }
-    public String getMuscleGroup() {
-        return muscleGroup;
-    }
-    public void setMuscleGroup(String muscleGroup) {
-        this.muscleGroup = muscleGroup;
     }
 }

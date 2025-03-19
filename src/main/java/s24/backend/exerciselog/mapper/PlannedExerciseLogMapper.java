@@ -13,7 +13,6 @@ import s24.backend.exerciselog.domain.entity.User;
 public interface PlannedExerciseLogMapper {
 
     @Mapping(target = "exerciseName", source = "exercise.name")
-    @Mapping(target = "muscleGroup", source = "exercise.muscleGroup")
     @Mapping(target = "userId", source = "user.id")
     PlannedExerciseLogDto toDto(PlannedExerciseLog entity);
 
@@ -22,7 +21,8 @@ public interface PlannedExerciseLogMapper {
     PlannedExerciseLog toEntity(PlannedExerciseLogDto dto, @Context User user, @Context Exercise exercise);
 
     @AfterMapping
-    default void setUserAndExercise(@MappingTarget PlannedExerciseLog entity, @Context User user, @Context Exercise exercise) {
+    default void setUserAndExercise(@MappingTarget PlannedExerciseLog entity, @Context User user,
+            @Context Exercise exercise) {
         entity.setUser(user);
         entity.setExercise(exercise);
     }

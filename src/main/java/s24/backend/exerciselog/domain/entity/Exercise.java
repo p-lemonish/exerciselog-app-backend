@@ -26,15 +26,11 @@ public class Exercise {
 
     private String name;
 
-    // TODO make it accept multiple muscle groups
-    private String muscleGroup;
-
     public Exercise() {
     }
 
-    public Exercise(String name, String muscleGroup) {
+    public Exercise(String name) {
         this.name = name;
-        this.muscleGroup = muscleGroup;
     }
 
     public User getUser() {
@@ -75,13 +71,5 @@ public class Exercise {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getMuscleGroup() {
-        return muscleGroup;
-    }
-
-    public void setMuscleGroup(String muscleGroup) {
-        this.muscleGroup = muscleGroup;
     }
 }
