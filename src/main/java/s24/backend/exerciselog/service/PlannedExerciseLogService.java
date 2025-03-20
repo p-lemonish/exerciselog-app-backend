@@ -119,14 +119,17 @@ public class PlannedExerciseLogService {
     // Helper method for finding an existing exercise or creating a new one if not
     // found
     public Exercise findOrCreateExercise(PlannedExerciseLogDto plannedExerciseLogDto) throws BadRequestException {
-        Optional<Exercise> exerciseOptional = exerciseRepository.findByName(plannedExerciseLogDto.getExerciseName());
-        Exercise exercise;
-        if (exerciseOptional.isPresent()) {
-            exercise = exerciseOptional.get();
-        } else {
-            exercise = new Exercise(plannedExerciseLogDto.getExerciseName());
-            exerciseRepository.save(exercise);
+        String exerciseName = plannedExerciseLogDto.getExerciseName();
+        User user = SecurityUtils.getCurrentUser();
+        List<Exercise> userExercises = exerciseRepository.findByUser(user);
+        for (Exercise exercise : userExercises) {
+            if (exercise.getName().equals(exerciseName)) {
+                return exercise;
+            }
         }
+        Exercise exercise = new Exercise(plannedExerciseLogDto.getExerciseName());
+        exercise.setUser(user);
+        exerciseRepository.save(exercise);
         return exercise;
     }
 }
