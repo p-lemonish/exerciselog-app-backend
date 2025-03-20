@@ -53,83 +53,78 @@ public class PlannedExerciseLogService {
     }
 
     @Transactional
-    public void addPlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto, Exercise exercise) throws BadRequestException {
+    public void addPlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto, Exercise exercise)
+            throws BadRequestException {
         User user = SecurityUtils.getCurrentUser();
-        if(plannedExerciseLogDto.getId() != null || plannedExerciseLogDto.getUserId() != null) {
-            throw new BadRequestException("UserId or PlannedExerciseLogId must not be present while adding new planned exercise");
+        if (plannedExerciseLogDto.getId() != null || plannedExerciseLogDto.getUserId() != null) {
+            throw new BadRequestException(
+                    "UserId or PlannedExerciseLogId must not be present while adding new planned exercise");
         }
-        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user, exercise);
+        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user,
+                exercise);
         plannedExerciseLogRepository.save(plannedExerciseLog);
     }
 
     @Transactional
     public PlannedExerciseLogDto getPlannedExerciseLogDtoById(Long id) {
-        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("PlannedExerciseLog not found"));
+        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("PlannedExerciseLog not found"));
         return plannedExerciseLogMapper.toDto(plannedExerciseLog);
     }
 
     @Transactional
     public void updatePlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto) throws BadRequestException {
         User user = SecurityUtils.getCurrentUser();
-        if(plannedExerciseLogDto.getUserId() != null) {
+        if (plannedExerciseLogDto.getUserId() != null) {
             throw new BadRequestException("UserId must not be present while adding new planned exercise");
         }
 
         Optional<Exercise> exerciseOptional = exerciseRepository.findByName(plannedExerciseLogDto.getExerciseName());
         Exercise exercise;
-        if(!exerciseOptional.isPresent()) {
-            if((plannedExerciseLogDto.getMuscleGroup().isBlank()) || (plannedExerciseLogDto.getMuscleGroup() == null)) {
-                throw new BadRequestException("Can't set muscle group as null or empty");
-            }
-            exercise = new Exercise(plannedExerciseLogDto.getExerciseName(), plannedExerciseLogDto.getMuscleGroup());
+        if (!exerciseOptional.isPresent()) {
+            exercise = new Exercise(plannedExerciseLogDto.getExerciseName());
             exerciseRepository.save(exercise);
         } else {
             exercise = exerciseOptional.get();
         }
 
         // Check if user changed exercise name or muscle group
-        if(!(plannedExerciseLogDto.getExerciseName().equals(exercise.getName())
-            && plannedExerciseLogDto.getMuscleGroup().equals(exercise.getMuscleGroup()))) {
-            
-            if((plannedExerciseLogDto.getMuscleGroup().isBlank()) || (plannedExerciseLogDto.getMuscleGroup() == null)) {
-                throw new BadRequestException("Can't set muscle group as null or empty");
-            }
+        if (!plannedExerciseLogDto.getExerciseName().equals(exercise.getName())) {
             exercise.setName(plannedExerciseLogDto.getExerciseName());
-            exercise.setMuscleGroup(plannedExerciseLogDto.getMuscleGroup());
         }
 
-        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user, exercise);
+        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user,
+                exercise);
         plannedExerciseLog.setExercise(exercise);
         user.getPlannedExerciseLogs().add(plannedExerciseLog);
         userRepository.save(user);
     }
 
     @Transactional
-    public void deletePlannedExerciseLog(Long id) throws BadRequestException { 
-        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Planned exercise log not found"));
+    public void deletePlannedExerciseLog(Long id) throws BadRequestException {
+        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Planned exercise log not found"));
         List<Workout> workouts = workoutRepository.findByPlannedExerciseLogs(plannedExerciseLog);
-        if(!(workouts.isEmpty() || workouts == null)) {
+        if (!(workouts.isEmpty() || workouts == null)) {
             throw new BadRequestException("Cannot delete a planned exercise that is being used by a planned workout!");
         }
         // Set completedWorkout = null to avoid null references
         List<ExerciseLog> exerciseLogs = exerciseLogRepository.findByPlannedExerciseLog(plannedExerciseLog);
-        for(ExerciseLog exerciseLog : exerciseLogs) {
+        for (ExerciseLog exerciseLog : exerciseLogs) {
             exerciseLog.setPlannedExerciseLog(null);
         }
         plannedExerciseLogRepository.deleteById(id);
     }
 
-    // Helper method for finding an existing exercise or creating a new one if not found
+    // Helper method for finding an existing exercise or creating a new one if not
+    // found
     public Exercise findOrCreateExercise(PlannedExerciseLogDto plannedExerciseLogDto) throws BadRequestException {
         Optional<Exercise> exerciseOptional = exerciseRepository.findByName(plannedExerciseLogDto.getExerciseName());
         Exercise exercise;
-        if(exerciseOptional.isPresent()) {
+        if (exerciseOptional.isPresent()) {
             exercise = exerciseOptional.get();
         } else {
-            if(plannedExerciseLogDto.getMuscleGroup().isEmpty() || plannedExerciseLogDto.getMuscleGroup() == null) {
-                throw new BadRequestException("Muscle group must be added if adding a new exercise name");
-            }
-            exercise = new Exercise(plannedExerciseLogDto.getExerciseName(), plannedExerciseLogDto.getMuscleGroup());
+            exercise = new Exercise(plannedExerciseLogDto.getExerciseName());
             exerciseRepository.save(exercise);
         }
         return exercise;
