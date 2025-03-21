@@ -19,10 +19,6 @@ import s24.backend.exerciselog.mapper.*;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.util.SecurityUtils;
 
-/*
- * TODO Fix: Any user with a valid JWT can do for example PUT /api/planned/ANY ID and they will "own" this exercise now
- */
-
 @Service
 public class PlannedExerciseLogService {
     @Autowired
@@ -56,27 +52,29 @@ public class PlannedExerciseLogService {
     public void addPlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto, Exercise exercise)
             throws BadRequestException {
         User user = SecurityUtils.getCurrentUser();
-        if (plannedExerciseLogDto.getId() != null || plannedExerciseLogDto.getUserId() != null) {
-            throw new BadRequestException(
-                    "UserId or PlannedExerciseLogId must not be present while adding new planned exercise");
-        }
         PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user,
                 exercise);
         plannedExerciseLogRepository.save(plannedExerciseLog);
     }
 
     @Transactional
-    public PlannedExerciseLogDto getPlannedExerciseLogDtoById(Long id) {
+    public PlannedExerciseLogDto getPlannedExerciseLogDtoById(Long id) throws BadRequestException {
+        User user = SecurityUtils.getCurrentUser();
         PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("PlannedExerciseLog not found"));
+        if (user.getId() != plannedExerciseLog.getUser().getId()) {
+            throw new BadRequestException("You do not own this exercise!");
+        }
         return plannedExerciseLogMapper.toDto(plannedExerciseLog);
     }
 
     @Transactional
     public void updatePlannedExerciseLog(PlannedExerciseLogDto plannedExerciseLogDto) throws BadRequestException {
         User user = SecurityUtils.getCurrentUser();
-        if (plannedExerciseLogDto.getUserId() != null) {
-            throw new BadRequestException("UserId must not be present while adding new planned exercise");
+        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(plannedExerciseLogDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Planned Exercise not found."));
+        if (user.getId() != plannedExerciseLog.getUser().getId()) {
+            throw new BadRequestException("You do not own this exercise!");
         }
 
         Optional<Exercise> exerciseOptional = exerciseRepository.findByName(plannedExerciseLogDto.getExerciseName());
@@ -88,7 +86,7 @@ public class PlannedExerciseLogService {
             exercise = exerciseOptional.get();
         }
 
-        // Check if user changed exercise name or muscle group
+        // Check if user changed exercise name
         if (!plannedExerciseLogDto.getExerciseName().equals(exercise.getName())) {
             exercise.setName(plannedExerciseLogDto.getExerciseName());
         }
@@ -102,8 +100,13 @@ public class PlannedExerciseLogService {
 
     @Transactional
     public void deletePlannedExerciseLog(Long id) throws BadRequestException {
+        User user = SecurityUtils.getCurrentUser();
         PlannedExerciseLog plannedExerciseLog = plannedExerciseLogRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Planned exercise log not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("PlannedExerciseLog not found"));
+        if (user.getId() != plannedExerciseLog.getUser().getId()) {
+            throw new BadRequestException("You do not own this exercise!");
+        }
+
         List<Workout> workouts = workoutRepository.findByPlannedExerciseLogs(plannedExerciseLog);
         if (!(workouts.isEmpty() || workouts == null)) {
             throw new BadRequestException("Cannot delete a planned exercise that is being used by a planned workout!");
