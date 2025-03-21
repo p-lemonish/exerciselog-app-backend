@@ -17,7 +17,8 @@ public interface PlannedExerciseLogMapper {
     PlannedExerciseLogDto toDto(PlannedExerciseLog entity);
 
     @Mapping(target = "exercise", ignore = true) // Will be set after mapping
-    @Mapping(target = "user", ignore = true) // Will be set after mapping
+    @Mapping(target = "user", ignore = true) // drop the ID from DTO and let context set it
+    @Mapping(target = "id", ignore = true) // drop the ID from DTO
     PlannedExerciseLog toEntity(PlannedExerciseLogDto dto, @Context User user, @Context Exercise exercise);
 
     @AfterMapping
