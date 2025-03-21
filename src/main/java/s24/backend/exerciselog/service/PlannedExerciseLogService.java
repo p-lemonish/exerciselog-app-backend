@@ -1,6 +1,7 @@
 package s24.backend.exerciselog.service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,24 +78,12 @@ public class PlannedExerciseLogService {
             throw new BadRequestException("You do not own this exercise!");
         }
 
-        Optional<Exercise> exerciseOptional = exerciseRepository.findByName(plannedExerciseLogDto.getExerciseName());
-        Exercise exercise;
-        if (!exerciseOptional.isPresent()) {
-            exercise = new Exercise(plannedExerciseLogDto.getExerciseName());
-            exerciseRepository.save(exercise);
-        } else {
-            exercise = exerciseOptional.get();
-        }
+        plannedExerciseLog.setNotes(plannedExerciseLogDto.getNotes());
+        plannedExerciseLog.getExercise().setName(plannedExerciseLogDto.getExerciseName());
+        plannedExerciseLog.setPlannedReps(plannedExerciseLogDto.getPlannedReps());
+        plannedExerciseLog.setPlannedSets(plannedExerciseLogDto.getPlannedSets());
+        plannedExerciseLog.setPlannedWeight(plannedExerciseLogDto.getPlannedWeight());
 
-        // Check if user changed exercise name
-        if (!plannedExerciseLogDto.getExerciseName().equals(exercise.getName())) {
-            exercise.setName(plannedExerciseLogDto.getExerciseName());
-        }
-
-        PlannedExerciseLog plannedExerciseLog = plannedExerciseLogMapper.toEntity(plannedExerciseLogDto, user,
-                exercise);
-        plannedExerciseLog.setExercise(exercise);
-        user.getPlannedExerciseLogs().add(plannedExerciseLog);
         userRepository.save(user);
     }
 

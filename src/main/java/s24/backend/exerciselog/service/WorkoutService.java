@@ -21,11 +21,6 @@ import s24.backend.exerciselog.mapper.*;
 import s24.backend.exerciselog.repository.*;
 import s24.backend.exerciselog.util.SecurityUtils;
 
-/*
- * TODO Fix: Any user can access any workout ID
- * TODO allow user to delete exercise log 
- */
-
 @Service
 public class WorkoutService {
     @Autowired
