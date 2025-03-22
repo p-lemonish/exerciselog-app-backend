@@ -10,12 +10,12 @@ import s24.backend.exerciselog.domain.entity.PlannedExerciseLog;
 import s24.backend.exerciselog.domain.entity.User;
 import s24.backend.exerciselog.domain.entity.Workout;
 
-@Mapper(componentModel = "spring", uses = {ExerciseLogMapper.class})
+@Mapper(componentModel = "spring", uses = { ExerciseLogMapper.class })
 public interface WorkoutMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true) // Set in @AfterMapping
-    @Mapping(target = "date", source = "plannedDate") 
+    // @Mapping(target = "date", source = "plannedDate")
     @Mapping(target = "notes", source = "workoutNotes")
     @Mapping(target = "exerciseLogs", ignore = true)
     @Mapping(target = "plannedExerciseLogs", ignore = true) // Set in service
@@ -29,19 +29,21 @@ public interface WorkoutMapper {
 
     @Mapping(target = "workoutName", source = "name")
     @Mapping(target = "workoutNotes", source = "notes")
-    @Mapping(target = "plannedDate", source = "date")
-    @Mapping(target = "selectedExerciseIds", expression = "java(mapPlannedExerciseLogsToIds(entity.getPlannedExerciseLogs()))") // Set in @Aftermapping
+    // @Mapping(target = "plannedDate", source = "date")
+    @Mapping(target = "selectedExerciseIds", expression = "java(mapPlannedExerciseLogsToIds(entity.getPlannedExerciseLogs()))") // Set
+                                                                                                                                // in
+                                                                                                                                // @Aftermapping
     WorkoutDto toDto(Workout entity);
 
     List<WorkoutDto> toDtoList(List<Workout> entities);
 
     @AfterMapping
     default List<Long> mapPlannedExerciseLogsToIds(List<PlannedExerciseLog> plannedExerciseLogs) {
-        if(plannedExerciseLogs == null) {
+        if (plannedExerciseLogs == null) {
             return null;
         }
         return plannedExerciseLogs.stream()
-            .map(PlannedExerciseLog::getId)
-            .collect(Collectors.toList());
+                .map(PlannedExerciseLog::getId)
+                .collect(Collectors.toList());
     }
 }

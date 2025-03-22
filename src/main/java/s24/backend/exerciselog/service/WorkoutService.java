@@ -90,9 +90,11 @@ public class WorkoutService {
             throw new BadRequestException("You do not own this workout!");
         }
 
-        if (workoutDto.getPlannedDate() == null) {
-            workoutDto.setPlannedDate(workout.getDate());
-        }
+        /*
+         * if (workoutDto.getPlannedDate() == null) {
+         * workoutDto.setPlannedDate(workout.getDate());
+         * }
+         */
 
         List<Long> selectedExerciseIds = workoutDto.getSelectedExerciseIds();
         List<PlannedExerciseLog> selectedPlannedExerciseLogs = plannedExerciseLogRepository
@@ -130,7 +132,7 @@ public class WorkoutService {
         completedWorkout.setUser(currentUser);
         completedWorkout.setDate(now);
         completedWorkout.setWorkoutName(workout.getName());
-        completedWorkout.setPlannedDate(workout.getDate());
+        // completedWorkout.setPlannedDate(workout.getDate());
 
         // Create an ExerciseLog instance of the completed workout
         List<ExerciseLog> exerciseLogs = new ArrayList<>();
@@ -175,7 +177,7 @@ public class WorkoutService {
 
         CompletedWorkoutDto completedWorkoutDto = new CompletedWorkoutDto();
         completedWorkoutDto.setWorkoutName(workout.getName());
-        completedWorkoutDto.setPlannedDate(workout.getDate());
+        // completedWorkoutDto.setPlannedDate(workout.getDate());
         completedWorkoutDto.setId(workoutId);
         completedWorkoutDto.setUserId(workout.getUser().getId());
 

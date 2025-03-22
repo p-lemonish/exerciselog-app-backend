@@ -1,7 +1,6 @@
 package s24.backend.exerciselog.service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
