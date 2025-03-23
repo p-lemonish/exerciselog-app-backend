@@ -26,7 +26,7 @@ import s24.backend.exerciselog.util.SecurityUtils;
 
 @ExtendWith(MockitoExtension.class)
 public class WorkoutServiceTest {
-    
+
     @InjectMocks
     private WorkoutService workoutService;
     @Mock
@@ -48,7 +48,8 @@ public class WorkoutServiceTest {
     @Mock
     private User user;
 
-    // BeforeEach means that the setUp() is called before every test-method gets called
+    // BeforeEach means that the setUp() is called before every test-method gets
+    // called
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -56,16 +57,16 @@ public class WorkoutServiceTest {
 
     @Test
     public void testGetUserWorkouts() {
-        
+
         // Create list with Workout-entities
         List<Workout> workouts = Arrays.asList(new Workout(), new Workout());
         // Mock the JPA repository looking for a user's workouts
-        when(workoutRepository.findByUser(user)).thenReturn(workouts); 
+        when(workoutRepository.findByUser(user)).thenReturn(workouts);
 
         // Create list with WorkoutDto-entities
         List<WorkoutDto> workoutDtos = Arrays.asList(new WorkoutDto(), new WorkoutDto());
         // Mock workoutMapper creating a list of workoutDtos from workouts
-        when(workoutMapper.toDtoList(workouts)).thenReturn(workoutDtos); 
+        when(workoutMapper.toDtoList(workouts)).thenReturn(workoutDtos);
 
         // Let workoutService work with the given mocks
         List<WorkoutDto> result = workoutService.getUserWorkouts(user);
@@ -82,7 +83,8 @@ public class WorkoutServiceTest {
         List<CompletedWorkout> completedWorkouts = Arrays.asList(new CompletedWorkout(), new CompletedWorkout());
         when(completedWorkoutRepository.findByUser(user)).thenReturn(completedWorkouts);
 
-        List<CompletedWorkoutDto> completedWorkoutDtos = Arrays.asList(new CompletedWorkoutDto(), new CompletedWorkoutDto());
+        List<CompletedWorkoutDto> completedWorkoutDtos = Arrays.asList(new CompletedWorkoutDto(),
+                new CompletedWorkoutDto());
         when(completedWorkoutMapper.toDtoList(completedWorkouts)).thenReturn(completedWorkoutDtos);
 
         List<CompletedWorkoutDto> result = workoutService.getUserCompletedWorkouts(user);
@@ -96,10 +98,12 @@ public class WorkoutServiceTest {
     @Test
     public void testGetUserPlannedExercises() {
 
-        List<PlannedExerciseLog> plannedExerciseLogs = Arrays.asList(new PlannedExerciseLog(), new PlannedExerciseLog());
+        List<PlannedExerciseLog> plannedExerciseLogs = Arrays.asList(new PlannedExerciseLog(),
+                new PlannedExerciseLog());
         when(plannedExerciseLogRepository.findByUser(user)).thenReturn(plannedExerciseLogs);
 
-        List<PlannedExerciseLogDto> plannedExerciseLogDtos = Arrays.asList(new PlannedExerciseLogDto(), new PlannedExerciseLogDto());
+        List<PlannedExerciseLogDto> plannedExerciseLogDtos = Arrays.asList(new PlannedExerciseLogDto(),
+                new PlannedExerciseLogDto());
         when(plannedExerciseLogMapper.toDtoList(plannedExerciseLogs)).thenReturn(plannedExerciseLogDtos);
 
         List<PlannedExerciseLogDto> result = workoutService.getUserPlannedExercises(user);
@@ -116,8 +120,10 @@ public class WorkoutServiceTest {
         WorkoutDto workoutDto = new WorkoutDto();
         workoutDto.setSelectedExerciseIds(Arrays.asList(1L, 2L));
 
-        List<PlannedExerciseLog> plannedExerciseLogs = Arrays.asList(new PlannedExerciseLog(), new PlannedExerciseLog());
-        when(plannedExerciseLogRepository.findAllById(workoutDto.getSelectedExerciseIds())).thenReturn(plannedExerciseLogs);
+        List<PlannedExerciseLog> plannedExerciseLogs = Arrays.asList(new PlannedExerciseLog(),
+                new PlannedExerciseLog());
+        when(plannedExerciseLogRepository.findAllById(workoutDto.getSelectedExerciseIds()))
+                .thenReturn(plannedExerciseLogs);
 
         Workout workout = new Workout();
         when(workoutMapper.toEntity(workoutDto, user)).thenReturn(workout);
@@ -130,7 +136,7 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    public void testStartWorkout() {
+    public void testStartWorkout() throws BadRequestException {
 
         Long workoutId = 1L;
         Workout workout = new Workout();
@@ -158,7 +164,7 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    public void testDeletePlannedWorkout() {
+    public void testDeletePlannedWorkout() throws BadRequestException {
 
         Long workoutId = 1L;
         Workout workout = new Workout();
@@ -181,7 +187,7 @@ public class WorkoutServiceTest {
     }
 
     @Test
-    public void testDeleteCompletedWorkout() {
+    public void testDeleteCompletedWorkout() throws BadRequestException {
 
         Long completedWorkoutId = 1L;
         CompletedWorkout completedWorkout = new CompletedWorkout();
@@ -229,7 +235,7 @@ public class WorkoutServiceTest {
         plannedExerciseLog2.setId(2L);
         when(plannedExerciseLogRepository.findById(1L)).thenReturn(Optional.of(plannedExerciseLog1));
         when(plannedExerciseLogRepository.findById(2L)).thenReturn(Optional.of(plannedExerciseLog2));
-            
+
         ExerciseLog exerciseLog1 = new ExerciseLog();
         ExerciseLog exerciseLog2 = new ExerciseLog();
 
@@ -241,22 +247,20 @@ public class WorkoutServiceTest {
             mockedSecurityUtils.when(SecurityUtils::getCurrentUser).thenReturn(currentUser);
 
             when(exerciseLogMapper.toEntity(
-                eq(exerciseLogDto1), 
-                any(ExerciseLog.class), 
-                eq(plannedExerciseLog1), 
-                eq(currentUser), 
-                eq(workout))
-            )
-            .thenReturn(exerciseLog1);
+                    eq(exerciseLogDto1),
+                    any(ExerciseLog.class),
+                    eq(plannedExerciseLog1),
+                    eq(currentUser),
+                    eq(workout)))
+                    .thenReturn(exerciseLog1);
 
             when(exerciseLogMapper.toEntity(
-                eq(exerciseLogDto2), 
-                any(ExerciseLog.class), 
-                eq(plannedExerciseLog2), 
-                eq(currentUser), 
-                eq(workout))
-            )
-            .thenReturn(exerciseLog2);
+                    eq(exerciseLogDto2),
+                    any(ExerciseLog.class),
+                    eq(plannedExerciseLog2),
+                    eq(currentUser),
+                    eq(workout)))
+                    .thenReturn(exerciseLog2);
 
             workoutService.completeWorkout(workoutId, completedWorkoutDto);
 
@@ -287,7 +291,7 @@ public class WorkoutServiceTest {
         ExerciseLogDto exerciseLogDto1 = new ExerciseLogDto();
 
         // Set bad ID for exerciseLogDto1 to cause problems
-        exerciseLogDto1.setExerciseId(3L); 
+        exerciseLogDto1.setExerciseId(3L);
 
         completedWorkoutDto.getExercises().add(exerciseLogDto1);
 
