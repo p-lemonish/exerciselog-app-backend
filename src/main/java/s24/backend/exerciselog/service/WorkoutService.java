@@ -147,7 +147,7 @@ public class WorkoutService {
                         .collect(Collectors.toList());
                 List<Integer> givenSetNumbers = exerciseDto.getSetLogDtoList().stream().map(SetLogDto::getSetNumber)
                         .collect(Collectors.toList());
-                if (!expectedSetNumbers.equals(givenSetNumbers)) {
+                if (!givenSetNumbers.stream().allMatch(expectedSetNumbers::contains)) {
                     throw new BadRequestException("Set number values are not as expected");
                 }
             }
