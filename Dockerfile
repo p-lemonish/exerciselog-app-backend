@@ -5,9 +5,10 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM openjdk:21-jdk-alpine
+FROM openjdk:21-jdk
 WORKDIR /app
 COPY --from=build /app/target/exerciselog-0.0.1-SNAPSHOT.jar app.jar
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
+ENTRYPOINT ["./entrypoint.sh"]
