@@ -1,6 +1,7 @@
 package s24.backend.exerciselog.controller.rest;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import s24.backend.exerciselog.util.ValidationUtil;
 public class PlannedExerciseLogRestController {
     @Autowired
     private PlannedExerciseLogService plannedExerciseLogService;
-    
+
     @GetMapping
     public ResponseEntity<List<PlannedExerciseLogDto>> getAllPlannedExerciseLogs() {
         User user = SecurityUtils.getCurrentUser();
@@ -30,21 +31,32 @@ public class PlannedExerciseLogRestController {
         return ResponseEntity.ok(plannedExerciseLogs);
     }
 
+    @GetMapping("/ids/{idsString}")
+    public ResponseEntity<List<PlannedExerciseLogDto>> getSomePlannedExerciseLogs(@PathVariable String idsString)
+            throws BadRequestException {
+        System.out.println("/ids/idsString invoked");
+        List<Long> ids = Arrays.stream(idsString.split(",")).map(Long::valueOf).collect(Collectors.toList());
+        List<PlannedExerciseLogDto> plannedExerciseLogs = plannedExerciseLogService.getSomePlannedExerciseLogs(ids);
+        return ResponseEntity.ok(plannedExerciseLogs);
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<PlannedExerciseLogDto> getPlannedExerciseLog(@PathVariable Long id) {
+    public ResponseEntity<PlannedExerciseLogDto> getPlannedExerciseLog(@PathVariable Long id)
+            throws BadRequestException {
         PlannedExerciseLogDto plannedExerciseLogDto = plannedExerciseLogService.getPlannedExerciseLogDtoById(id);
         return ResponseEntity.ok(plannedExerciseLogDto);
     }
-    
+
     @PostMapping
     public ResponseEntity<?> addPlannedExerciseLog(
-        @Valid @RequestBody PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result) throws BadRequestException {
+            @Valid @RequestBody PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result)
+            throws BadRequestException {
 
         ResponseEntity<Map<String, String>> validationErrors = ValidationUtil.handleValidationErrors(result);
-        if(validationErrors != null) {
+        if (validationErrors != null) {
             return validationErrors;
         }
-        
+
         Exercise exercise = plannedExerciseLogService.findOrCreateExercise(plannedExerciseLogDto);
         plannedExerciseLogService.addPlannedExerciseLog(plannedExerciseLogDto, exercise);
 
@@ -59,11 +71,12 @@ public class PlannedExerciseLogRestController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> editPlannedExerciseLog(
-        @PathVariable Long id,
-        @Valid @RequestBody PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result) throws BadRequestException {
+            @PathVariable Long id,
+            @Valid @RequestBody PlannedExerciseLogDto plannedExerciseLogDto, BindingResult result)
+            throws BadRequestException {
 
         ResponseEntity<Map<String, String>> validationErrors = ValidationUtil.handleValidationErrors(result);
-        if(validationErrors != null) {
+        if (validationErrors != null) {
             return validationErrors;
         }
 
@@ -72,5 +85,5 @@ public class PlannedExerciseLogRestController {
 
         return ResponseEntity.ok().build();
     }
-    
+
 }

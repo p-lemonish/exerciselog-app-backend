@@ -43,6 +43,15 @@ public class PlannedExerciseLogService {
     }
 
     @Transactional
+    public List<PlannedExerciseLogDto> getSomePlannedExerciseLogs(List<Long> ids) throws BadRequestException {
+        List<PlannedExerciseLogDto> plannedExerciseLogs = new ArrayList<>();
+        for (Long id : ids) {
+            plannedExerciseLogs.add(getPlannedExerciseLogDtoById(id));
+        }
+        return plannedExerciseLogs;
+    }
+
+    @Transactional
     public List<ExerciseDto> getUserExercises(User user) {
         List<Exercise> exercises = exerciseRepository.findByUser(user);
         return exerciseMapper.toDtoList(exercises);
