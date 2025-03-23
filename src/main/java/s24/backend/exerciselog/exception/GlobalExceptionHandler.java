@@ -4,8 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -44,6 +47,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleBadRequestException(BadRequestException ex) {
         ex.printStackTrace();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    private static final Logger adminAccessLogger = LoggerFactory.getLogger("adminAccessLogger");
+
+    @ExceptionHandler(ApiNotInUseException.class)
+    public ResponseEntity<?> handleApiNotInUseException(ApiNotInUseException ex, HttpServletRequest request) {
+        String ipAddress = request.getRemoteAddr();
+        String requestUri = request.getRequestURI();
+        adminAccessLogger.info("Attempt to access disabled API endpoint: {} from IP: {}. Message: {}",
+                requestUri, ipAddress, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body("This API endpoint is not available");
     }
 
     // Handle Spring Security access denied exceptions
