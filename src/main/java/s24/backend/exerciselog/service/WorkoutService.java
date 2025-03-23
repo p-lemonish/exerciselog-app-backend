@@ -123,7 +123,7 @@ public class WorkoutService {
                 .stream().map(ExerciseLogDto::getExerciseId)
                 .collect(Collectors.toList());
 
-        if (!selectedExerciseIds.equals(completedWorkoutDtoExerciseIds)) {
+        if (!completedWorkoutDtoExerciseIds.stream().allMatch(selectedExerciseIds::contains)) {
             throw new BadRequestException("SelectedExerciseIds and completedWorkoutDtoExerciseIds do not match");
         }
 
