@@ -1,44 +1,31 @@
-version: '3.8'
-
 services:
-    postgres:
-        image: postgres:14
-        restart: always
-        environment:
-            POSTGRES_DB: exerciselog
-            POSTGRES_USER: exerciselog_user
-            POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-        ports:
-            - "5432:5432"
-        volumes:
-            - postgres-data:/var/lib/postgresql/data
-        secrets:
-          - db_password
+  postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_DB: exerciselog
+      POSTGRES_USER: exerciselog_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - /run/secrets:/run/secrets:ro
 
-    backend:
-        build:
-            context: ./
-            dockerfile: Dockerfile
-        image: exerciselog-app-backend
-        container_name: exerciselog-app-backend
-        ports:
-            - "8080:8080"
-        secrets:
-          - db_password
-          - secret_key
-          - encryption_secret
-        depends_on:
-            - postgres
-    
-secrets:
-  db_password:
-    file: /run/secrets/db_password
-  secret_key:
-    file: /run/secrets/secret_key
-  encryption_secret:
-    file: /run/secrets/encryption_secret
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: exerciselog-app-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - /run/secrets:/run/secrets:ro
+    depends_on:
+      - postgres
 
 volumes:
-    postgres-data:
-        external: true
-        name: exerciselog-app_postgres-data
+  postgres-data:
+    external: true
+    name: exerciselog-app_postgres-data
+
