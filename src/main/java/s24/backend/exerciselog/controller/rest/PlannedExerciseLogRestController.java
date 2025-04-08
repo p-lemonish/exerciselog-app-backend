@@ -34,7 +34,6 @@ public class PlannedExerciseLogRestController {
     @GetMapping("/ids/{idsString}")
     public ResponseEntity<List<PlannedExerciseLogDto>> getSomePlannedExerciseLogs(@PathVariable String idsString)
             throws BadRequestException {
-        System.out.println("/ids/idsString invoked");
         List<Long> ids = Arrays.stream(idsString.split(",")).map(Long::valueOf).collect(Collectors.toList());
         List<PlannedExerciseLogDto> plannedExerciseLogs = plannedExerciseLogService.getSomePlannedExerciseLogs(ids);
         return ResponseEntity.ok(plannedExerciseLogs);
